@@ -83,16 +83,34 @@ export default function Terminal({ onCommand }) {
         setIsMounted(true);
         
         // Center the terminal on mount
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const initialDim = {
-            width: 850,
-            height: 550,
-            top: (h - 550) / 2,
-            left: (w - 850) / 2
+        const handleResize = () => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const isMobile = w < 768;
+            
+            if (isMobile) {
+                const mobileDim = {
+                    width: w * 0.95,
+                    height: h * 0.7,
+                    top: (h - h * 0.7) / 2,
+                    left: (w - w * 0.95) / 2
+                };
+                setDimensions(mobileDim);
+                dimensionsRef.current = mobileDim;
+            } else {
+                const desktopDim = {
+                    width: Math.min(850, w * 0.8),
+                    height: Math.min(550, h * 0.7),
+                    top: (h - Math.min(550, h * 0.7)) / 2,
+                    left: (w - Math.min(850, w * 0.8)) / 2
+                };
+                setDimensions(desktopDim);
+                dimensionsRef.current = desktopDim;
+            }
         };
-        setDimensions(initialDim);
-        dimensionsRef.current = initialDim;
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
 
         inputRef.current?.focus();
 
@@ -154,9 +172,11 @@ export default function Terminal({ onCommand }) {
             document.body.style.cursor = 'default';
         };
 
+        window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
         return () => {
+            window.removeEventListener('resize', handleResize);
             window.removeEventListener('clear-terminal', handleClear);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
@@ -170,6 +190,7 @@ export default function Terminal({ onCommand }) {
     }, [history]);
 
     const startResize = (type, e) => {
+        if (window.innerWidth < 768) return;
         e.preventDefault();
         e.stopPropagation();
         isResizing.current = true;
@@ -188,6 +209,7 @@ export default function Terminal({ onCommand }) {
     };
 
     const startDrag = (e) => {
+        if (window.innerWidth < 768) return;
         if (e.target.closest('.title-bar-drag') || e.target === terminalRef.current) {
             isDragging.current = true;
             const rect = terminalRef.current.parentElement.getBoundingClientRect();
@@ -276,7 +298,7 @@ export default function Terminal({ onCommand }) {
                         >
                             <motion.pre 
                                 variants={itemVariants}
-                                className="text-green-400 text-xs leading-tight mb-4"
+                                className="text-green-400 text-[10px] sm:text-xs leading-tight mb-4 overflow-x-hidden"
                             >
 {`
 ┌───────────────────────────────────────┐
@@ -286,7 +308,7 @@ export default function Terminal({ onCommand }) {
 `}
                             </motion.pre>
                             
-                            <motion.p variants={itemVariants} className="text-white/70 mb-4">
+                            <motion.p variants={itemVariants} className="text-white/70 mb-4 text-xs sm:text-sm">
                                 <Typewriter 
                                     text="Welcome to my interactive portfolio. Type a command to explore." 
                                     onComplete={() => setIsAnimating(false)}
@@ -299,13 +321,13 @@ export default function Terminal({ onCommand }) {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="border border-white/10 rounded-lg overflow-hidden"
                                 >
-                                    <div className="bg-white/5 px-3 py-2 border-b border-white/10">
-                                        <span className="text-white/50 text-xs uppercase tracking-wider">Available Commands</span>
+                                    <div className="bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 border-b border-white/10">
+                                        <span className="text-white/50 text-[10px] sm:text-xs uppercase tracking-wider">Available Commands</span>
                                     </div>
                                     {commands.map((cmd) => (
-                                        <div key={cmd.name} className="px-3 py-2 flex items-start gap-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
-                                            <span className="text-green-400 font-semibold w-24">{cmd.name}</span>
-                                            <span className="text-white/50">{cmd.description}</span>
+                                        <div key={cmd.name} className="px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
+                                            <span className="text-green-400 font-semibold w-20 sm:w-24 text-xs sm:text-sm">{cmd.name}</span>
+                                            <span className="text-white/50 text-[10px] sm:text-xs leading-relaxed">{cmd.description}</span>
                                         </div>
                                     ))}
                                 </motion.div>
@@ -317,9 +339,9 @@ export default function Terminal({ onCommand }) {
                     {history.map((item, index) => (
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
-                                <div className="flex items-center gap-2">
-                                    <span className="text-white/70 font-medium">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                    <span className="text-white">{item.content}</span>
+                                <div className="flex items-start gap-2 mb-1">
+                                    <span className="text-white/70 font-medium text-[10px] sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                    <span className="text-white text-[10px] sm:text-sm break-all">{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
@@ -332,22 +354,24 @@ export default function Terminal({ onCommand }) {
                     ))}
 
                     {/* Input Line */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-white/70 font-medium">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            className="flex-1 bg-transparent text-white outline-none caret-white"
-                            spellCheck={false}
-                            autoComplete="off"
-                        />
+                    <div className="flex items-start gap-2">
+                        <span className="text-white/70 font-medium text-[10px] sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                        <div className="flex-1 min-w-0">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                className="w-full bg-transparent text-white outline-none caret-white text-[10px] sm:text-sm"
+                                spellCheck={false}
+                                autoComplete="off"
+                            />
+                        </div>
                         <motion.span
                             animate={{ opacity: [1, 0] }}
                             transition={{ duration: 0.8, repeat: Infinity }}
-                            className="w-2 h-5 bg-white/80"
+                            className="w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80 shrink-0"
                         />
                     </div>
                 </div>

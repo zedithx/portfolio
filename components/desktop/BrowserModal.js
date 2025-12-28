@@ -280,56 +280,56 @@ export default function BrowserModal({ type, onClose }) {
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                    className="w-full max-w-4xl max-h-[85vh] flex flex-col"
+                    className="w-full max-w-4xl h-full max-h-[90vh] md:max-h-[85vh] flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Browser Chrome */}
-                    <div className="bg-[#f6f6f6] rounded-t-xl border border-gray-200 border-b-0">
+                    <div className="bg-[#f6f6f6] rounded-t-xl border border-gray-200 border-b-0 shrink-0">
                         {/* Title Bar */}
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-                            <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b border-gray-200 relative">
+                            <div className="flex items-center gap-1.5 md:gap-2">
                                 <button onClick={onClose} className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all group flex items-center justify-center">
                                     <X className="w-2 h-2 text-[#ff5f57] group-hover:text-red-800" />
                                 </button>
                                 <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
                                 <div className="w-3 h-3 rounded-full bg-[#28c840]" />
                             </div>
-                            <div className="absolute left-1/2 -translate-x-1/2 text-sm text-gray-600 font-medium">
+                            <div className="absolute left-1/2 -translate-x-1/2 text-[10px] md:text-sm text-gray-600 font-medium truncate max-w-[150px] md:max-w-none">
                                 {data.pages[currentPage].title}
                             </div>
-                            <div className="flex items-center gap-3 text-gray-400">
-                                <Plus className="w-4 h-4 cursor-pointer hover:text-gray-600" />
+                            <div className="flex items-center gap-2 md:gap-3 text-gray-400">
+                                <Plus className="w-3 h-3 md:w-4 md:h-4 cursor-pointer hover:text-gray-600" />
                             </div>
                         </div>
 
                         {/* Navigation & URL Bar */}
-                        <div className="flex items-center gap-3 px-4 py-2">
-                            <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2">
+                            <div className="flex items-center gap-0.5 md:gap-1">
                                 <button 
                                     onClick={goPrev}
                                     disabled={currentPage === 0}
-                                    className={`p-1.5 rounded-lg transition-colors ${currentPage === 0 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-200'}`}
+                                    className={`p-1 md:p-1.5 rounded-lg transition-colors ${currentPage === 0 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-200'}`}
                                 >
-                                    <ChevronLeft className="w-4 h-4" />
+                                    <ChevronLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                 </button>
                                 <button 
                                     onClick={goNext}
                                     disabled={currentPage === totalPages - 1}
-                                    className={`p-1.5 rounded-lg transition-colors ${currentPage === totalPages - 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-200'}`}
+                                    className={`p-1 md:p-1.5 rounded-lg transition-colors ${currentPage === totalPages - 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-200'}`}
                                 >
-                                    <ChevronRight className="w-4 h-4" />
+                                    <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                 </button>
-                                <button className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors">
+                                <button className="hidden sm:block p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors">
                                     <RotateCw className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            <div className="flex-1 flex items-center gap-2 bg-white rounded-lg px-3 py-1.5 border border-gray-200">
-                                <Lock className="w-3 h-3 text-gray-400" />
-                                <span className="text-sm text-gray-600">portfolio.dev/{type}</span>
+                            <div className="flex-1 flex items-center gap-1.5 md:gap-2 bg-white rounded-lg px-2 md:px-3 py-1 md:py-1.5 border border-gray-200 min-w-0">
+                                <Lock className="w-2.5 h-2.5 md:w-3 md:h-3 text-gray-400 shrink-0" />
+                                <span className="text-[10px] md:text-sm text-gray-600 truncate">portfolio.dev/{type}</span>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="hidden sm:flex items-center gap-2">
                                 <Share className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" />
                                 <Star className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" />
                             </div>
@@ -337,16 +337,16 @@ export default function BrowserModal({ type, onClose }) {
 
                         {/* Tabs */}
                         <div className="flex items-center px-2 -mb-px">
-                            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-t-lg border border-gray-200 border-b-white text-sm">
+                            <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-white rounded-t-lg border border-gray-200 border-b-white text-[10px] md:text-sm">
                                 <span className="text-gray-700">{data.title}</span>
-                                <X className="w-3 h-3 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                                <X className="w-2.5 h-2.5 md:w-3 md:h-3 text-gray-400 hover:text-gray-600 cursor-pointer" />
                             </div>
                         </div>
                     </div>
 
                     {/* Browser Content */}
-                    <div className="flex-1 bg-white rounded-b-xl border border-gray-200 border-t-0 overflow-hidden">
-                        <div className="h-full overflow-y-auto p-8">
+                    <div className="flex-1 bg-white rounded-b-xl border border-gray-200 border-t-0 overflow-hidden flex flex-col">
+                        <div className="flex-1 overflow-y-auto p-4 md:p-8">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentPage}

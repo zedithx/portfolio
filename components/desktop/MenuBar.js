@@ -114,7 +114,7 @@ export default function MenuBar({ onPermissionError }) {
                                         <span className="text-white/40 text-[11px]">⌃⌘Q</span>
                                     </div>
                                     <div onClick={handleMenuClick} className="px-4 py-1 text-white text-[13px] hover:bg-blue-600 cursor-default flex justify-between items-center">
-                                        <span>Log Out Yang Si Jun...</span>
+                                        <span>Log Out zedithx...</span>
                                         <span className="text-white/40 text-[11px]">⇧⌘Q</span>
                                     </div>
                                 </motion.div>
@@ -361,16 +361,16 @@ export default function MenuBar({ onPermissionError }) {
                         </AnimatePresence>
                     </div>
 
-                    <div className="relative flex items-center">
+                    <div className="relative hidden md:flex items-center">
                         <span className="text-white/70 text-[13px]">View</span>
                     </div>
-                    <div className="relative flex items-center">
+                    <div className="relative hidden md:flex items-center">
                         <span className="text-white/70 text-[13px]">Go</span>
                     </div>
-                    <div className="relative flex items-center">
+                    <div className="relative hidden lg:flex items-center">
                         <span className="text-white/70 text-[13px]">Window</span>
                     </div>
-                    <div className="relative flex items-center">
+                    <div className="relative hidden lg:flex items-center">
                         <span className="text-white/70 text-[13px]">Help</span>
                     </div>
                 </div>
