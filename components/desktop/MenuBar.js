@@ -187,8 +187,8 @@ export default function MenuBar({ onPermissionError }) {
                         </AnimatePresence>
                     </div>
 
-                    {/* File Menu */}
-                    <div className="relative flex items-center" ref={fileMenuRef}>
+                    {/* File Menu - hidden on small screens */}
+                    <div className="relative hidden md:flex items-center" ref={fileMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
                             onClick={() => setIsFileMenuOpen(!isFileMenuOpen)}
@@ -273,8 +273,8 @@ export default function MenuBar({ onPermissionError }) {
                         </AnimatePresence>
                     </div>
 
-                    {/* Edit Menu */}
-                    <div className="relative flex items-center" ref={editMenuRef}>
+                    {/* Edit Menu - hidden on small screens */}
+                    <div className="relative hidden md:flex items-center" ref={editMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
                             onClick={() => setIsEditMenuOpen(!isEditMenuOpen)}
