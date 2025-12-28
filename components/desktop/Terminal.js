@@ -303,8 +303,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand('github');
+                // Open immediately to avoid popup blockers
+                const githubWindow = window.open('https://github.com/zedithx', '_blank');
                 setTimeout(() => {
-                    window.open('https://github.com/zedithx', '_blank');
                     setIsLoading(false);
                     setLoadingCommand('');
                     handleClear(true);
@@ -313,8 +314,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand('linkedin');
+                // Open immediately to avoid popup blockers
+                const linkedinWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank');
                 setTimeout(() => {
-                    window.open('https://linkedin.com/in/yang-si-jun/', '_blank');
                     setIsLoading(false);
                     setLoadingCommand('');
                     handleClear(true);
