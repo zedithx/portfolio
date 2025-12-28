@@ -318,7 +318,7 @@ export default function Terminal({ onCommand }) {
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-center gap-2">
-                                    <span className="text-green-400 font-medium">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                    <span className="text-white/70 font-medium">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
                                     <span className="text-white">{item.content}</span>
                                 </div>
                             )}
@@ -333,7 +333,7 @@ export default function Terminal({ onCommand }) {
 
                     {/* Input Line */}
                     <div className="flex items-center gap-2">
-                        <span className="text-white font-medium">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                        <span className="text-white/70 font-medium">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
                         <input
                             ref={inputRef}
                             type="text"
