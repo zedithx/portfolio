@@ -338,8 +338,8 @@ export default function Terminal({ onCommand }) {
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-start gap-2 mb-1">
-                                    <span className="text-white/70 font-medium text-[10px] sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                    <span className="text-white text-[10px] sm:text-sm break-all">{item.content}</span>
+                                    <span className="text-white/70 font-medium text-base sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                    <span className="text-white text-base sm:text-sm break-all">{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
@@ -353,7 +353,7 @@ export default function Terminal({ onCommand }) {
 
                     {/* Input Line */}
                     <div className="flex items-start gap-2">
-                        <span className="text-white/70 font-medium text-[10px] sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                        <span className="text-white/70 font-medium text-base sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
                         <div className="flex-1 min-w-0 relative flex items-center">
                             <input
                                 ref={inputRef}
@@ -361,7 +361,7 @@ export default function Terminal({ onCommand }) {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className="flex-1 bg-transparent text-white outline-none text-[10px] sm:text-sm"
+                                className="flex-1 bg-transparent text-white outline-none text-base sm:text-sm"
                                 style={{ caretColor: 'transparent' }}
                                 spellCheck={false}
                                 autoComplete="off"
@@ -371,7 +371,7 @@ export default function Terminal({ onCommand }) {
                                 transition={{ duration: 0.8, repeat: Infinity }}
                                 className="absolute w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80"
                                 style={{ 
-                                    left: `${input.length * (typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 7.8)}px`
+                                    left: `${input.length * (typeof window !== 'undefined' && window.innerWidth < 640 ? 9 : 7.8)}px`
                                 }}
                             />
                         </div>

@@ -83,7 +83,7 @@ export default function MenuBar({ onPermissionError }) {
                         <img 
                             src="/menubar-icon/apple.png"
                             alt="Apple"
-                            className="w-3.5 h-3.5 md:w-4 md:h-4 cursor-pointer brightness-200 contrast-200" 
+                            className="w-4 h-4 cursor-pointer brightness-200 contrast-200" 
                             onClick={() => setIsAppleMenuOpen(!isAppleMenuOpen)}
                         />
                         <AnimatePresence>
