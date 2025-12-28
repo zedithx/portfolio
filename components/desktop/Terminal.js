@@ -233,8 +233,6 @@ export default function Terminal({ onCommand }) {
                 setTimeout(() => onCommand(cmd), 300);
             } else {
                 setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'error', content: `Command not found: ${cmd}.` }]);
-                setShowWelcome(false);
-                showWelcomeRef.current = false;
             }
             
             setInput('');
@@ -298,7 +296,7 @@ export default function Terminal({ onCommand }) {
                         >
                             <motion.pre 
                                 variants={itemVariants}
-                                className="text-green-400 text-[10px] xs:text-xs sm:text-xs leading-tight mb-4 overflow-x-hidden"
+                                className="text-green-400 text-[10px] sm:text-xs leading-tight mb-4 overflow-x-hidden"
                             >
 {`
 ┌───────────────────────────────────────┐
@@ -308,7 +306,7 @@ export default function Terminal({ onCommand }) {
 `}
                             </motion.pre>
                             
-                            <motion.p variants={itemVariants} className="text-white/70 mb-4 text-sm sm:text-sm">
+                            <motion.p variants={itemVariants} className="text-white/70 mb-4 text-xs sm:text-sm">
                                 <Typewriter 
                                     text="Welcome to my interactive portfolio. Type a command to explore." 
                                     onComplete={() => setIsAnimating(false)}
@@ -322,12 +320,12 @@ export default function Terminal({ onCommand }) {
                                     className="border border-white/10 rounded-lg overflow-hidden"
                                 >
                                     <div className="bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 border-b border-white/10">
-                                        <span className="text-white/50 text-xs sm:text-xs uppercase tracking-wider">Available Commands</span>
+                                        <span className="text-white/50 text-[10px] sm:text-xs uppercase tracking-wider">Available Commands</span>
                                     </div>
                                     {commands.map((cmd) => (
                                         <div key={cmd.name} className="px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
-                                            <span className="text-green-400 font-semibold w-20 sm:w-24 text-sm sm:text-sm">{cmd.name}</span>
-                                            <span className="text-white/50 text-xs sm:text-xs leading-relaxed">{cmd.description}</span>
+                                            <span className="text-green-400 font-semibold w-20 sm:w-24 text-xs sm:text-sm">{cmd.name}</span>
+                                            <span className="text-white/50 text-[10px] sm:text-xs leading-relaxed">{cmd.description}</span>
                                         </div>
                                     ))}
                                 </motion.div>
@@ -340,8 +338,8 @@ export default function Terminal({ onCommand }) {
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-start gap-2 mb-1">
-                                    <span className="text-white/70 font-medium text-sm sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                    <span className="text-white text-sm sm:text-sm break-all">{item.content}</span>
+                                    <span className="text-white/70 font-medium text-[10px] sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                    <span className="text-white text-[10px] sm:text-sm break-all">{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
@@ -355,24 +353,28 @@ export default function Terminal({ onCommand }) {
 
                     {/* Input Line */}
                     <div className="flex items-start gap-2">
-                        <span className="text-white/70 font-medium text-sm sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                        <div className="flex-1 min-w-0">
+                        <span className="text-white/70 font-medium text-[10px] sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                        <div className="flex-1 min-w-0 relative flex items-center">
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className="w-full bg-transparent text-white outline-none caret-white text-sm sm:text-sm"
+                                className="flex-1 bg-transparent text-white outline-none text-[10px] sm:text-sm"
+                                style={{ caretColor: 'transparent' }}
                                 spellCheck={false}
                                 autoComplete="off"
                             />
+                            <motion.span
+                                animate={{ opacity: [1, 0] }}
+                                transition={{ duration: 0.8, repeat: Infinity }}
+                                className="absolute w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80"
+                                style={{ 
+                                    left: `${input.length * (typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 7.8)}px`
+                                }}
+                            />
                         </div>
-                        <motion.span
-                            animate={{ opacity: [1, 0] }}
-                            transition={{ duration: 0.8, repeat: Infinity }}
-                            className="w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80 shrink-0"
-                        />
                     </div>
                 </div>
             </div>

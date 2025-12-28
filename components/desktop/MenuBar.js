@@ -44,10 +44,21 @@ export default function MenuBar({ onPermissionError }) {
             hour: 'numeric', 
             minute: '2-digit',
             hour12: true 
-        });
+        }).toLowerCase().replace(/\s/g, '');
     };
 
     const formatDate = (date) => {
+        if (typeof window !== 'undefined' && window.innerWidth < 380) {
+            // Very small screens: just show time
+            return '';
+        } else if (typeof window !== 'undefined' && window.innerWidth < 550) {
+            // Small screens: abbreviated format
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        // Desktop: full format
         return date.toLocaleDateString('en-US', { 
             weekday: 'short', 
             month: 'short', 
@@ -65,14 +76,14 @@ export default function MenuBar({ onPermissionError }) {
 
     return (
         <>
-            <div className="fixed top-0 left-0 right-0 h-7 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-4 z-50">
-                <div className="flex items-center gap-5">
+            <div className="fixed top-0 left-0 right-0 h-7 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-2 sm:px-3 md:px-4 z-50">
+                <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
                     {/* Apple Menu */}
                     <div className="relative flex items-center" ref={appleMenuRef}>
                         <img 
                             src="/menubar-icon/apple.png"
                             alt="Apple"
-                            className="w-4 h-4 cursor-pointer brightness-200 contrast-200" 
+                            className="w-3.5 h-3.5 md:w-4 md:h-4 cursor-pointer brightness-200 contrast-200" 
                             onClick={() => setIsAppleMenuOpen(!isAppleMenuOpen)}
                         />
                         <AnimatePresence>
@@ -125,7 +136,7 @@ export default function MenuBar({ onPermissionError }) {
                     {/* iTerm2 Menu */}
                     <div className="relative flex items-center" ref={iTermMenuRef}>
                         <span 
-                            className="text-white/90 text-[13px] font-bold cursor-pointer"
+                            className="text-white/90 text-[12px] md:text-[13px] font-bold cursor-pointer"
                             onClick={() => setIsiTermMenuOpen(!isiTermMenuOpen)}
                         >
                             iTerm2
@@ -187,8 +198,8 @@ export default function MenuBar({ onPermissionError }) {
                         </AnimatePresence>
                     </div>
 
-                    {/* File Menu - hidden on small screens */}
-                    <div className="relative hidden md:flex items-center" ref={fileMenuRef}>
+                    {/* File Menu */}
+                    <div className="relative flex items-center" ref={fileMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
                             onClick={() => setIsFileMenuOpen(!isFileMenuOpen)}
@@ -273,8 +284,8 @@ export default function MenuBar({ onPermissionError }) {
                         </AnimatePresence>
                     </div>
 
-                    {/* Edit Menu - hidden on small screens */}
-                    <div className="relative hidden md:flex items-center" ref={editMenuRef}>
+                    {/* Edit Menu */}
+                    <div className="relative flex items-center" ref={editMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
                             onClick={() => setIsEditMenuOpen(!isEditMenuOpen)}
@@ -374,14 +385,14 @@ export default function MenuBar({ onPermissionError }) {
                         <span className="text-white/70 text-[13px]">Help</span>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <Wifi className="w-4 h-4 text-white/80" />
-                    <Search className="w-4 h-4 text-white/80" />
-                    <div className="flex items-center gap-1">
-                        <Battery className="w-5 h-5 text-white/80" />
-                        <span className="text-white/80 text-[12px]">100%</span>
+                <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
+                    <Wifi className="hidden md:block w-4 h-4 text-white/80" />
+                    <Search className="hidden lg:block w-4 h-4 text-white/80" />
+                    <div className="hidden sm:flex items-center gap-1">
+                        <Battery className="w-4 h-4 md:w-5 md:h-5 text-white/80" />
+                        <span className="text-white/80 text-[10px] md:text-[12px]">100%</span>
                     </div>
-                    <span className="text-white/90 text-[13px]">
+                    <span className="text-white/90 text-[10px] sm:text-[11px] md:text-[13px] whitespace-nowrap">
                         {formatDate(time)} {formatTime(time)}
                     </span>
                 </div>
