@@ -9,6 +9,7 @@ import PermissionModal from '../components/desktop/PermissionModal';
 export default function Home() {
     const [activeModal, setActiveModal] = useState(null);
     const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
+    const [terminalState, setTerminalState] = useState('normal'); // 'closed', 'minimized', 'normal', 'maximized'
 
     const handleCommand = (command) => {
         setActiveModal(command);
@@ -24,6 +25,26 @@ export default function Home() {
         setIsPermissionModalOpen(true);
     };
 
+    const handleTerminalClose = () => {
+        setTerminalState('closed');
+    };
+
+    const handleTerminalMinimize = () => {
+        setTerminalState('minimized');
+    };
+
+    const handleTerminalMaximize = () => {
+        setTerminalState(prevState => prevState === 'maximized' ? 'normal' : 'maximized');
+    };
+
+    const handleTerminalRestore = () => {
+        if (terminalState === 'normal' || terminalState === 'maximized') {
+            setTerminalState('minimized');
+        } else {
+            setTerminalState('normal');
+        }
+    };
+
     return (
         <div className="min-h-screen w-full relative overflow-hidden bg-black">
             {/* Desktop Wallpaper */}
@@ -35,8 +56,20 @@ export default function Home() {
             />
 
             <MenuBar onPermissionError={triggerPermissionError} />
-            <Terminal onCommand={handleCommand} />
-            <Dock onPermissionError={triggerPermissionError} />
+            {terminalState !== 'closed' && (
+                <Terminal 
+                    onCommand={handleCommand} 
+                    onClose={handleTerminalClose}
+                    onMinimize={handleTerminalMinimize}
+                    onMaximize={handleTerminalMaximize}
+                    terminalState={terminalState}
+                />
+            )}
+            <Dock 
+                onPermissionError={triggerPermissionError} 
+                onTerminalClick={handleTerminalRestore}
+                terminalState={terminalState}
+            />
 
             {/* Browser Modal */}
             {activeModal && (

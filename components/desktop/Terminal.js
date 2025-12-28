@@ -1,11 +1,12 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const commands = [
     { name: 'background', description: 'Learn about who I am and my journey' },
     { name: 'projects', description: 'Browse through my portfolio of work' },
     { name: 'experience', description: 'View my professional experience' },
+    { name: 'clear', description: 'Clear the terminal screen' },
 ];
 
 const Typewriter = ({ text, delay = 0, onComplete }) => {
@@ -44,12 +45,14 @@ const Typewriter = ({ text, delay = 0, onComplete }) => {
     return <span>{displayedText}</span>;
 };
 
-export default function Terminal({ onCommand }) {
+export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState }) {
     const [history, setHistory] = useState([]);
     const [input, setInput] = useState('');
     const [showWelcome, setShowWelcome] = useState(true);
     const showWelcomeRef = useRef(true);
     const [isAnimating, setIsAnimating] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingCommand, setLoadingCommand] = useState('');
     const [cursorPosition, setCursorPosition] = useState(0);
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
@@ -80,6 +83,18 @@ export default function Terminal({ onCommand }) {
     const resizeType = useRef(null);
     const startPos = useRef({ x: 0, y: 0, w: 0, h: 0, t: 0, l: 0 });
     const dimensionsRef = useRef({ width: 850, height: 550, top: 100, left: 100 });
+
+    const handleClear = (shouldAnimate = true) => {
+        setHistory([]);
+        setShowWelcome(true);
+        showWelcomeRef.current = true;
+        setIsAnimating(shouldAnimate);
+        setIsLoading(false);
+        setLoadingCommand('');
+        setInput('');
+        setCursorPosition(0);
+        setTimeout(() => inputRef.current?.focus(), 50);
+    };
 
     useEffect(() => {
         setIsMounted(true);
@@ -116,15 +131,8 @@ export default function Terminal({ onCommand }) {
 
         inputRef.current?.focus();
 
-        const handleClear = () => {
-            setHistory([]);
-            setShowWelcome(true);
-            showWelcomeRef.current = true;
-            setIsAnimating(true);
-            setTimeout(() => inputRef.current?.focus(), 50);
-        };
-
-        window.addEventListener('clear-terminal', handleClear);
+        const onClearEvent = () => handleClear();
+        window.addEventListener('clear-terminal', onClearEvent);
 
         const handleMouseMove = (e) => {
             if (isResizing.current) {
@@ -174,12 +182,11 @@ export default function Terminal({ onCommand }) {
             document.body.style.cursor = 'default';
         };
 
-        window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
         return () => {
             window.removeEventListener('resize', handleResize);
-            window.removeEventListener('clear-terminal', handleClear);
+            window.removeEventListener('clear-terminal', onClearEvent);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
@@ -195,7 +202,7 @@ export default function Terminal({ onCommand }) {
         if (terminalRef.current) {
             terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
         }
-    }, [history]);
+    }, [history, isLoading]);
 
     const startResize = (type, e) => {
         if (window.innerWidth < 768) return;
@@ -234,11 +241,18 @@ export default function Terminal({ onCommand }) {
         if (e.key === 'Enter' && input.trim()) {
             const cmd = input.trim().toLowerCase();
             
-            if (['background', 'projects', 'experience'].includes(cmd)) {
-                setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'success', content: `Opening ${cmd}...` }]);
-                setShowWelcome(false);
-                showWelcomeRef.current = false;
-                setTimeout(() => onCommand(cmd), 300);
+            if (cmd === 'clear') {
+                handleClear(false);
+            } else if (['background', 'projects', 'experience'].includes(cmd)) {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setIsLoading(true);
+                setLoadingCommand(cmd);
+                setTimeout(() => {
+                    onCommand(cmd);
+                    // Reset loading state for when user returns
+                    setIsLoading(false);
+                    setLoadingCommand('');
+                }, 1500); 
             } else {
                 setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'error', content: `Command not found: ${cmd}.` }]);
             }
@@ -253,15 +267,22 @@ export default function Terminal({ onCommand }) {
 
     return (
         <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={{ scale: 0, opacity: 0, y: 200 }}
+            animate={{ 
+                scale: terminalState === 'minimized' ? 0 : 1, 
+                opacity: terminalState === 'minimized' ? 0 : 1,
+                y: terminalState === 'minimized' ? 200 : 0,
+                width: terminalState === 'maximized' ? '100vw' : dimensions.width,
+                height: terminalState === 'maximized' ? '100vh' : dimensions.height,
+                top: terminalState === 'maximized' ? 0 : dimensions.top,
+                left: terminalState === 'maximized' ? 0 : dimensions.left,
+                pointerEvents: terminalState === 'minimized' ? 'none' : 'auto'
+            }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
             onMouseDown={startDrag}
             className="fixed z-20 shadow-2xl rounded-xl overflow-hidden border border-white/10"
             style={{ 
-                width: dimensions.width, 
-                height: dimensions.height, 
-                top: dimensions.top, 
-                left: dimensions.left
+                transformOrigin: 'bottom'
             }}
         >
             {/* Custom Resize Handles */}
@@ -278,11 +299,20 @@ export default function Terminal({ onCommand }) {
 
             <div className="h-full flex flex-col">
                 {/* Title Bar */}
-                <div className="bg-[#2d2d2d] px-4 py-3 flex items-center gap-2 title-bar-drag cursor-grab active:cursor-grabbing">
+                <div className="bg-[#2d2d2d] px-4 py-3 flex items-center gap-2 title-bar-drag cursor-grab active:cursor-grabbing shrink-0">
                     <div className="flex gap-2">
-                        <div className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer" />
-                        <div className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer" />
-                        <div className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer" />
+                        <div 
+                            onClick={(e) => { e.stopPropagation(); onClose(); }} 
+                            className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer" 
+                        />
+                        <div 
+                            onClick={(e) => { e.stopPropagation(); onMinimize(); }} 
+                            className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer" 
+                        />
+                        <div 
+                            onClick={(e) => { e.stopPropagation(); onMaximize(); }} 
+                            className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer" 
+                        />
                     </div>
                     <div className="flex-1 text-center select-none">
                         <span className="text-white/60 text-sm font-medium">Terminal — zsh</span>
@@ -293,9 +323,9 @@ export default function Terminal({ onCommand }) {
                 <div 
                     ref={terminalRef}
                     onClick={handleTerminalClick}
-                    className="flex-1 bg-[#1e1e1e]/95 backdrop-blur-xl p-4 overflow-y-auto font-mono text-sm cursor-text scrollbar-hide"
+                    className="flex-1 bg-[#1e1e1e]/95 backdrop-blur-xl p-4 overflow-y-auto font-mono text-sm cursor-text scrollbar-hide relative"
                 >
-                    {showWelcome && (
+                    {showWelcome && !isLoading && (
                         <motion.div 
                             initial="hidden"
                             animate="visible"
@@ -342,41 +372,68 @@ export default function Terminal({ onCommand }) {
                     )}
 
                     {/* History */}
-                    {history.map((item, index) => (
+                    {!isLoading && history.map((item, index) => (
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-start gap-2 mb-1">
-                                    <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                    <span className="text-white text-xs sm:text-sm break-all">{item.content}</span>
+                                    <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap leading-5">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                    <span className="text-white text-xs sm:text-sm break-all leading-5">{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
-                                <p className="text-red-400 ml-0">{item.content}</p>
+                                <p className="text-red-400 ml-0 leading-5">{item.content}</p>
                             )}
                             {item.type === 'success' && (
-                                <p className="text-green-400 ml-0">{item.content}</p>
+                                <p className="text-green-400 ml-0 leading-5">{item.content}</p>
                             )}
                         </div>
                     ))}
 
+                    {isLoading && (
+                        <div className="h-full flex items-center justify-center">
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="w-64 space-y-4"
+                            >
+                                <div className="text-green-400 text-xs font-bold animate-pulse text-center">
+                                    {'>'} INITIALIZING {loadingCommand.toUpperCase()}...
+                                </div>
+                                <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/10">
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: '100%' }}
+                                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                                        className="h-full bg-green-500"
+                                    />
+                                </div>
+                                <div className="flex justify-between text-[9px] text-white/30 font-mono">
+                                    <span>LOADING MODULES</span>
+                                    <span>DONE</span>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+
                     {/* Input Line */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap leading-5">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                        <div className="flex-1 min-w-0 relative flex items-center h-5">
+                    {!isLoading && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap leading-5">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                            <div className="flex-1 min-w-0 relative flex items-center h-5">
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5"
+                                className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5 font-mono"
                                 style={{ caretColor: 'transparent' }}
                                 spellCheck={false}
                                 autoComplete="off"
                             />
                             <span
                                 ref={measureRef}
-                                className="absolute invisible text-xs sm:text-sm leading-5 whitespace-pre"
+                                className="absolute invisible text-xs sm:text-sm leading-5 whitespace-pre font-mono"
                                 style={{ left: 0 }}
                             >
                                 {input}
@@ -386,11 +443,13 @@ export default function Terminal({ onCommand }) {
                                 transition={{ duration: 0.8, repeat: Infinity }}
                                 className="absolute w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80"
                                 style={{ 
-                                    left: `${cursorPosition}px`
+                                    left: `${cursorPosition}px`,
+                                    marginLeft: '2px'
                                 }}
                             />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
             <style jsx>{`

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const dockApps = [
     { name: 'Finder', icon: '/dock-icons/comet.webp' },
     { name: 'Safari', icon: '/dock-icons/chatgpt.png' },
-    { name: 'Terminal', icon: '/dock-icons/iterm2.png', active: true },
+    { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
     { name: 'Cursor', icon: '/dock-icons/cursor.jpg' },
     { name: 'PyCharm', icon: '/dock-icons/pycharm.webp' },
     { name: 'Spotify', icon: '/dock-icons/spotify.png' },
@@ -13,7 +13,7 @@ const dockApps = [
     { name: 'Settings', icon: '/dock-icons/settings.png' },
 ];
 
-export default function Dock({ onPermissionError }) {
+export default function Dock({ onPermissionError, onTerminalClick, terminalState }) {
     return (
         <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40">
             <motion.div 
@@ -28,7 +28,13 @@ export default function Dock({ onPermissionError }) {
                         className="group relative"
                         whileHover={{ y: -8, scale: 1.15 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                        onClick={onPermissionError}
+                        onClick={(e) => {
+                            if (app.name === 'Terminal') {
+                                onTerminalClick();
+                            } else {
+                                onPermissionError();
+                            }
+                        }}
                     >
                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
                             {app.name}
@@ -40,7 +46,7 @@ export default function Dock({ onPermissionError }) {
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        {app.active && (
+                        {(app.active || (app.name === 'Terminal' && terminalState !== 'closed')) && (
                             <div className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-white/80 rounded-full" />
                         )}
                     </motion.div>
