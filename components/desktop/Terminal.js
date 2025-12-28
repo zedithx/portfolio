@@ -54,6 +54,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const [isLoading, setIsLoading] = useState(false);
     const [loadingCommand, setLoadingCommand] = useState('');
     const [cursorPosition, setCursorPosition] = useState(0);
+    const [sessionText, setSessionText] = useState('');
+    const [statusText, setStatusText] = useState('');
+    const [isReady, setIsReady] = useState(false);
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
     const measureRef = useRef(null);
@@ -93,8 +96,59 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         setLoadingCommand('');
         setInput('');
         setCursorPosition(0);
+        
+        if (shouldAnimate) {
+            setSessionText('');
+            setStatusText('');
+            setIsReady(false);
+        } else {
+            setSessionText('session: zedithx');
+            setStatusText('systems ready');
+            setIsReady(true);
+        }
+        
         setTimeout(() => inputRef.current?.focus(), 50);
     };
+
+    useEffect(() => {
+        if (showWelcome && isAnimating && sessionText === '') {
+            // Type out session text
+            const fullSessionText = 'session: zedithx';
+            let i = 0;
+            const sessionInterval = setInterval(() => {
+                setSessionText(fullSessionText.slice(0, i + 1));
+                i++;
+                if (i > fullSessionText.length) {
+                    clearInterval(sessionInterval);
+                    // Start typing status
+                    setTimeout(() => {
+                        let j = 0;
+                        const fullStatusText = 'systems warming up...';
+                        const statusInterval = setInterval(() => {
+                            setStatusText(fullStatusText.slice(0, j + 1));
+                            j++;
+                            if (j > fullStatusText.length) {
+                                clearInterval(statusInterval);
+                                // Wait 0.5s then type out "ready"
+                                setTimeout(() => {
+                                    let k = 0;
+                                    const readyText = 'systems ready';
+                                    const readyInterval = setInterval(() => {
+                                        setStatusText(readyText.slice(0, k + 1));
+                                        k++;
+                                        if (k > readyText.length) {
+                                            clearInterval(readyInterval);
+                                            setIsReady(true);
+                                        }
+                                    }, 40);
+                                }, 500);
+                            }
+                        }, 40);
+                    }, 100);
+                }
+            }, 40);
+        }
+    }, [showWelcome, isAnimating, sessionText]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -336,20 +390,25 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 variants={itemVariants}
                                 className="text-green-400 text-[10px] sm:text-xs leading-tight mb-4 overflow-x-hidden"
                             >
-{`
-┌───────────────────────────────────────┐
-│  session: zedithx                     │
-│  status: systems warming up...        │
-└───────────────────────────────────────┘
-`}
+{`┌───────────────────────────────────────┐
+│  ${sessionText.padEnd(37)}│
+│  status: ${statusText.padEnd(28)}│
+└───────────────────────────────────────┘`}
                             </motion.pre>
                             
-                            <motion.p variants={itemVariants} className="text-white/70 mb-4 text-xs sm:text-sm">
-                                <Typewriter 
-                                    text="Welcome to my interactive portfolio. Type a command to explore." 
-                                    onComplete={() => setIsAnimating(false)}
-                                />
-                            </motion.p>
+                            {isReady && (
+                                <motion.p 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    variants={itemVariants} 
+                                    className="text-white/70 mb-4 text-xs sm:text-sm"
+                                >
+                                    <Typewriter 
+                                        text="Welcome to my interactive portfolio. Type a command to explore." 
+                                        onComplete={() => setIsAnimating(false)}
+                                    />
+                                </motion.p>
+                            )}
 
                             {!isAnimating && (
                                 <motion.div 
