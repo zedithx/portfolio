@@ -50,8 +50,10 @@ export default function Terminal({ onCommand }) {
     const [showWelcome, setShowWelcome] = useState(true);
     const showWelcomeRef = useRef(true);
     const [isAnimating, setIsAnimating] = useState(true);
+    const [cursorPosition, setCursorPosition] = useState(0);
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
+    const measureRef = useRef(null);
 
     // Variants for staggered animation
     const containerVariants = {
@@ -182,6 +184,12 @@ export default function Terminal({ onCommand }) {
             window.removeEventListener('mouseup', handleMouseUp);
         };
     }, []);
+
+    useEffect(() => {
+        if (measureRef.current) {
+            setCursorPosition(measureRef.current.offsetWidth);
+        }
+    }, [input]);
 
     useEffect(() => {
         if (terminalRef.current) {
@@ -352,26 +360,33 @@ export default function Terminal({ onCommand }) {
                     ))}
 
                     {/* Input Line */}
-                    <div className="flex items-start gap-2">
-                        <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                        <div className="flex-1 min-w-0 relative flex items-center">
+                    <div className="flex items-center gap-2">
+                        <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap leading-5">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                        <div className="flex-1 min-w-0 relative flex items-center h-5">
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className="flex-1 bg-transparent text-white outline-none text-base sm:text-sm"
+                                className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5"
                                 style={{ caretColor: 'transparent' }}
                                 spellCheck={false}
                                 autoComplete="off"
                             />
+                            <span
+                                ref={measureRef}
+                                className="absolute invisible text-xs sm:text-sm leading-5 whitespace-pre"
+                                style={{ left: 0 }}
+                            >
+                                {input}
+                            </span>
                             <motion.span
                                 animate={{ opacity: [1, 0] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
                                 className="absolute w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80"
                                 style={{ 
-                                    left: `${input.length * (typeof window !== 'undefined' && window.innerWidth < 640 ? 9 : 7.8)}px`
+                                    left: `${cursorPosition}px`
                                 }}
                             />
                         </div>

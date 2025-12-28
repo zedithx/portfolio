@@ -25,10 +25,10 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-black">
+        <div className="min-h-screen w-full relative overflow-hidden bg-black">
             {/* Desktop Wallpaper */}
             <div 
-                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat w-full h-full"
                 style={{
                     backgroundImage: 'url("/wallpaper/desktop_wallpaper.jpg")'
                 }}

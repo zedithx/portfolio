@@ -9,15 +9,31 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen">
+      <body className="min-h-screen fixed inset-0 overflow-hidden w-full">
         <style dangerouslySetInnerHTML={{ __html: `
           * {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              box-sizing: border-box;
+          }
+          
+          html, body {
+              position: fixed;
+              overflow: hidden;
+              width: 100%;
+              height: 100%;
+              -webkit-overflow-scrolling: touch;
+              overscroll-behavior: none;
+          }
+          
+          body > * {
+              max-width: 100vw;
+              overflow-x: hidden;
           }
           
           ::-webkit-scrollbar {
