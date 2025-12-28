@@ -3,8 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const dockApps = [
-    { name: 'Finder', icon: '/dock-icons/comet.webp' },
-    { name: 'Safari', icon: '/dock-icons/chatgpt.png' },
+    { name: 'GitHub', icon: '/platform-icons/github.webp' },
+    { name: 'LinkedIn', icon: '/platform-icons/linkedin.webp' },
     { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
     { name: 'Cursor', icon: '/dock-icons/cursor.jpg' },
     { name: 'PyCharm', icon: '/dock-icons/pycharm.webp' },
@@ -31,6 +31,10 @@ export default function Dock({ onPermissionError, onTerminalClick, terminalState
                         onClick={(e) => {
                             if (app.name === 'Terminal') {
                                 onTerminalClick();
+                            } else if (app.name === 'GitHub') {
+                                window.open('https://github.com/zedithx', '_blank');
+                            } else if (app.name === 'LinkedIn') {
+                                window.open('https://linkedin.com/in/yang-si-jun/', '_blank');
                             } else {
                                 onPermissionError();
                             }
@@ -43,7 +47,7 @@ export default function Dock({ onPermissionError, onTerminalClick, terminalState
                             <img 
                                 src={app.icon} 
                                 alt={app.name} 
-                                className="w-full h-full object-cover"
+                                className={`w-full h-full object-cover ${app.name === 'LinkedIn' ? 'scale-[85%]' : ''}`}
                             />
                         </div>
                         {(app.active || (app.name === 'Terminal' && terminalState !== 'closed')) && (

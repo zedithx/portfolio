@@ -6,6 +6,8 @@ const commands = [
     { name: 'background', description: 'Learn about who I am and my journey' },
     { name: 'projects', description: 'Browse through my portfolio of work' },
     { name: 'experience', description: 'View my professional experience' },
+    { name: 'github', description: 'Visit my GitHub profile' },
+    { name: 'linkedin', description: 'Connect with me on LinkedIn' },
     { name: 'clear', description: 'Clear the terminal screen' },
 ];
 
@@ -297,6 +299,26 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             
             if (cmd === 'clear') {
                 handleClear(false);
+            } else if (cmd === 'github') {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setIsLoading(true);
+                setLoadingCommand('github');
+                setTimeout(() => {
+                    window.open('https://github.com/zedithx', '_blank');
+                    setIsLoading(false);
+                    setLoadingCommand('');
+                    handleClear(true);
+                }, 1500);
+            } else if (cmd === 'linkedin') {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setIsLoading(true);
+                setLoadingCommand('linkedin');
+                setTimeout(() => {
+                    window.open('https://linkedin.com/in/yang-si-jun/', '_blank');
+                    setIsLoading(false);
+                    setLoadingCommand('');
+                    handleClear(true);
+                }, 1500);
             } else if (['background', 'projects', 'experience'].includes(cmd)) {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
@@ -451,13 +473,36 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     {isLoading && (
                         <div className="h-full flex items-center justify-center">
                             <motion.div 
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="w-64 space-y-4"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="w-80 space-y-6 flex flex-col items-center"
                             >
-                                <div className="text-green-400 text-xs font-bold animate-pulse text-center">
-                                    {'>'} INITIALIZING {loadingCommand.toUpperCase()}...
+                                {(loadingCommand === 'github' || loadingCommand === 'linkedin') && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1, rotate: [0, 360] }}
+                                        transition={{ 
+                                            scale: { type: 'spring', stiffness: 200 },
+                                            rotate: { duration: 1.5, ease: 'easeInOut' }
+                                        }}
+                                        className="w-24 h-24 flex items-center justify-center"
+                                    >
+                                        <img 
+                                            src={loadingCommand === 'github' ? '/platform-icons/github.webp' : '/platform-icons/linkedin.webp'}
+                                            alt={loadingCommand}
+                                            className={`w-full h-full object-contain ${loadingCommand === 'linkedin' ? 'scale-85' : ''}`}
+                                        />
+                                    </motion.div>
+                                )}
+                                
+                                <div className="text-green-400 text-sm font-bold animate-pulse text-center">
+                                    {loadingCommand === 'github' && '🔗 Connecting to GitHub...'}
+                                    {loadingCommand === 'linkedin' && '🔗 Connecting to LinkedIn...'}
+                                    {!['github', 'linkedin'].includes(loadingCommand) && (
+                                        <>{`>`} INITIALIZING {loadingCommand.toUpperCase()}...</>
+                                    )}
                                 </div>
+                                
                                 <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/10">
                                     <motion.div 
                                         initial={{ width: 0 }}
@@ -466,8 +511,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                         className="h-full bg-green-500"
                                     />
                                 </div>
-                                <div className="flex justify-between text-[9px] text-white/30 font-mono">
-                                    <span>LOADING MODULES</span>
+                                
+                                <div className="flex justify-between text-[9px] text-white/30 font-mono w-full">
+                                    <span>{loadingCommand === 'github' || loadingCommand === 'linkedin' ? 'REDIRECTING' : 'LOADING MODULES'}</span>
                                     <span>DONE</span>
                                 </div>
                             </motion.div>
