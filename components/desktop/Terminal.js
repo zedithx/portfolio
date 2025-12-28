@@ -338,8 +338,8 @@ export default function Terminal({ onCommand }) {
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-start gap-2 mb-1">
-                                    <span className="text-white/70 font-medium text-base sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                    <span className="text-white text-base sm:text-sm break-all">{item.content}</span>
+                                    <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                    <span className="text-white text-xs sm:text-sm break-all">{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
@@ -353,7 +353,7 @@ export default function Terminal({ onCommand }) {
 
                     {/* Input Line */}
                     <div className="flex items-start gap-2">
-                        <span className="text-white/70 font-medium text-base sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                        <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
                         <div className="flex-1 min-w-0 relative flex items-center">
                             <input
                                 ref={inputRef}
