@@ -17,8 +17,8 @@ export default function Home() {
 
     const closeModal = () => {
         setActiveModal(null);
-        // Dispatch a custom event to clear the terminal
-        window.dispatchEvent(new CustomEvent('clear-terminal'));
+        // Dispatch a custom event to restore the welcome screen
+        window.dispatchEvent(new CustomEvent('restore-terminal'));
     };
 
     const triggerPermissionError = () => {

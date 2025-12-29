@@ -187,8 +187,25 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
 
         inputRef.current?.focus();
 
-        const onClearEvent = () => handleClear();
+        const onClearEvent = () => handleClear(true);
         window.addEventListener('clear-terminal', onClearEvent);
+
+        const onRestoreEvent = () => {
+            // Restore welcome screen but keep history and don't reset animations
+            setShowWelcome(true);
+            showWelcomeRef.current = true;
+            setIsLoading(false);
+            setLoadingCommand('');
+            setInput('');
+            setCursorPosition(0);
+            // Ensure session and status are set (not animated)
+            setSessionText('session: zedithx');
+            setStatusText('systems ready');
+            setIsReady(true);
+            setIsAnimating(false); // Don't re-animate, show commands list immediately
+            setTimeout(() => inputRef.current?.focus(), 50);
+        };
+        window.addEventListener('restore-terminal', onRestoreEvent);
 
         const handleMouseMove = (e) => {
             if (isResizing.current) {
@@ -243,6 +260,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         return () => {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('clear-terminal', onClearEvent);
+            window.removeEventListener('restore-terminal', onRestoreEvent);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
@@ -256,9 +274,22 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
 
     useEffect(() => {
         if (terminalRef.current) {
-            terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+            // Use double requestAnimationFrame to ensure DOM has fully updated
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (terminalRef.current) {
+                        terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+                    }
+                });
+            });
+            // Fallback timeout to ensure scroll happens
+            setTimeout(() => {
+                if (terminalRef.current) {
+                    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+                }
+            }, 50);
         }
-    }, [history, isLoading]);
+    }, [history, isLoading, input]);
 
     const startResize = (type, e) => {
         if (window.innerWidth < 768) return;
@@ -303,45 +334,51 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand('github');
-                // Create and click a link element to better handle mobile
-                const link = document.createElement('a');
-                link.href = 'https://github.com/zedithx';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                // Delay the click slightly for animation
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        link.click();
-                        document.body.removeChild(link);
-                    });
-                });
+                
+                const openTab = () => {
+                    const link = document.createElement('a');
+                    link.href = 'https://github.com/zedithx';
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+                
+                // Wait for animation on all devices
+                setTimeout(openTab, 1200);
+                
                 setTimeout(() => {
                     setIsLoading(false);
                     setLoadingCommand('');
-                    handleClear(true);
+                    setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
+                    setInput('');
+                    setCursorPosition(0);
                 }, 1500);
             } else if (cmd === 'linkedin') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand('linkedin');
-                // Create and click a link element to better handle mobile
-                const link = document.createElement('a');
-                link.href = 'https://linkedin.com/in/yang-si-jun/';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                // Delay the click slightly for animation
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        link.click();
-                        document.body.removeChild(link);
-                    });
-                });
+                
+                const openTab = () => {
+                    const link = document.createElement('a');
+                    link.href = 'https://linkedin.com/in/yang-si-jun/';
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+                
+                // Wait for animation on all devices
+                setTimeout(openTab, 1200);
+                
                 setTimeout(() => {
                     setIsLoading(false);
                     setLoadingCommand('');
-                    handleClear(true);
+                    setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
+                    setInput('');
+                    setCursorPosition(0);
                 }, 1500);
             } else if (['background', 'projects', 'experience'].includes(cmd)) {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
