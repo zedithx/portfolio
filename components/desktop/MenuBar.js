@@ -112,8 +112,7 @@ export default function MenuBar({ onPermissionError }) {
         });
     };
 
-    const handleMenuClick = () => {
-        onPermissionError();
+    const closeAllMenus = () => {
         setIsAppleMenuOpen(false);
         setIsiTermMenuOpen(false);
         setIsFileMenuOpen(false);
@@ -126,6 +125,11 @@ export default function MenuBar({ onPermissionError }) {
         setIsBatteryMenuOpen(false);
     };
 
+    const handleMenuClick = () => {
+        onPermissionError();
+        closeAllMenus();
+    };
+
     return (
         <>
             <div className="fixed top-0 left-0 right-0 h-7 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-2 sm:px-3 md:px-4 z-50">
@@ -136,7 +140,10 @@ export default function MenuBar({ onPermissionError }) {
                             src="/menubar-icon/apple.png"
                             alt="Apple"
                             className="w-4 h-4 cursor-pointer brightness-200 contrast-200" 
-                            onClick={() => setIsAppleMenuOpen(!isAppleMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsAppleMenuOpen(!isAppleMenuOpen);
+                            }}
                         />
                         <AnimatePresence>
                             {isAppleMenuOpen && (
@@ -189,7 +196,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative flex items-center" ref={iTermMenuRef}>
                         <span 
                             className="text-white/90 text-[12px] md:text-[13px] font-bold cursor-pointer"
-                            onClick={() => setIsiTermMenuOpen(!isiTermMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsiTermMenuOpen(!isiTermMenuOpen);
+                            }}
                         >
                             iTerm2
                         </span>
@@ -254,7 +264,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative flex items-center" ref={fileMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
-                            onClick={() => setIsFileMenuOpen(!isFileMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsFileMenuOpen(!isFileMenuOpen);
+                            }}
                         >
                             File
                         </span>
@@ -340,7 +353,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative flex items-center" ref={editMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
-                            onClick={() => setIsEditMenuOpen(!isEditMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsEditMenuOpen(!isEditMenuOpen);
+                            }}
                         >
                             Edit
                         </span>
@@ -428,7 +444,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative hidden md:flex items-center" ref={viewMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
-                            onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsViewMenuOpen(!isViewMenuOpen);
+                            }}
                         >
                             View
                         </span>
@@ -480,7 +499,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative hidden md:flex items-center" ref={goMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
-                            onClick={() => setIsGoMenuOpen(!isGoMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsGoMenuOpen(!isGoMenuOpen);
+                            }}
                         >
                             Go
                         </span>
@@ -536,7 +558,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative hidden lg:flex items-center" ref={windowMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
-                            onClick={() => setIsWindowMenuOpen(!isWindowMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsWindowMenuOpen(!isWindowMenuOpen);
+                            }}
                         >
                             Window
                         </span>
@@ -576,7 +601,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative hidden lg:flex items-center" ref={helpMenuRef}>
                         <span 
                             className="text-white/70 text-[13px] cursor-pointer hover:text-white"
-                            onClick={() => setIsHelpMenuOpen(!isHelpMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsHelpMenuOpen(!isHelpMenuOpen);
+                            }}
                         >
                             Help
                         </span>
@@ -612,7 +640,10 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative hidden md:block" ref={wifiMenuRef}>
                         <Wifi 
                             className="w-4 h-4 text-white/80 cursor-pointer hover:text-white transition-colors" 
-                            onClick={() => setIsWifiMenuOpen(!isWifiMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsWifiMenuOpen(!isWifiMenuOpen);
+                            }}
                         />
                         <AnimatePresence>
                             {isWifiMenuOpen && (
@@ -730,11 +761,17 @@ export default function MenuBar({ onPermissionError }) {
                     <div className="relative hidden sm:flex items-center gap-1" ref={batteryMenuRef}>
                         <Battery 
                             className="w-4 h-4 md:w-5 md:h-5 text-white/80 cursor-pointer hover:text-white transition-colors" 
-                            onClick={() => setIsBatteryMenuOpen(!isBatteryMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsBatteryMenuOpen(!isBatteryMenuOpen);
+                            }}
                         />
                         <span 
                             className="text-white/80 text-[10px] md:text-[12px] cursor-pointer hover:text-white transition-colors"
-                            onClick={() => setIsBatteryMenuOpen(!isBatteryMenuOpen)}
+                            onClick={() => {
+                                closeAllMenus();
+                                setIsBatteryMenuOpen(!isBatteryMenuOpen);
+                            }}
                         >
                             100%
                         </span>
