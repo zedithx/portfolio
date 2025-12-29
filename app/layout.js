@@ -1,14 +1,18 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Portfolio - MacOS Desktop',
+  title: 'zedithx',
   description: 'A portfolio website mimicking macOS desktop with a terminal interface.',
+  icons: {
+    icon: '/favicon/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/favicon/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
