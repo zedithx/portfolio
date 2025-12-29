@@ -303,8 +303,19 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand('github');
-                // Open immediately to avoid popup blockers
-                const githubWindow = window.open('https://github.com/zedithx', '_blank');
+                // Create and click a link element to better handle mobile
+                const link = document.createElement('a');
+                link.href = 'https://github.com/zedithx';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                // Delay the click slightly for animation
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                });
                 setTimeout(() => {
                     setIsLoading(false);
                     setLoadingCommand('');
@@ -314,8 +325,19 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand('linkedin');
-                // Open immediately to avoid popup blockers
-                const linkedinWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank');
+                // Create and click a link element to better handle mobile
+                const link = document.createElement('a');
+                link.href = 'https://linkedin.com/in/yang-si-jun/';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                // Delay the click slightly for animation
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                });
                 setTimeout(() => {
                     setIsLoading(false);
                     setLoadingCommand('');
