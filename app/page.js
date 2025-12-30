@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import MenuBar from '../components/desktop/MenuBar';
 import Dock from '../components/desktop/Dock';
 import Terminal from '../components/desktop/Terminal';
@@ -12,40 +12,47 @@ export default function Home() {
     const [permissionMessage, setPermissionMessage] = useState(null);
     const [terminalState, setTerminalState] = useState('normal'); // 'closed', 'minimized', 'normal', 'maximized'
 
-    const handleCommand = (command) => {
+    const handleCommand = useCallback((command) => {
         setActiveModal(command);
-    };
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setActiveModal(null);
         // Dispatch a custom event to restore the welcome screen
         window.dispatchEvent(new CustomEvent('restore-terminal'));
-    };
+    }, []);
 
-    const triggerPermissionError = (message) => {
+    const triggerPermissionError = useCallback((message) => {
         setPermissionMessage(message);
         setIsPermissionModalOpen(true);
-    };
+    }, []);
 
-    const handleTerminalClose = () => {
+    const handleTerminalClose = useCallback(() => {
         setTerminalState('closed');
-    };
+    }, []);
 
-    const handleTerminalMinimize = () => {
+    const handleTerminalMinimize = useCallback(() => {
         setTerminalState('minimized');
-    };
+    }, []);
 
-    const handleTerminalMaximize = () => {
+    const handleTerminalMaximize = useCallback(() => {
         setTerminalState(prevState => prevState === 'maximized' ? 'normal' : 'maximized');
-    };
+    }, []);
 
-    const handleTerminalRestore = () => {
-        if (terminalState === 'normal' || terminalState === 'maximized') {
-            setTerminalState('minimized');
-        } else {
-            setTerminalState('normal');
-        }
-    };
+    const handleTerminalRestore = useCallback(() => {
+        setTerminalState(prevState => {
+            if (prevState === 'normal' || prevState === 'maximized') {
+                return 'minimized';
+            } else {
+                return 'normal';
+            }
+        });
+    }, []);
+
+    const closePermissionModal = useCallback(() => {
+        setIsPermissionModalOpen(false);
+        setPermissionMessage(null);
+    }, []);
 
     return (
         <div className="min-h-screen w-full relative overflow-hidden bg-black">
@@ -85,10 +92,7 @@ export default function Home() {
             {/* Permission Denied Modal */}
             <PermissionModal 
                 isOpen={isPermissionModalOpen} 
-                onClose={() => {
-                    setIsPermissionModalOpen(false);
-                    setPermissionMessage(null);
-                }}
+                onClose={closePermissionModal}
                 message={permissionMessage}
             />
         </div>

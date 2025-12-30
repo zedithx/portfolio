@@ -202,6 +202,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setSessionText('session: zedithx');
             setStatusText('systems ready');
             setIsReady(true);
+            // Scroll to bottom when restoring
+            setTimeout(() => {
+                if (terminalRef.current) {
+                    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+                }
+            }, 100);
             setIsAnimating(false); // Don't re-animate, show commands list immediately
             setTimeout(() => inputRef.current?.focus(), 50);
         };
@@ -290,6 +296,18 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             }, 50);
         }
     }, [history, isLoading, input]);
+
+    // Scroll to bottom when terminal becomes visible (e.g., when returning from modal)
+    useEffect(() => {
+        if (terminalState?.isOpen && terminalRef.current) {
+            const scrollTimer = setTimeout(() => {
+                if (terminalRef.current) {
+                    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+                }
+            }, 100);
+            return () => clearTimeout(scrollTimer);
+        }
+    }, [terminalState?.isOpen]);
 
     const startResize = (type, e) => {
         if (window.innerWidth < 768) return;
@@ -419,6 +437,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             onMouseDown={startDrag}
             className="fixed z-20 shadow-2xl rounded-xl overflow-hidden border border-white/10"
             style={{ 
+                transformOrigin: 'bottom',
+                maxWidth: '100vw',
+                overflowX: 'hidden'
+            }}
+            style={{ 
                 transformOrigin: 'bottom'
             }}
         >
@@ -460,7 +483,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 <div 
                     ref={terminalRef}
                     onClick={handleTerminalClick}
-                    className="flex-1 bg-[#1e1e1e]/95 backdrop-blur-xl p-4 overflow-y-auto font-mono text-sm cursor-text scrollbar-hide relative"
+                    className="flex-1 bg-[#1e1e1e]/95 backdrop-blur-xl p-4 overflow-y-auto overflow-x-hidden font-mono text-sm cursor-text scrollbar-hide relative"
                 >
                     {showWelcome && !isLoading && (
                         <motion.div 

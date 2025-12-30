@@ -372,11 +372,9 @@ const ItemCard = React.memo(({ item, onClick }) => {
             
             {/* Glow effect on hover */}
             {isHovered && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                <div
                     className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-purple-500/10 pointer-events-none"
+                    style={{ willChange: 'opacity' }}
                 />
             )}
             
@@ -404,6 +402,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                         duration: 0.3,
                         ease: "easeOut"
                     }}
+                    style={{ willChange: isHovered ? 'transform' : 'auto' }}
                 >
                     {item.thumbnail.type === 'image' && item.thumbnail.src ? (
                         <img 
@@ -449,7 +448,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
                                         y: { type: "tween", duration: 0.15, ease: "easeOut" }
                                     }}
-                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/90 backdrop-blur-md rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/50"
+                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/95 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/50"
                                     title={isImagePath ? tech.split('/').pop() : tech}
                                 >
                                     {isImagePath ? (
@@ -489,18 +488,6 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 <div className="flex items-center justify-between">
                     <motion.div
                         whileHover={{ scale: 1.15, x: 2 }}
-                        animate={{
-                            boxShadow: [
-                                "0 0 0px rgba(250, 204, 21, 0)",
-                                "0 0 8px rgba(250, 204, 21, 0.5)",
-                                "0 0 0px rgba(250, 204, 21, 0)",
-                            ]
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
                         className="px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/50 border-2 border-yellow-400/60 rounded-lg"
                     >
                         <span className="text-yellow-300 text-[10px] sm:text-xs md:text-sm font-bold flex items-center gap-1 sm:gap-1.5">
