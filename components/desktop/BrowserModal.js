@@ -365,14 +365,14 @@ const ItemCard = React.memo(({ item, onClick }) => {
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
+            onClick={handleClick}
             className="relative bg-[#1a1a1a] rounded-lg overflow-hidden cursor-pointer transition-all shadow-lg hover:shadow-xl hover:shadow-yellow-500/30"
             style={{
                 border: '1px solid rgba(255, 255, 255, 0.2)',
             }}
-            onClick={handleClick}
         >
             
-            {/* Glow effect on hover */}
+            {/* Glow effect on hover (desktop only) */}
             {isHovered && (
                 <div
                     className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-purple-500/10 pointer-events-none"
@@ -383,7 +383,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
             
             {/* Item thumbnail area with clean MapleStory-style background */}
             <div className={`aspect-square bg-gradient-to-b ${item.thumbnail.gradient} flex items-center justify-center relative overflow-hidden`}>
-                {/* Bounce animation for thumbnail - only on hover */}
+                {/* Bounce animation for thumbnail - only on hover (desktop) */}
                 <motion.div
                     className="relative z-10 w-full h-full flex items-center justify-center"
                     animate={isHovered ? {
@@ -450,8 +450,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
                                         y: { type: "tween", duration: 0.15, ease: "easeOut" }
                                     }}
-                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/95 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/50"
-                                    title={isImagePath ? tech.split('/').pop() : tech}
+                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/95 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/50 pointer-events-none"
                                 >
                                     {isImagePath ? (
                                         <img 

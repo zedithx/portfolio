@@ -26,7 +26,7 @@ const Typewriter = ({ text, delay = 0, onComplete }) => {
                         clearInterval(interval);
                         if (onComplete) onComplete();
                     }
-                }, 30);
+                }, 20);
             }, delay);
         } else {
             let i = 0;
@@ -37,7 +37,7 @@ const Typewriter = ({ text, delay = 0, onComplete }) => {
                     clearInterval(interval);
                     if (onComplete) onComplete();
                 }
-            }, 30);
+            }, 20);
         }
         return () => {
             clearTimeout(timeout);
