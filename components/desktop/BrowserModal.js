@@ -63,13 +63,13 @@ const projectData = {
     'DevOps Projects': [
         {
             id: 5,
-            title: 'DevOps Monitoring',
+            title: 'Monitoring Suite',
             commits: 11,
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/devops-monitoring/cicd.png',
-                gradient: 'from-cyan-500 to-blue-600'
+                src: '/projects/project-icons/monitoring-suite/cicd.png',
+                gradient: 'from-blue-500 to-indigo-600'
             },
             techIcons: [
                 '/projects/project-icons/tech-icons/go.png',
@@ -81,13 +81,13 @@ const projectData = {
         },
         {
             id: 6,
-            title: 'Docker Compose Networking',
+            title: 'Container Networking',
             commits: 56,
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/docker-compose/docker-compose.png',
-                gradient: 'from-blue-500 to-cyan-600'
+                src: '/projects/project-icons/container-networking/container.png',
+                gradient: 'from-slate-500 to-slate-700'
             },
             techIcons: [
                 '/projects/project-icons/tech-icons/docker.png',
@@ -380,50 +380,6 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 />
             )}
             
-            {/* Multiple sparkle effects */}
-            {isHovered && (
-                <>
-                    <motion.div
-                        className="absolute top-2 left-2 w-2 h-2 bg-yellow-400 rounded-full z-20"
-                        animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.5, 1, 0.5],
-                        }}
-                        transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: 0
-                        }}
-                    />
-                    <motion.div
-                        className="absolute top-4 right-4 w-1.5 h-1.5 bg-purple-400 rounded-full z-20"
-                        animate={{
-                            scale: [1, 2, 1],
-                            opacity: [0.3, 1, 0.3],
-                        }}
-                        transition={{
-                            duration: 1.2,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: 0.3
-                        }}
-                    />
-                    <motion.div
-                        className="absolute bottom-3 left-4 w-1.5 h-1.5 bg-pink-400 rounded-full z-20"
-                        animate={{
-                            scale: [1, 1.8, 1],
-                            opacity: [0.4, 1, 0.4],
-                        }}
-                        transition={{
-                            duration: 1.3,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: 0.6
-                        }}
-                    />
-                </>
-            )}
             
             {/* Item thumbnail area with clean MapleStory-style background */}
             <div className={`aspect-square bg-gradient-to-b ${item.thumbnail.gradient} flex items-center justify-center relative overflow-hidden`}>
@@ -434,21 +390,30 @@ const ItemCard = React.memo(({ item, onClick }) => {
                         y: [0, -10, 0],
                         rotate: [0, 5, -5, 0],
                         scale: [1, 1.05, 1]
-                    } : {}}
+                    } : {
+                        y: 0,
+                        rotate: 0,
+                        scale: 1
+                    }}
                     transition={isHovered ? {
                         duration: 0.6,
                         repeat: Infinity,
                         repeatType: 'reverse',
                         ease: "easeInOut"
-                    } : {}}
+                    } : {
+                        duration: 0.3,
+                        ease: "easeOut"
+                    }}
                 >
                     {item.thumbnail.type === 'image' && item.thumbnail.src ? (
                         <img 
                             src={item.thumbnail.src} 
                             alt={item.title}
                             className={`object-contain drop-shadow-2xl ${
-                                item.title === 'DevOps Monitoring' 
-                                    ? 'w-40 h-40 sm:w-44 sm:h-44 md:w-48 md:h-48' 
+                                item.title === 'Container Networking' 
+                                    ? 'w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40' 
+                                    : item.title === 'Monitoring Suite'
+                                    ? 'w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24'
                                     : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32'
                             }`}
                             loading="lazy"
@@ -518,8 +483,8 @@ const ItemCard = React.memo(({ item, onClick }) => {
             </div>
             
             {/* Bottom info section with darker MapleStory-style background */}
-            <div className="p-3 sm:p-4 bg-[#1a1a1a] border-t border-gray-700/50">
-                <h3 className="text-white font-bold text-sm sm:text-base mb-2 truncate">{item.title}</h3>
+            <div className="p-2 sm:p-3 md:p-4 bg-[#1a1a1a] border-t border-gray-700/50">
+                <h3 className="text-white font-bold text-xs sm:text-sm md:text-base mb-1.5 sm:mb-2 truncate">{item.title}</h3>
                 
                 <div className="flex items-center justify-between">
                     <motion.div
@@ -536,11 +501,11 @@ const ItemCard = React.memo(({ item, onClick }) => {
                             repeat: Infinity,
                             ease: "easeInOut"
                         }}
-                        className="px-3 py-1.5 bg-yellow-900/50 border-2 border-yellow-400/60 rounded-lg"
+                        className="px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/50 border-2 border-yellow-400/60 rounded-lg"
                     >
-                        <span className="text-yellow-300 text-xs sm:text-sm font-bold flex items-center gap-1.5">
-                            <span className="text-yellow-400">💎</span>
-                            {item.commits.toLocaleString()} Commits
+                        <span className="text-yellow-300 text-[10px] sm:text-xs md:text-sm font-bold flex items-center gap-1 sm:gap-1.5">
+                            <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
+                            <span className="whitespace-nowrap">{item.commits.toLocaleString()} Commits</span>
                         </span>
                     </motion.div>
                 </div>
@@ -610,14 +575,14 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                        className="w-full max-w-7xl h-full max-h-[95vh] flex flex-col"
+                        className="w-full max-w-7xl h-full max-h-screen sm:max-h-[95vh] flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Browser Chrome */}
                         <div className="bg-[#1a1a1a] rounded-t-xl border border-gray-700 border-b-0 shrink-0">
                             {/* Title Bar */}
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 relative">
-                                <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3 border-b border-gray-700 relative">
+                                <div className="flex items-center gap-1.5 sm:gap-2">
                                     <button onClick={onClose} className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all"></button>
                                     <button 
                                         onClick={() => onPermissionError && onPermissionError("You cannot minimize when on this page.")} 
@@ -628,19 +593,20 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                         className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all"
                                     />
                                 </div>
-                                <div className="absolute left-1/2 -translate-x-1/2 text-sm text-white/80 font-medium">
+                                <div className="absolute left-1/2 -translate-x-1/2 text-xs sm:text-sm text-white/80 font-medium px-2 truncate max-w-[60%] sm:max-w-none">
                                     {selectedProject ? selectedProject.title : 'Cash Shop'}
                                 </div>
-                                <div className="w-12"></div>
+                                <div className="w-12 sm:w-12"></div>
                             </div>
 
                             {/* Cash Shop Header */}
                             <div className="px-3 sm:px-4 py-2 sm:py-3 bg-[#1a1a1a] border-b border-gray-700">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                    <div className="flex items-center gap-3 sm:gap-6">
-                                        <h1 className="text-lg sm:text-xl font-bold text-yellow-400">Cash Shop</h1>
+                                    <div className="flex items-center gap-2 sm:gap-6 flex-wrap">
+                                        <h1 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400">Cash Shop</h1>
                                         <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
-                                            <span className="text-yellow-300 text-xs sm:text-sm font-semibold">Commits: {commits.toLocaleString()}</span>
+                                            <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
+                                            <span className="text-yellow-300 text-xs sm:text-sm font-semibold">{commits.toLocaleString()} Commits</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2 sm:gap-4">
@@ -658,6 +624,20 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                         </button>
                                     </div>
                                 </div>
+                                
+                                {/* Mobile Avatar Stats - Show on mobile, hide on lg+ */}
+                                <div className="lg:hidden mt-3 pt-3 border-t border-gray-700">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 text-center">
+                                            <div className="text-white/70 text-[10px] mb-0.5">Projects</div>
+                                            <div className="text-yellow-400 text-sm font-bold">{data.items ? data.items.length : 0}</div>
+                                        </div>
+                                        <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 text-center">
+                                            <div className="text-white/70 text-[10px] mb-0.5">Commits</div>
+                                            <div className="text-yellow-400 text-sm font-bold">{commits.toLocaleString()}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -665,30 +645,30 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                         <div className="flex-1 bg-[#1a1a1a] rounded-b-xl border border-gray-700 border-t-0 overflow-hidden flex">
                             {selectedProject ? (
                                 /* Project Detail View */
-                                <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                                <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8">
                                     <button 
                                         onClick={handleBackToShop}
-                                        className="mb-4 sm:mb-6 flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors text-sm sm:text-base"
+                                        className="mb-3 sm:mb-4 md:mb-6 flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors text-xs sm:text-sm md:text-base"
                                     >
-                                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                                         <span>Back to Shop</span>
                                     </button>
-                                    <div className="bg-white rounded-xl p-4 sm:p-6 md:p-8">
+                                    <div className="bg-white rounded-xl p-3 sm:p-4 md:p-6 lg:p-8">
                                         {selectedProject.content}
                                     </div>
                                 </div>
                             ) : (
                                 <>
                                     {/* Main Content Area */}
-                                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+                                    <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 lg:p-6">
                                         {/* Popular Items Section */}
-                                        <div className="mb-6 sm:mb-8">
-                                            <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
-                                                <span className="text-2xl">⭐</span>
+                                        <div className="mb-4 sm:mb-6 md:mb-8">
+                                            <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                                <span className="text-xl sm:text-2xl">⭐</span>
                                                 <span>Popular Items</span>
-                                                <span className="text-xl">✨</span>
+                                                <span className="text-lg sm:text-xl">✨</span>
                                             </h2>
-                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                                 {popularItems.map((item) => (
                                                     <ItemCard 
                                                         key={item.id}
@@ -701,13 +681,13 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
 
                                         {/* Student Government Section */}
                                         {studentGovernmentItems.length > 0 && (
-                                            <div className="mb-6 sm:mb-8">
-                                                <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
-                                                    <span className="text-2xl">🎓</span>
+                                            <div className="mb-4 sm:mb-6 md:mb-8">
+                                                <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                                    <span className="text-xl sm:text-2xl">🎓</span>
                                                     <span>Student Government</span>
-                                                    <span className="text-xl">📚</span>
+                                                    <span className="text-lg sm:text-xl">📚</span>
                                                 </h2>
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                                     {studentGovernmentItems.map((item) => (
                                                         <ItemCard 
                                                             key={item.id}
@@ -722,12 +702,12 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                         {/* DevOps Projects Section */}
                                         {devOpsItems.length > 0 && (
                                             <div>
-                                                <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
-                                                    <span className="text-2xl">⚙️</span>
+                                                <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                                    <span className="text-xl sm:text-2xl">⚙️</span>
                                                     <span>DevOps Projects</span>
-                                                    <span className="text-xl">🔧</span>
+                                                    <span className="text-lg sm:text-xl">🔧</span>
                                                 </h2>
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                                     {devOpsItems.map((item) => (
                                                         <ItemCard 
                                                             key={item.id}
