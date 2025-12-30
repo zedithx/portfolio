@@ -858,7 +858,7 @@ export default function MenuBar({ onPermissionError }) {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            className="fixed right-0 top-0 bottom-0 z-[101] w-full sm:w-[320px] md:w-[360px] lg:w-[380px] bg-black/30 backdrop-blur-2xl shadow-2xl overflow-y-auto"
+                            className="fixed right-0 top-0 bottom-0 z-[101] w-[85%] max-w-[320px] sm:w-[320px] md:w-[360px] lg:w-[380px] bg-black/30 backdrop-blur-2xl shadow-2xl overflow-y-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="p-3 sm:p-4 md:p-5 space-y-3 sm:space-y-4">
