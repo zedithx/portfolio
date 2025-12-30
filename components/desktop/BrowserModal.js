@@ -1,7 +1,117 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, Plus, ShoppingCart, Search } from 'lucide-react';
+
+// Project Data organized by category
+const projectData = {
+    Popular: [
+        {
+            id: 1,
+            title: 'Bulkify',
+            commits: 474,
+            badge: 'Hot',
+            thumbnail: {
+                type: 'image',
+                src: '/projects/project-icons/bulkify/bulkify.png',
+                gradient: 'from-blue-400 to-purple-500'
+            },
+            techIcons: [
+                '/projects/project-icons/tech-icons/java.webp',
+                '/projects/project-icons/tech-icons/firebase.png'
+            ],
+            description: 'A powerful e-commerce bulk operations platform built with modern web technologies. Features include real-time inventory management, bulk product updates, order processing, and a beautiful responsive design.',
+            techTags: ['React', 'Node.js', 'MongoDB', 'TypeScript']
+        },
+        {
+            id: 3,
+            title: 'EnableID',
+            commits: 823,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/project-icons/enableid/refugees.png',
+                gradient: 'from-pink-500 to-rose-600'
+            },
+            techIcons: [
+                '/projects/project-icons/tech-icons/next.webp',
+                '/projects/project-icons/tech-icons/rubyonrails.png'
+            ],
+            description: 'A comprehensive platform for refugee identification and support services. Features include secure identity management, document verification, and streamlined access to essential services.',
+            techTags: ['Next.js', 'Ruby on Rails']
+        }
+    ],
+    'Student Government': [
+        {
+            id: 4,
+            title: 'Night Fiesta RFID Project',
+            commits: 31,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/project-icons/nightfiesta/rfid.png',
+                gradient: 'from-indigo-500 to-purple-600'
+            },
+            techIcons: [
+                '/projects/project-icons/tech-icons/python.webp',
+                '/projects/project-icons/tech-icons/django.png'
+            ],
+            description: 'An RFID-based access control and event management system for student government events. Features include contactless check-in, real-time attendance tracking, and secure event access management.',
+            techTags: ['Python', 'Django']
+        }
+    ]
+};
+
+// Helper function to generate project content JSX
+const generateProjectContent = (project) => {
+    return (
+        <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
+            <p className="text-gray-600 leading-relaxed">
+                {project.description}
+            </p>
+            <div className="flex flex-wrap gap-2">
+                {project.techTags.map((tag, idx) => {
+                    const colorClasses = {
+                        'React': 'bg-blue-100 text-blue-700',
+                        'Node.js': 'bg-green-100 text-green-700',
+                        'MongoDB': 'bg-indigo-100 text-indigo-700',
+                        'TypeScript': 'bg-purple-100 text-purple-700',
+                        'Next.js': 'bg-blue-100 text-blue-700',
+                        'Firebase': 'bg-orange-100 text-orange-700',
+                        'Tailwind': 'bg-pink-100 text-pink-700',
+                        'Python': 'bg-purple-100 text-purple-700',
+                        'OpenAI': 'bg-green-100 text-green-700',
+                        'FastAPI': 'bg-blue-100 text-blue-700',
+                        'Django': 'bg-green-100 text-green-700',
+                        'Ruby on Rails': 'bg-red-100 text-red-700'
+                    };
+                    const className = colorClasses[tag] || 'bg-gray-100 text-gray-700';
+                    return (
+                        <span key={idx} className={`px-3 py-1 ${className} rounded-full text-sm`}>
+                            {tag}
+                        </span>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+// Transform projectData into items format with content
+const transformProjectsToItems = () => {
+    const items = [];
+    Object.keys(projectData).forEach(category => {
+        projectData[category].forEach(project => {
+            items.push({
+                ...project,
+                category,
+                content: generateProjectContent(project)
+            });
+        });
+    });
+    return items;
+};
 
 const contentData = {
     background: {
@@ -73,107 +183,7 @@ const contentData = {
     },
     projects: {
         title: 'Cash Shop',
-        items: [
-            {
-                id: 1,
-                title: 'Bulkify',
-                commits: 474,
-                category: 'Popular',
-                badge: 'Hot',
-                thumbnail: {
-                    type: 'image',
-                    src: '/projects/project-icons/bulkify/bulkify.png',
-                    gradient: 'from-blue-400 to-purple-500'
-                },
-                techIcons: [
-                    '/projects/project-icons/bulkify/tech-icons/java.webp',
-                    '/projects/project-icons/bulkify/tech-icons/stripes.png',
-                    '/projects/project-icons/bulkify/tech-icons/firebase.png',
-                    '/projects/project-icons/bulkify/tech-icons/streamio.png'
-                ],
-                content: (
-                    <div className="space-y-6">
-                        <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center shadow-xl relative overflow-hidden">
-                            <img src="/projects/project-icons/bulkify/bulkify.png" alt="Bulkify" className="w-32 h-32 object-contain" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Bulkify</h2>
-                        <p className="text-gray-600 leading-relaxed">
-                            A powerful e-commerce bulk operations platform built with modern web technologies. 
-                            Features include real-time inventory management, bulk product updates, order processing, 
-                            and a beautiful responsive design.
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">React</span>
-                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Node.js</span>
-                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">MongoDB</span>
-                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">TypeScript</span>
-                        </div>
-                    </div>
-                )
-            },
-            {
-                id: 2,
-                title: 'Task Management App',
-                commits: 120,
-                category: 'New',
-                badge: 'New',
-                thumbnail: {
-                    type: 'emoji',
-                    emoji: '✅',
-                    gradient: 'from-green-500 to-teal-600'
-                },
-                techIcons: ['nextjs', 'firebase', 'tailwind'],
-                content: (
-                    <div className="space-y-6">
-                        <div className="aspect-video bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center text-8xl shadow-xl">
-                            ✅
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Task Management App</h2>
-                        <p className="text-gray-600 leading-relaxed">
-                            A collaborative task management application with real-time updates, 
-                            drag-and-drop functionality, and team workspaces. Built to help teams 
-                            stay organized and productive.
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">Next.js</span>
-                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">Firebase</span>
-                            <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">Tailwind</span>
-                        </div>
-                    </div>
-                )
-            },
-            {
-                id: 3,
-                title: 'AI Writing Assistant',
-                commits: 180,
-                category: 'Popular',
-                badge: null,
-                thumbnail: {
-                    type: 'emoji',
-                    emoji: '🤖',
-                    gradient: 'from-pink-500 to-rose-600'
-                },
-                techIcons: ['python', 'openai', 'fastapi'],
-                content: (
-                    <div className="space-y-6">
-                        <div className="aspect-video bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center text-8xl shadow-xl">
-                            🤖
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">AI Writing Assistant</h2>
-                        <p className="text-gray-600 leading-relaxed">
-                            An AI-powered writing assistant that helps users create better content. 
-                            Features include grammar checking, tone adjustment, and content suggestions 
-                            powered by GPT-4.
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Python</span>
-                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">OpenAI</span>
-                            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">FastAPI</span>
-                        </div>
-                    </div>
-                )
-            }
-        ]
+        items: transformProjectsToItems()
     },
     experience: {
         title: 'Experience',
@@ -284,9 +294,13 @@ const contentData = {
     }
 };
 
-// Item Card Component with enhanced animations
-const ItemCard = ({ item, onClick }) => {
+// Item Card Component with enhanced animations - Memoized for performance
+const ItemCard = React.memo(({ item, onClick }) => {
     const [isHovered, setIsHovered] = useState(false);
+    
+    const handleClick = useCallback(() => {
+        onClick(item);
+    }, [onClick, item]);
     
     return (
         <motion.div
@@ -306,11 +320,12 @@ const ItemCard = ({ item, onClick }) => {
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="relative bg-[#1a1a1a] border-2 border-gray-600 rounded-lg overflow-hidden cursor-pointer hover:border-yellow-400 transition-all shadow-lg hover:shadow-xl hover:shadow-yellow-500/30"
-            onClick={onClick}
+            className="relative bg-[#1a1a1a] rounded-lg overflow-hidden cursor-pointer transition-all shadow-lg hover:shadow-xl hover:shadow-yellow-500/30"
+            style={{
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+            }}
+            onClick={handleClick}
         >
-            {/* Inner border frame */}
-            <div className="absolute inset-0.5 border border-gray-700/50 rounded-lg pointer-events-none" />
             
             {/* Glow effect on hover */}
             {isHovered && (
@@ -369,58 +384,60 @@ const ItemCard = ({ item, onClick }) => {
             
             {/* Item thumbnail area with clean MapleStory-style background */}
             <div className={`aspect-square bg-gradient-to-b ${item.thumbnail.gradient} flex items-center justify-center relative overflow-hidden`}>
-                {/* Bounce animation for thumbnail */}
+                {/* Bounce animation for thumbnail - only on hover */}
                 <motion.div
-                    className="relative z-10"
+                    className="relative z-10 w-full h-full flex items-center justify-center"
                     animate={isHovered ? {
-                        y: [0, -15, -5, 0],
-                        rotate: [0, 8, -8, 5, -5, 0],
-                        scale: [1, 1.1, 1.05, 1]
-                    } : {
-                        y: [0, -3, 0],
-                    }}
+                        y: [0, -10, 0],
+                        rotate: [0, 5, -5, 0],
+                        scale: [1, 1.05, 1]
+                    } : {}}
                     transition={isHovered ? {
-                        duration: 0.8,
+                        duration: 0.6,
                         repeat: Infinity,
                         repeatType: 'reverse',
                         ease: "easeInOut"
-                    } : {
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                    }}
-                    className="w-full h-full flex items-center justify-center"
+                    } : {}}
                 >
                     {item.thumbnail.type === 'image' && item.thumbnail.src ? (
-                        <motion.img 
+                        <img 
                             src={item.thumbnail.src} 
                             alt={item.title}
                             className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain drop-shadow-2xl"
-                            whileHover={{ scale: 1.15 }}
+                            loading="lazy"
                         />
                     ) : (
-                        <motion.span 
-                            className="text-4xl sm:text-5xl md:text-6xl drop-shadow-2xl"
-                            whileHover={{ scale: 1.2 }}
-                        >
+                        <span className="text-4xl sm:text-5xl md:text-6xl drop-shadow-2xl">
                             {item.thumbnail.emoji}
-                        </motion.span>
+                        </span>
                     )}
                 </motion.div>
                 
                 {/* Technology Icons - In thumbnail area */}
                 {item.techIcons && item.techIcons.length > 0 && (
                     <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-2 z-10">
-                        {item.techIcons.map((tech, idx) => {
+                        {item.techIcons.slice(0, 3).map((tech, idx) => {
                             const isImagePath = typeof tech === 'string' && tech.startsWith('/');
                             return (
                                 <motion.div
                                     key={idx}
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    transition={{ delay: item.id * 0.1 + 0.3 + idx * 0.05, type: 'spring' }}
-                                    whileHover={{ scale: 1.3, rotate: 10, y: -5 }}
-                                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center overflow-hidden shadow-lg"
+                                    whileHover={{ 
+                                        scale: 1.2, 
+                                        rotate: 10, 
+                                        y: -5
+                                    }}
+                                    transition={{ 
+                                        delay: item.id * 0.1 + 0.3 + idx * 0.05,
+                                        type: 'spring',
+                                        stiffness: 400,
+                                        damping: 25,
+                                        scale: { type: "tween", duration: 0.15, ease: "easeOut" },
+                                        rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
+                                        y: { type: "tween", duration: 0.15, ease: "easeOut" }
+                                    }}
+                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/90 backdrop-blur-md rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/50"
                                     title={isImagePath ? tech.split('/').pop() : tech}
                                 >
                                     {isImagePath ? (
@@ -428,9 +445,10 @@ const ItemCard = ({ item, onClick }) => {
                                             src={tech} 
                                             alt={tech.split('/').pop()} 
                                             className="w-full h-full object-contain p-1.5"
+                                            loading="lazy"
                                         />
                                     ) : (
-                                        <span className="text-base sm:text-lg">⚙️</span>
+                                        <span className="text-lg sm:text-xl">⚙️</span>
                                     )}
                                 </motion.div>
                             );
@@ -441,41 +459,13 @@ const ItemCard = ({ item, onClick }) => {
                 {item.badge && (
                     <motion.div
                         initial={{ scale: 0, rotate: -180 }}
-                        animate={{ 
-                            scale: [1, 1.1, 1],
-                            rotate: [0, 5, -5, 0]
-                        }}
-                        transition={{ 
-                            scale: {
-                                duration: 2,
-                                repeat: Infinity,
-                                repeatType: 'reverse'
-                            },
-                            rotate: {
-                                duration: 3,
-                                repeat: Infinity
-                            }
-                        }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: 'spring', stiffness: 200 }}
                         className={`absolute top-2 right-2 px-2.5 py-1 text-xs font-bold rounded-full shadow-lg z-10 ${
                             item.badge === 'Hot' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
                         }`}
                     >
-                        <span className="relative z-10">{item.badge}</span>
-                        <motion.div
-                            className={`absolute inset-0 rounded-full ${
-                                item.badge === 'Hot' ? 'bg-red-400' : 'bg-green-400'
-                            }`}
-                            animate={{
-                                opacity: [0.5, 0.8, 0.5],
-                                scale: [1, 1.2, 1]
-                            }}
-                            transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                            style={{ filter: 'blur(4px)' }}
-                        />
+                        {item.badge}
                     </motion.div>
                 )}
             </div>
@@ -510,7 +500,11 @@ const ItemCard = ({ item, onClick }) => {
             </div>
         </motion.div>
     );
-};
+}, (prevProps, nextProps) => {
+    // Custom comparison to prevent unnecessary re-renders
+    return prevProps.item.id === nextProps.item.id && 
+           prevProps.item.commits === nextProps.item.commits;
+});
 
 export default function BrowserModal({ type, onClose, onPermissionError }) {
     const [currentPage, setCurrentPage] = useState(0);
@@ -520,25 +514,34 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
     const totalPages = data.pages ? data.pages.length : 0;
     const commits = 1247; // Hardcoded commit count
 
-    const goNext = () => {
+    // Memoize filtered items to prevent recalculation on every render
+    const popularItems = useMemo(() => {
+        return isCashShop ? data.items.filter(item => item.category === 'Popular') : [];
+    }, [isCashShop, data.items]);
+
+    const studentGovernmentItems = useMemo(() => {
+        return isCashShop ? data.items.filter(item => item.category === 'Student Government') : [];
+    }, [isCashShop, data.items]);
+
+    const handleProjectClick = useCallback((project) => {
+        setSelectedProject(project);
+    }, []);
+
+    const goNext = useCallback(() => {
         if (currentPage < totalPages - 1) {
             setCurrentPage(prev => prev + 1);
         }
-    };
+    }, [currentPage, totalPages]);
 
-    const goPrev = () => {
+    const goPrev = useCallback(() => {
         if (currentPage > 0) {
             setCurrentPage(prev => prev - 1);
         }
-    };
+    }, [currentPage]);
 
-    const handleProjectClick = (project) => {
-        setSelectedProject(project);
-    };
-
-    const handleBackToShop = () => {
+    const handleBackToShop = useCallback(() => {
         setSelectedProject(null);
-    };
+    }, []);
 
     // Cash Shop Layout
     if (isCashShop) {
@@ -629,60 +632,41 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                     <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
                                         {/* Popular Items Section */}
                                         <div className="mb-6 sm:mb-8">
-                                            <motion.h2 
-                                                initial={{ opacity: 0, x: -20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2"
-                                            >
+                                            <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
                                                 <span className="text-2xl">⭐</span>
                                                 <span>Popular Items</span>
-                                                <motion.span
-                                                    animate={{ rotate: [0, 10, -10, 0] }}
-                                                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-                                                    className="text-xl"
-                                                >
-                                                    ✨
-                                                </motion.span>
-                                            </motion.h2>
+                                                <span className="text-xl">✨</span>
+                                            </h2>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-                                                {data.items.filter(item => item.category === 'Popular').map((item) => (
+                                                {popularItems.map((item) => (
                                                     <ItemCard 
                                                         key={item.id}
                                                         item={item}
-                                                        onClick={() => handleProjectClick(item)}
+                                                        onClick={handleProjectClick}
                                                     />
                                                 ))}
                                             </div>
                                         </div>
 
-                                        {/* New Releases Section */}
-                                        <div>
-                                            <motion.h2 
-                                                initial={{ opacity: 0, x: -20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: 0.2 }}
-                                                className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2"
-                                            >
-                                                <span className="text-2xl">🆕</span>
-                                                <span>New Releases</span>
-                                                <motion.span
-                                                    animate={{ scale: [1, 1.2, 1] }}
-                                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                                    className="text-xl"
-                                                >
-                                                    💫
-                                                </motion.span>
-                                            </motion.h2>
-                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-                                                {data.items.filter(item => item.category === 'New').map((item) => (
-                                                    <ItemCard 
-                                                        key={item.id}
-                                                        item={item}
-                                                        onClick={() => handleProjectClick(item)}
-                                                    />
-                                                ))}
+                                        {/* Student Government Section */}
+                                        {studentGovernmentItems.length > 0 && (
+                                            <div>
+                                                <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
+                                                    <span className="text-2xl">🎓</span>
+                                                    <span>Student Government</span>
+                                                    <span className="text-xl">📚</span>
+                                                </h2>
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                                    {studentGovernmentItems.map((item) => (
+                                                        <ItemCard 
+                                                            key={item.id}
+                                                            item={item}
+                                                            onClick={handleProjectClick}
+                                                        />
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
 
                                     {/* Avatar Sidebar */}
