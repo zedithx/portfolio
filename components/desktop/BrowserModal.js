@@ -100,6 +100,27 @@ const projectData = {
     ]
 };
 
+// Color classes map - moved outside function to avoid recreation
+const colorClassesMap = {
+    'React': 'bg-blue-100 text-blue-700',
+    'Node.js': 'bg-green-100 text-green-700',
+    'MongoDB': 'bg-indigo-100 text-indigo-700',
+    'TypeScript': 'bg-purple-100 text-purple-700',
+    'Next.js': 'bg-blue-100 text-blue-700',
+    'Firebase': 'bg-orange-100 text-orange-700',
+    'Tailwind': 'bg-pink-100 text-pink-700',
+    'Python': 'bg-purple-100 text-purple-700',
+    'OpenAI': 'bg-green-100 text-green-700',
+    'FastAPI': 'bg-blue-100 text-blue-700',
+    'Django': 'bg-green-100 text-green-700',
+    'Ruby on Rails': 'bg-red-100 text-red-700',
+    'Golang': 'bg-cyan-100 text-cyan-700',
+    'Grafana': 'bg-orange-100 text-orange-700',
+    'Prometheus': 'bg-red-100 text-red-700',
+    'Go': 'bg-cyan-100 text-cyan-700',
+    'Docker Compose': 'bg-blue-100 text-blue-700'
+};
+
 // Helper function to generate project content JSX
 const generateProjectContent = (project) => {
     return (
@@ -110,26 +131,7 @@ const generateProjectContent = (project) => {
             </p>
             <div className="flex flex-wrap gap-2">
                 {project.techTags.map((tag, idx) => {
-                    const colorClasses = {
-                        'React': 'bg-blue-100 text-blue-700',
-                        'Node.js': 'bg-green-100 text-green-700',
-                        'MongoDB': 'bg-indigo-100 text-indigo-700',
-                        'TypeScript': 'bg-purple-100 text-purple-700',
-                        'Next.js': 'bg-blue-100 text-blue-700',
-                        'Firebase': 'bg-orange-100 text-orange-700',
-                        'Tailwind': 'bg-pink-100 text-pink-700',
-                        'Python': 'bg-purple-100 text-purple-700',
-                        'OpenAI': 'bg-green-100 text-green-700',
-                        'FastAPI': 'bg-blue-100 text-blue-700',
-                        'Django': 'bg-green-100 text-green-700',
-                        'Ruby on Rails': 'bg-red-100 text-red-700',
-                        'Golang': 'bg-cyan-100 text-cyan-700',
-                        'Grafana': 'bg-orange-100 text-orange-700',
-                        'Prometheus': 'bg-red-100 text-red-700',
-                        'Go': 'bg-cyan-100 text-cyan-700',
-                        'Docker Compose': 'bg-blue-100 text-blue-700'
-                    };
-                    const className = colorClasses[tag] || 'bg-gray-100 text-gray-700';
+                    const className = colorClassesMap[tag] || 'bg-gray-100 text-gray-700';
                     return (
                         <span key={idx} className={`px-3 py-1 ${className} rounded-full text-sm`}>
                             {tag}
@@ -508,9 +510,11 @@ const ItemCard = React.memo(({ item, onClick }) => {
 export default function BrowserModal({ type, onClose, onPermissionError }) {
     const [currentPage, setCurrentPage] = useState(0);
     const [selectedProject, setSelectedProject] = useState(null);
-    const data = contentData[type];
-    const isCashShop = type === 'projects' && data.items;
-    const totalPages = data.pages ? data.pages.length : 0;
+    
+    // Memoize data access to prevent unnecessary recalculations
+    const data = useMemo(() => contentData[type], [type]);
+    const isCashShop = useMemo(() => type === 'projects' && data.items, [type, data.items]);
+    const totalPages = useMemo(() => data.pages ? data.pages.length : 0, [data.pages]);
     const commits = 1247; // Hardcoded commit count
 
     // Memoize filtered items to prevent recalculation on every render
@@ -554,7 +558,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
                     onClick={onClose}
                 >
                     <motion.div
@@ -748,7 +752,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
                 onClick={onClose}
             >
                 <motion.div
