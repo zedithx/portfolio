@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, Plus } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, Plus, ShoppingCart, Search } from 'lucide-react';
 
 const contentData = {
     background: {
@@ -72,32 +72,57 @@ const contentData = {
         }]
     },
     projects: {
-        title: 'Projects',
-        pages: [
+        title: 'Cash Shop',
+        items: [
             {
-                title: 'E-Commerce Platform',
+                id: 1,
+                title: 'Bulkify',
+                commits: 474,
+                category: 'Popular',
+                badge: 'Hot',
+                thumbnail: {
+                    type: 'image',
+                    src: '/projects/project-icons/bulkify/bulkify.png',
+                    gradient: 'from-blue-400 to-purple-500'
+                },
+                techIcons: [
+                    '/projects/project-icons/bulkify/tech-icons/java.webp',
+                    '/projects/project-icons/bulkify/tech-icons/stripes.png',
+                    '/projects/project-icons/bulkify/tech-icons/firebase.png',
+                    '/projects/project-icons/bulkify/tech-icons/streamio.png'
+                ],
                 content: (
                     <div className="space-y-6">
-                        <div className="aspect-video bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-8xl shadow-xl">
-                            🛒
+                        <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center shadow-xl relative overflow-hidden">
+                            <img src="/projects/project-icons/bulkify/bulkify.png" alt="Bulkify" className="w-32 h-32 object-contain" />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900">E-Commerce Platform</h2>
+                        <h2 className="text-2xl font-bold text-gray-900">Bulkify</h2>
                         <p className="text-gray-600 leading-relaxed">
-                            A full-featured e-commerce platform built with React, Node.js, and PostgreSQL. 
-                            Features include real-time inventory management, payment processing with Stripe, 
+                            A powerful e-commerce bulk operations platform built with modern web technologies. 
+                            Features include real-time inventory management, bulk product updates, order processing, 
                             and a beautiful responsive design.
                         </p>
                         <div className="flex flex-wrap gap-2">
                             <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">React</span>
                             <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Node.js</span>
-                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">PostgreSQL</span>
-                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Stripe</span>
+                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">MongoDB</span>
+                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">TypeScript</span>
                         </div>
                     </div>
                 )
             },
             {
+                id: 2,
                 title: 'Task Management App',
+                commits: 120,
+                category: 'New',
+                badge: 'New',
+                thumbnail: {
+                    type: 'emoji',
+                    emoji: '✅',
+                    gradient: 'from-green-500 to-teal-600'
+                },
+                techIcons: ['nextjs', 'firebase', 'tailwind'],
                 content: (
                     <div className="space-y-6">
                         <div className="aspect-video bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center text-8xl shadow-xl">
@@ -118,7 +143,17 @@ const contentData = {
                 )
             },
             {
+                id: 3,
                 title: 'AI Writing Assistant',
+                commits: 180,
+                category: 'Popular',
+                badge: null,
+                thumbnail: {
+                    type: 'emoji',
+                    emoji: '🤖',
+                    gradient: 'from-pink-500 to-rose-600'
+                },
+                techIcons: ['python', 'openai', 'fastapi'],
                 content: (
                     <div className="space-y-6">
                         <div className="aspect-video bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center text-8xl shadow-xl">
@@ -249,10 +284,241 @@ const contentData = {
     }
 };
 
-export default function BrowserModal({ type, onClose }) {
+// Item Card Component with enhanced animations
+const ItemCard = ({ item, onClick }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    
+    return (
+        <motion.div
+            key={item.id}
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ 
+                type: 'spring', 
+                stiffness: 200, 
+                damping: 15,
+                delay: item.id * 0.1
+            }}
+            whileHover={{ 
+                scale: 1.08,
+                y: -8,
+                transition: { type: 'spring', stiffness: 400, damping: 10 }
+            }}
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            className="relative bg-[#1a1a1a] border-2 border-gray-600 rounded-lg overflow-hidden cursor-pointer hover:border-yellow-400 transition-all shadow-lg hover:shadow-xl hover:shadow-yellow-500/30"
+            onClick={onClick}
+        >
+            {/* Inner border frame */}
+            <div className="absolute inset-0.5 border border-gray-700/50 rounded-lg pointer-events-none" />
+            
+            {/* Glow effect on hover */}
+            {isHovered && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-purple-500/10 pointer-events-none"
+                />
+            )}
+            
+            {/* Multiple sparkle effects */}
+            {isHovered && (
+                <>
+                    <motion.div
+                        className="absolute top-2 left-2 w-2 h-2 bg-yellow-400 rounded-full z-20"
+                        animate={{
+                            scale: [1, 1.5, 1],
+                            opacity: [0.5, 1, 0.5],
+                        }}
+                        transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 0
+                        }}
+                    />
+                    <motion.div
+                        className="absolute top-4 right-4 w-1.5 h-1.5 bg-purple-400 rounded-full z-20"
+                        animate={{
+                            scale: [1, 2, 1],
+                            opacity: [0.3, 1, 0.3],
+                        }}
+                        transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 0.3
+                        }}
+                    />
+                    <motion.div
+                        className="absolute bottom-3 left-4 w-1.5 h-1.5 bg-pink-400 rounded-full z-20"
+                        animate={{
+                            scale: [1, 1.8, 1],
+                            opacity: [0.4, 1, 0.4],
+                        }}
+                        transition={{
+                            duration: 1.3,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 0.6
+                        }}
+                    />
+                </>
+            )}
+            
+            {/* Item thumbnail area with clean MapleStory-style background */}
+            <div className={`aspect-square bg-gradient-to-b ${item.thumbnail.gradient} flex items-center justify-center relative overflow-hidden`}>
+                {/* Bounce animation for thumbnail */}
+                <motion.div
+                    className="relative z-10"
+                    animate={isHovered ? {
+                        y: [0, -15, -5, 0],
+                        rotate: [0, 8, -8, 5, -5, 0],
+                        scale: [1, 1.1, 1.05, 1]
+                    } : {
+                        y: [0, -3, 0],
+                    }}
+                    transition={isHovered ? {
+                        duration: 0.8,
+                        repeat: Infinity,
+                        repeatType: 'reverse',
+                        ease: "easeInOut"
+                    } : {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                    className="w-full h-full flex items-center justify-center"
+                >
+                    {item.thumbnail.type === 'image' && item.thumbnail.src ? (
+                        <motion.img 
+                            src={item.thumbnail.src} 
+                            alt={item.title}
+                            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain drop-shadow-2xl"
+                            whileHover={{ scale: 1.15 }}
+                        />
+                    ) : (
+                        <motion.span 
+                            className="text-4xl sm:text-5xl md:text-6xl drop-shadow-2xl"
+                            whileHover={{ scale: 1.2 }}
+                        >
+                            {item.thumbnail.emoji}
+                        </motion.span>
+                    )}
+                </motion.div>
+                
+                {/* Technology Icons - In thumbnail area */}
+                {item.techIcons && item.techIcons.length > 0 && (
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-2 z-10">
+                        {item.techIcons.map((tech, idx) => {
+                            const isImagePath = typeof tech === 'string' && tech.startsWith('/');
+                            return (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: item.id * 0.1 + 0.3 + idx * 0.05, type: 'spring' }}
+                                    whileHover={{ scale: 1.3, rotate: 10, y: -5 }}
+                                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center overflow-hidden shadow-lg"
+                                    title={isImagePath ? tech.split('/').pop() : tech}
+                                >
+                                    {isImagePath ? (
+                                        <img 
+                                            src={tech} 
+                                            alt={tech.split('/').pop()} 
+                                            className="w-full h-full object-contain p-1.5"
+                                        />
+                                    ) : (
+                                        <span className="text-base sm:text-lg">⚙️</span>
+                                    )}
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                )}
+                
+                {item.badge && (
+                    <motion.div
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ 
+                            scale: [1, 1.1, 1],
+                            rotate: [0, 5, -5, 0]
+                        }}
+                        transition={{ 
+                            scale: {
+                                duration: 2,
+                                repeat: Infinity,
+                                repeatType: 'reverse'
+                            },
+                            rotate: {
+                                duration: 3,
+                                repeat: Infinity
+                            }
+                        }}
+                        className={`absolute top-2 right-2 px-2.5 py-1 text-xs font-bold rounded-full shadow-lg z-10 ${
+                            item.badge === 'Hot' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+                        }`}
+                    >
+                        <span className="relative z-10">{item.badge}</span>
+                        <motion.div
+                            className={`absolute inset-0 rounded-full ${
+                                item.badge === 'Hot' ? 'bg-red-400' : 'bg-green-400'
+                            }`}
+                            animate={{
+                                opacity: [0.5, 0.8, 0.5],
+                                scale: [1, 1.2, 1]
+                            }}
+                            transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                            style={{ filter: 'blur(4px)' }}
+                        />
+                    </motion.div>
+                )}
+            </div>
+            
+            {/* Bottom info section with darker MapleStory-style background */}
+            <div className="p-3 sm:p-4 bg-[#1a1a1a] border-t border-gray-700/50">
+                <h3 className="text-white font-bold text-sm sm:text-base mb-2 truncate">{item.title}</h3>
+                
+                <div className="flex items-center justify-between">
+                    <motion.div
+                        whileHover={{ scale: 1.15, x: 2 }}
+                        animate={{
+                            boxShadow: [
+                                "0 0 0px rgba(250, 204, 21, 0)",
+                                "0 0 8px rgba(250, 204, 21, 0.5)",
+                                "0 0 0px rgba(250, 204, 21, 0)",
+                            ]
+                        }}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="px-3 py-1.5 bg-yellow-900/50 border-2 border-yellow-400/60 rounded-lg"
+                    >
+                        <span className="text-yellow-300 text-xs sm:text-sm font-bold flex items-center gap-1.5">
+                            <span className="text-yellow-400">💎</span>
+                            {item.commits.toLocaleString()} Commits
+                        </span>
+                    </motion.div>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
+export default function BrowserModal({ type, onClose, onPermissionError }) {
     const [currentPage, setCurrentPage] = useState(0);
+    const [selectedProject, setSelectedProject] = useState(null);
     const data = contentData[type];
-    const totalPages = data.pages.length;
+    const isCashShop = type === 'projects' && data.items;
+    const totalPages = data.pages ? data.pages.length : 0;
+    const commits = 1247; // Hardcoded commit count
 
     const goNext = () => {
         if (currentPage < totalPages - 1) {
@@ -266,6 +532,194 @@ export default function BrowserModal({ type, onClose }) {
         }
     };
 
+    const handleProjectClick = (project) => {
+        setSelectedProject(project);
+    };
+
+    const handleBackToShop = () => {
+        setSelectedProject(null);
+    };
+
+    // Cash Shop Layout
+    if (isCashShop) {
+        return (
+            <AnimatePresence>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+                    onClick={onClose}
+                >
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                        className="w-full max-w-7xl h-full max-h-[95vh] flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Browser Chrome */}
+                        <div className="bg-[#1a1a1a] rounded-t-xl border border-gray-700 border-b-0 shrink-0">
+                            {/* Title Bar */}
+                            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 relative">
+                                <div className="flex items-center gap-2">
+                                    <button onClick={onClose} className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all"></button>
+                                    <button 
+                                        onClick={() => onPermissionError && onPermissionError("You cannot minimize when on this page.")} 
+                                        className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all"
+                                    />
+                                    <button 
+                                        onClick={() => onPermissionError && onPermissionError("You cannot maximize when on this page.")} 
+                                        className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all"
+                                    />
+                                </div>
+                                <div className="absolute left-1/2 -translate-x-1/2 text-sm text-white/80 font-medium">
+                                    {selectedProject ? selectedProject.title : 'Cash Shop'}
+                                </div>
+                                <div className="w-12"></div>
+                            </div>
+
+                            {/* Cash Shop Header */}
+                            <div className="px-3 sm:px-4 py-2 sm:py-3 bg-[#1a1a1a] border-b border-gray-700">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div className="flex items-center gap-3 sm:gap-6">
+                                        <h1 className="text-lg sm:text-xl font-bold text-yellow-400">Cash Shop</h1>
+                                        <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
+                                            <span className="text-yellow-300 text-xs sm:text-sm font-semibold">Commits: {commits.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 sm:gap-4">
+                                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700">
+                                            <Search className="w-4 h-4 text-gray-400" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Search items..." 
+                                                className="bg-transparent text-white/70 text-sm outline-none w-32"
+                                            />
+                                        </div>
+                                        <button className="relative p-2 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors">
+                                            <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
+                                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">0</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Cash Shop Content */}
+                        <div className="flex-1 bg-[#1a1a1a] rounded-b-xl border border-gray-700 border-t-0 overflow-hidden flex">
+                            {selectedProject ? (
+                                /* Project Detail View */
+                                <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                                    <button 
+                                        onClick={handleBackToShop}
+                                        className="mb-4 sm:mb-6 flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors text-sm sm:text-base"
+                                    >
+                                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        <span>Back to Shop</span>
+                                    </button>
+                                    <div className="bg-white rounded-xl p-4 sm:p-6 md:p-8">
+                                        {selectedProject.content}
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Main Content Area */}
+                                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+                                        {/* Popular Items Section */}
+                                        <div className="mb-6 sm:mb-8">
+                                            <motion.h2 
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2"
+                                            >
+                                                <span className="text-2xl">⭐</span>
+                                                <span>Popular Items</span>
+                                                <motion.span
+                                                    animate={{ rotate: [0, 10, -10, 0] }}
+                                                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                                                    className="text-xl"
+                                                >
+                                                    ✨
+                                                </motion.span>
+                                            </motion.h2>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                                {data.items.filter(item => item.category === 'Popular').map((item) => (
+                                                    <ItemCard 
+                                                        key={item.id}
+                                                        item={item}
+                                                        onClick={() => handleProjectClick(item)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* New Releases Section */}
+                                        <div>
+                                            <motion.h2 
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.2 }}
+                                                className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2"
+                                            >
+                                                <span className="text-2xl">🆕</span>
+                                                <span>New Releases</span>
+                                                <motion.span
+                                                    animate={{ scale: [1, 1.2, 1] }}
+                                                    transition={{ duration: 1.5, repeat: Infinity }}
+                                                    className="text-xl"
+                                                >
+                                                    💫
+                                                </motion.span>
+                                            </motion.h2>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                                {data.items.filter(item => item.category === 'New').map((item) => (
+                                                    <ItemCard 
+                                                        key={item.id}
+                                                        item={item}
+                                                        onClick={() => handleProjectClick(item)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Avatar Sidebar */}
+                                    <div className="hidden lg:block w-72 xl:w-80 bg-[#2d2d2d] border-l border-gray-700 p-4 xl:p-6 overflow-y-auto">
+                                        <div className="text-center mb-4">
+                                            <h3 className="text-white font-bold text-lg mb-2">zedithx</h3>
+                                            <div className="bg-[#1a1a1a] rounded-lg p-4 border border-gray-700">
+                                                <div className="aspect-square relative">
+                                                    <img 
+                                                        src="/projects/avatar/avatar.png" 
+                                                        alt="Character Avatar" 
+                                                        className="w-full h-full object-contain"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="bg-[#1a1a1a] rounded-lg p-3 border border-gray-700">
+                                                <div className="text-white/70 text-xs mb-1">Projects</div>
+                                                <div className="text-yellow-400 text-lg font-bold">{data.items ? data.items.length : 0}</div>
+                                            </div>
+                                            <div className="bg-[#1a1a1a] rounded-lg p-3 border border-gray-700">
+                                                <div className="text-white/70 text-xs mb-1">Total Commits</div>
+                                                <div className="text-yellow-400 text-lg font-bold">{commits.toLocaleString()}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </motion.div>
+                </motion.div>
+            </AnimatePresence>
+        );
+    }
+
+    // Regular Browser Layout (for background, experience, etc.)
     return (
         <AnimatePresence>
             <motion.div

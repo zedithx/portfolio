@@ -2,7 +2,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function PermissionModal({ isOpen, onClose }) {
+export default function PermissionModal({ isOpen, onClose, message }) {
+    const defaultMessage = "You do not have root access. Please use sudo or contact your administrator.";
+    const displayMessage = message || defaultMessage;
+    
     return (
         <AnimatePresence>
             {isOpen && (
@@ -18,7 +21,7 @@ export default function PermissionModal({ isOpen, onClose }) {
                         </div>
                         <h3 className="text-white font-semibold text-lg mb-2">Permission Denied</h3>
                         <p className="text-white/70 text-sm mb-6">
-                            You do not have root access. Please use sudo or contact your administrator.
+                            {displayMessage}
                         </p>
                         <button
                             onClick={onClose}

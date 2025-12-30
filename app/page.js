@@ -9,6 +9,7 @@ import PermissionModal from '../components/desktop/PermissionModal';
 export default function Home() {
     const [activeModal, setActiveModal] = useState(null);
     const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
+    const [permissionMessage, setPermissionMessage] = useState(null);
     const [terminalState, setTerminalState] = useState('normal'); // 'closed', 'minimized', 'normal', 'maximized'
 
     const handleCommand = (command) => {
@@ -21,7 +22,8 @@ export default function Home() {
         window.dispatchEvent(new CustomEvent('restore-terminal'));
     };
 
-    const triggerPermissionError = () => {
+    const triggerPermissionError = (message) => {
+        setPermissionMessage(message);
         setIsPermissionModalOpen(true);
     };
 
@@ -75,14 +77,19 @@ export default function Home() {
             {activeModal && (
                 <BrowserModal 
                     type={activeModal} 
-                    onClose={closeModal} 
+                    onClose={closeModal}
+                    onPermissionError={triggerPermissionError}
                 />
             )}
 
             {/* Permission Denied Modal */}
             <PermissionModal 
                 isOpen={isPermissionModalOpen} 
-                onClose={() => setIsPermissionModalOpen(false)} 
+                onClose={() => {
+                    setIsPermissionModalOpen(false);
+                    setPermissionMessage(null);
+                }}
+                message={permissionMessage}
             />
         </div>
     );
