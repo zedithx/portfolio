@@ -593,15 +593,25 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                             {/* Cash Shop Header */}
                             <div className="px-3 sm:px-4 py-2 sm:py-3 bg-[#1a1a1a] border-b border-gray-700">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                    <div className="flex items-center gap-2 sm:gap-6 flex-wrap">
+                                    {/* Title and Commits Row */}
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                                         <h1 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400">Cash Shop</h1>
-                                        <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
-                                            <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
-                                            <span className="text-yellow-300 text-xs sm:text-sm font-semibold">{commits.toLocaleString()} Commits</span>
+                                        {/* Mobile: Commits below title, Desktop: Commits next to title */}
+                                        <div className="flex items-center justify-between sm:justify-start gap-2">
+                                            <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
+                                                <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
+                                                <span className="text-yellow-300 text-xs sm:text-sm font-semibold">{commits.toLocaleString()} Commits</span>
+                                            </div>
+                                            {/* Shopping Cart - Flushed right on mobile, in separate section on desktop */}
+                                            <button className="sm:hidden relative p-2 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors">
+                                                <ShoppingCart className="w-4 h-4 text-yellow-400" />
+                                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">0</span>
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 sm:gap-4">
-                                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700">
+                                    {/* Desktop: Search and Cart */}
+                                    <div className="hidden sm:flex items-center gap-2 sm:gap-4">
+                                        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700">
                                             <Search className="w-4 h-4 text-gray-400" />
                                             <input 
                                                 type="text" 

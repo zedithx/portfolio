@@ -109,7 +109,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setIsReady(true);
         }
         
-        setTimeout(() => inputRef.current?.focus(), 50);
+        setTimeout(() => {
+            if (inputRef.current) {
+                inputRef.current.focus({ preventScroll: true });
+            }
+        }, 50);
     };
 
     useEffect(() => {
@@ -185,7 +189,24 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         handleResize();
         window.addEventListener('resize', handleResize);
 
-        inputRef.current?.focus();
+        // Handle visual viewport changes (mobile keyboard)
+        const handleVisualViewportChange = () => {
+            if (window.visualViewport) {
+                // Prevent scroll when keyboard appears
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }
+        };
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleVisualViewportChange);
+            window.visualViewport.addEventListener('scroll', handleVisualViewportChange);
+        }
+
+        // Prevent viewport shift on mobile when focusing input
+        if (inputRef.current) {
+            inputRef.current.focus({ preventScroll: true });
+        }
 
         const onClearEvent = () => handleClear(true);
         window.addEventListener('clear-terminal', onClearEvent);
@@ -209,7 +230,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 }
             }, 100);
             setIsAnimating(false); // Don't re-animate, show commands list immediately
-            setTimeout(() => inputRef.current?.focus(), 50);
+            setTimeout(() => {
+            if (inputRef.current) {
+                inputRef.current.focus({ preventScroll: true });
+            }
+        }, 50);
         };
         window.addEventListener('restore-terminal', onRestoreEvent);
 
@@ -269,6 +294,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             window.removeEventListener('restore-terminal', onRestoreEvent);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
+            if (window.visualViewport) {
+                window.visualViewport.removeEventListener('resize', handleVisualViewportChange);
+                window.visualViewport.removeEventListener('scroll', handleVisualViewportChange);
+            }
         };
     }, []);
 
@@ -417,7 +446,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     };
 
     const handleTerminalClick = () => {
-        inputRef.current?.focus();
+        // Prevent viewport shift on mobile when focusing input
+        if (inputRef.current) {
+            inputRef.current.focus({ preventScroll: true });
+        }
     };
 
     return (
@@ -428,8 +460,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 opacity: terminalState === 'minimized' ? 0 : 1,
                 y: terminalState === 'minimized' ? 200 : 0,
                 width: terminalState === 'maximized' ? '100vw' : dimensions.width,
-                height: terminalState === 'maximized' ? '100vh' : dimensions.height,
-                top: terminalState === 'maximized' ? 0 : dimensions.top,
+                height: terminalState === 'maximized' ? 'calc(100vh - 28px)' : dimensions.height,
+                top: terminalState === 'maximized' ? '28px' : dimensions.top,
                 left: terminalState === 'maximized' ? 0 : dimensions.left,
                 pointerEvents: terminalState === 'minimized' ? 'none' : 'auto'
             }}
@@ -615,6 +647,17 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
+                                onFocus={(e) => {
+                                    // Prevent viewport shift on mobile when keyboard appears
+                                    if (window.visualViewport) {
+                                        // Prevent automatic scrolling by resetting scroll position
+                                        setTimeout(() => {
+                                            window.scrollTo(0, 0);
+                                            document.documentElement.scrollTop = 0;
+                                            document.body.scrollTop = 0;
+                                        }, 100);
+                                    }
+                                }}
                                 className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5 font-mono"
                                 style={{ caretColor: 'transparent' }}
                                 spellCheck={false}

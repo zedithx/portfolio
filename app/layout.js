@@ -35,6 +35,21 @@ export default function RootLayout({ children }) {
               overscroll-behavior: none;
           }
           
+          /* Prevent viewport shift on mobile when keyboard appears */
+          @supports (-webkit-touch-callout: none) {
+              html {
+                  height: -webkit-fill-available;
+              }
+              body {
+                  min-height: -webkit-fill-available;
+              }
+          }
+          
+          input, textarea {
+              -webkit-user-select: text;
+              user-select: text;
+          }
+          
           body > * {
               max-width: 100vw;
               overflow-x: hidden;
