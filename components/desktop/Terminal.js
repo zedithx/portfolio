@@ -111,7 +111,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         
         setTimeout(() => {
             if (inputRef.current) {
-                inputRef.current.focus({ preventScroll: true });
+                inputRef.current.focus();
             }
         }, 50);
     };
@@ -189,23 +189,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         handleResize();
         window.addEventListener('resize', handleResize);
 
-        // Handle visual viewport changes (mobile keyboard)
-        const handleVisualViewportChange = () => {
-            if (window.visualViewport) {
-                // Prevent scroll when keyboard appears
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-            }
-        };
-
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleVisualViewportChange);
-            window.visualViewport.addEventListener('scroll', handleVisualViewportChange);
-        }
-
-        // Prevent viewport shift on mobile when focusing input
+        // Focus input on mount
         if (inputRef.current) {
-            inputRef.current.focus({ preventScroll: true });
+            inputRef.current.focus();
         }
 
         const onClearEvent = () => handleClear(true);
@@ -232,7 +218,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setIsAnimating(false); // Don't re-animate, show commands list immediately
             setTimeout(() => {
             if (inputRef.current) {
-                inputRef.current.focus({ preventScroll: true });
+                inputRef.current.focus();
             }
         }, 50);
         };
@@ -294,10 +280,6 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             window.removeEventListener('restore-terminal', onRestoreEvent);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
-            if (window.visualViewport) {
-                window.visualViewport.removeEventListener('resize', handleVisualViewportChange);
-                window.visualViewport.removeEventListener('scroll', handleVisualViewportChange);
-            }
         };
     }, []);
 
@@ -446,9 +428,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     };
 
     const handleTerminalClick = () => {
-        // Prevent viewport shift on mobile when focusing input
+        // Focus input when terminal is clicked
         if (inputRef.current) {
-            inputRef.current.focus({ preventScroll: true });
+            inputRef.current.focus();
         }
     };
 
@@ -647,17 +629,6 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                onFocus={(e) => {
-                                    // Prevent viewport shift on mobile when keyboard appears
-                                    if (window.visualViewport) {
-                                        // Prevent automatic scrolling by resetting scroll position
-                                        setTimeout(() => {
-                                            window.scrollTo(0, 0);
-                                            document.documentElement.scrollTop = 0;
-                                            document.body.scrollTop = 0;
-                                        }, 100);
-                                    }
-                                }}
                                 className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5 font-mono"
                                 style={{ caretColor: 'transparent' }}
                                 spellCheck={false}
