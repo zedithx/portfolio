@@ -59,6 +59,44 @@ const projectData = {
             description: 'An RFID-based access control and event management system for student government events. Features include contactless check-in, real-time attendance tracking, and secure event access management.',
             techTags: ['Python', 'Django']
         }
+    ],
+    'DevOps Projects': [
+        {
+            id: 5,
+            title: 'DevOps Monitoring',
+            commits: 11,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/project-icons/devops-monitoring/cicd.png',
+                gradient: 'from-cyan-500 to-blue-600'
+            },
+            techIcons: [
+                '/projects/project-icons/tech-icons/go.png',
+                '/projects/project-icons/tech-icons/grafana.png',
+                '/projects/project-icons/tech-icons/prometheus.png'
+            ],
+            description: 'A comprehensive DevOps monitoring and CI/CD pipeline management system. Features include real-time infrastructure monitoring, automated deployment pipelines, performance metrics visualization, and alerting systems.',
+            techTags: ['Go', 'Grafana', 'Prometheus']
+        },
+        {
+            id: 6,
+            title: 'Docker Compose Networking',
+            commits: 56,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/project-icons/docker-compose/docker-compose.png',
+                gradient: 'from-blue-500 to-cyan-600'
+            },
+            techIcons: [
+                '/projects/project-icons/tech-icons/docker.png',
+                '/projects/project-icons/tech-icons/python.webp',
+                '/projects/project-icons/tech-icons/rubyonrails.png'
+            ],
+            description: 'A Docker Compose-based networking solution for managing multi-container applications. Features include service orchestration, network configuration, volume management, and seamless container communication.',
+            techTags: ['Docker Compose', 'Python', 'Ruby on Rails']
+        }
     ]
 };
 
@@ -84,7 +122,12 @@ const generateProjectContent = (project) => {
                         'OpenAI': 'bg-green-100 text-green-700',
                         'FastAPI': 'bg-blue-100 text-blue-700',
                         'Django': 'bg-green-100 text-green-700',
-                        'Ruby on Rails': 'bg-red-100 text-red-700'
+                        'Ruby on Rails': 'bg-red-100 text-red-700',
+                        'Golang': 'bg-cyan-100 text-cyan-700',
+                        'Grafana': 'bg-orange-100 text-orange-700',
+                        'Prometheus': 'bg-red-100 text-red-700',
+                        'Go': 'bg-cyan-100 text-cyan-700',
+                        'Docker Compose': 'bg-blue-100 text-blue-700'
                     };
                     const className = colorClasses[tag] || 'bg-gray-100 text-gray-700';
                     return (
@@ -403,7 +446,11 @@ const ItemCard = React.memo(({ item, onClick }) => {
                         <img 
                             src={item.thumbnail.src} 
                             alt={item.title}
-                            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain drop-shadow-2xl"
+                            className={`object-contain drop-shadow-2xl ${
+                                item.title === 'DevOps Monitoring' 
+                                    ? 'w-40 h-40 sm:w-44 sm:h-44 md:w-48 md:h-48' 
+                                    : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32'
+                            }`}
                             loading="lazy"
                         />
                     ) : (
@@ -521,6 +568,10 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
 
     const studentGovernmentItems = useMemo(() => {
         return isCashShop ? data.items.filter(item => item.category === 'Student Government') : [];
+    }, [isCashShop, data.items]);
+
+    const devOpsItems = useMemo(() => {
+        return isCashShop ? data.items.filter(item => item.category === 'DevOps Projects') : [];
     }, [isCashShop, data.items]);
 
     const handleProjectClick = useCallback((project) => {
@@ -650,7 +701,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
 
                                         {/* Student Government Section */}
                                         {studentGovernmentItems.length > 0 && (
-                                            <div>
+                                            <div className="mb-6 sm:mb-8">
                                                 <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
                                                     <span className="text-2xl">🎓</span>
                                                     <span>Student Government</span>
@@ -658,6 +709,26 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                                 </h2>
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                                                     {studentGovernmentItems.map((item) => (
+                                                        <ItemCard 
+                                                            key={item.id}
+                                                            item={item}
+                                                            onClick={handleProjectClick}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* DevOps Projects Section */}
+                                        {devOpsItems.length > 0 && (
+                                            <div>
+                                                <h2 className="text-lg sm:text-xl font-bold text-yellow-400 mb-3 sm:mb-4 flex items-center gap-2">
+                                                    <span className="text-2xl">⚙️</span>
+                                                    <span>DevOps Projects</span>
+                                                    <span className="text-xl">🔧</span>
+                                                </h2>
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                                                    {devOpsItems.map((item) => (
                                                         <ItemCard 
                                                             key={item.id}
                                                             item={item}
