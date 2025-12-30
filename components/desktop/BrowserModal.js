@@ -593,22 +593,82 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                             {/* Cash Shop Header */}
                             <div className="px-3 sm:px-4 py-2 sm:py-3 bg-[#1a1a1a] border-b border-gray-700">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                    {/* Title and Commits Row */}
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                                    {/* Desktop: Title and Commits Row */}
+                                    <div className="hidden sm:flex sm:items-center gap-2 sm:gap-6">
                                         <h1 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400">Cash Shop</h1>
-                                        {/* Mobile: Commits below title, Desktop: Commits next to title */}
-                                        <div className="flex items-center justify-between sm:justify-start gap-2">
-                                            <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
-                                                <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
-                                                <span className="text-yellow-300 text-xs sm:text-sm font-semibold">{commits.toLocaleString()} Commits</span>
-                                            </div>
-                                            {/* Shopping Cart - Flushed right on mobile, in separate section on desktop */}
-                                            <button className="sm:hidden relative p-2 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors">
-                                                <ShoppingCart className="w-4 h-4 text-yellow-400" />
-                                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">0</span>
-                                            </button>
+                                        <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
+                                            <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
+                                            <span className="text-yellow-300 text-xs sm:text-sm font-semibold">{commits.toLocaleString()} Commits</span>
                                         </div>
                                     </div>
+                                    
+                                    {/* Mobile: Left (Search/Commits/Cart) and Right (Avatar/Stats) */}
+                                    <div className="sm:hidden w-full">
+                                        <div className="flex flex-col gap-3">
+                                            {/* Title */}
+                                            <h1 className="text-base font-bold text-yellow-400">Cash Shop</h1>
+                                            
+                                            {/* Main content: Left and Right sections */}
+                                            <div className="flex items-start gap-3">
+                                                {/* Left Side: Commits, Cart, then Search */}
+                                                <div className="flex flex-col gap-3">
+                                                    {/* Commits Counter and Cart Row - Bigger size */}
+                                                    <div className="flex items-center gap-2">
+                                                        {/* Commits Counter - Bigger */}
+                                                        <div className="flex items-center gap-2 px-3 py-3 bg-yellow-900/30 border border-yellow-500/30 rounded-lg min-w-0">
+                                                            <span className="text-yellow-400 text-sm flex-shrink-0">💎</span>
+                                                            <span className="text-yellow-300 text-sm font-semibold truncate">
+                                                                {commits.toLocaleString()}
+                                                                <span className="hidden min-[360px]:inline"> Commits</span>
+                                                            </span>
+                                                        </div>
+                                                        {/* Shopping Cart - Bigger */}
+                                                        <button className="relative p-3.5 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors flex-shrink-0">
+                                                            <ShoppingCart className="w-5 h-5 text-yellow-400" />
+                                                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">0</span>
+                                                        </button>
+                                                    </div>
+                                                    {/* Search Bar - Below commits/cart, reduced width */}
+                                                    <div className="flex items-center gap-2 px-3 py-2.5 bg-gray-800 rounded-lg border border-gray-700 w-48">
+                                                        <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Search..." 
+                                                            className="flex-1 bg-transparent text-white/70 text-base outline-none"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Right Side: Avatar and Stats */}
+                                                {!selectedProject && (
+                                                    <div className="flex items-start gap-2 ml-auto">
+                                                        {/* Avatar - Left, same height as stats boxes combined */}
+                                                        <div className="bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 flex-shrink-0 self-stretch flex items-center justify-center">
+                                                            <div className="w-16 h-full relative flex items-center justify-center">
+                                                                <img 
+                                                                    src="/projects/avatar/avatar.png" 
+                                                                    alt="Character Avatar" 
+                                                                    className="w-full h-full object-contain max-h-full"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        {/* Stats - Right of avatar */}
+                                                        <div className="flex flex-col gap-2">
+                                                            <div className="bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 text-center min-w-[60px]">
+                                                                <div className="text-white/70 text-[10px] mb-0.5">Projects</div>
+                                                                <div className="text-yellow-400 text-sm font-bold">{data.items ? data.items.length : 0}</div>
+                                                            </div>
+                                                            <div className="bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 text-center min-w-[60px]">
+                                                                <div className="text-white/70 text-[10px] mb-0.5">Commits</div>
+                                                                <div className="text-yellow-400 text-sm font-bold">{commits.toLocaleString()}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     {/* Desktop: Search and Cart */}
                                     <div className="hidden sm:flex items-center gap-2 sm:gap-4">
                                         <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700">
@@ -623,20 +683,6 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                             <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
                                             <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">0</span>
                                         </button>
-                                    </div>
-                                </div>
-                                
-                                {/* Mobile Avatar Stats - Show on mobile, hide on lg+ */}
-                                <div className="lg:hidden mt-3 pt-3 border-t border-gray-700">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 text-center">
-                                            <div className="text-white/70 text-[10px] mb-0.5">Projects</div>
-                                            <div className="text-yellow-400 text-sm font-bold">{data.items ? data.items.length : 0}</div>
-                                        </div>
-                                        <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 border border-gray-700 text-center">
-                                            <div className="text-white/70 text-[10px] mb-0.5">Commits</div>
-                                            <div className="text-yellow-400 text-sm font-bold">{commits.toLocaleString()}</div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
