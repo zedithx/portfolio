@@ -3,11 +3,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const dockApps = [
+    { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
+    { name: 'Gmail', icon: '/dock-icons/gmail.webp' },
     { name: 'GitHub', icon: '/platform-icons/github.webp' },
     { name: 'LinkedIn', icon: '/platform-icons/linkedin.webp' },
-    { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
     { name: 'Spotify', icon: '/dock-icons/spotify.png' },
-    { name: 'Telegram', icon: '/dock-icons/telegram.webp' },
     { name: 'Settings', icon: '/dock-icons/settings.png' },
 ];
 
