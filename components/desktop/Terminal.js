@@ -364,7 +364,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setIsLoading(true);
                 setLoadingCommand('github');
                 
-                const openTab = () => {
+                // Open link immediately to avoid mobile popup blocker, then show animation
+                requestAnimationFrame(() => {
                     const link = document.createElement('a');
                     link.href = 'https://github.com/zedithx';
                     link.target = '_blank';
@@ -372,10 +373,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                };
-                
-                // Wait for animation on all devices
-                setTimeout(openTab, 1200);
+                });
                 
                 setTimeout(() => {
                     setIsLoading(false);
@@ -389,7 +387,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setIsLoading(true);
                 setLoadingCommand('linkedin');
                 
-                const openTab = () => {
+                // Open link immediately to avoid mobile popup blocker, then show animation
+                requestAnimationFrame(() => {
                     const link = document.createElement('a');
                     link.href = 'https://linkedin.com/in/yang-si-jun/';
                     link.target = '_blank';
@@ -397,10 +396,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                };
-                
-                // Wait for animation on all devices
-                setTimeout(openTab, 1200);
+                });
                 
                 setTimeout(() => {
                     setIsLoading(false);
@@ -447,7 +443,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setIsLoading(true);
             setLoadingCommand('github');
             
-            const openTab = () => {
+            // Open link immediately to avoid mobile popup blocker, then show animation
+            requestAnimationFrame(() => {
                 const link = document.createElement('a');
                 link.href = 'https://github.com/zedithx';
                 link.target = '_blank';
@@ -455,9 +452,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            };
-            
-            setTimeout(openTab, 1200);
+            });
             
             setTimeout(() => {
                 setIsLoading(false);
@@ -468,7 +463,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setIsLoading(true);
             setLoadingCommand('linkedin');
             
-            const openTab = () => {
+            // Open link immediately to avoid mobile popup blocker, then show animation
+            requestAnimationFrame(() => {
                 const link = document.createElement('a');
                 link.href = 'https://linkedin.com/in/yang-si-jun/';
                 link.target = '_blank';
@@ -476,9 +472,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            };
-            
-            setTimeout(openTab, 1200);
+            });
             
             setTimeout(() => {
                 setIsLoading(false);
