@@ -8,6 +8,7 @@ import BrowserModal from '../components/desktop/BrowserModal';
 import PermissionModal from '../components/desktop/PermissionModal';
 import GmailConfirmModal from '../components/desktop/GmailConfirmModal';
 import GmailComposeModal from '../components/desktop/GmailComposeModal';
+import SpotifyModal from '../components/desktop/SpotifyModal';
 
 export default function Home() {
     const [activeModal, setActiveModal] = useState(null);
@@ -18,6 +19,8 @@ export default function Home() {
     const [isGmailComposeOpen, setIsGmailComposeOpen] = useState(false);
     const [isGmailSuccessOpen, setIsGmailSuccessOpen] = useState(false);
     const [visitorEmail, setVisitorEmail] = useState('');
+    const [isSpotifyOpen, setIsSpotifyOpen] = useState(false);
+    const [spotifyModalState, setSpotifyModalState] = useState('normal'); // 'closed', 'minimized', 'normal', 'maximized'
 
     const handleCommand = useCallback((command) => {
         setActiveModal(command);
@@ -88,6 +91,29 @@ export default function Home() {
         setIsGmailSuccessOpen(false);
     }, []);
 
+    const handleSpotifyClick = useCallback(() => {
+        setIsSpotifyOpen(true);
+        setSpotifyModalState(prevState => {
+            if (prevState === 'minimized' || prevState === 'closed') {
+                return 'normal';
+            }
+            return prevState;
+        });
+    }, []);
+
+    const closeSpotifyModal = useCallback(() => {
+        setIsSpotifyOpen(false);
+        setSpotifyModalState('closed');
+    }, []);
+
+    const handleSpotifyMinimize = useCallback(() => {
+        setSpotifyModalState('minimized');
+    }, []);
+
+    const handleSpotifyMaximize = useCallback(() => {
+        setSpotifyModalState(prevState => prevState === 'maximized' ? 'normal' : 'maximized');
+    }, []);
+
     return (
         <div className="min-h-screen w-full relative overflow-hidden bg-black">
             {/* Desktop Wallpaper */}
@@ -112,6 +138,7 @@ export default function Home() {
                 onPermissionError={triggerPermissionError}
                 onGmailClick={handleGmailClick}
                 onTerminalClick={handleTerminalRestore}
+                onSpotifyClick={handleSpotifyClick}
                 terminalState={terminalState}
             />
 
@@ -174,6 +201,16 @@ export default function Home() {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Spotify Modal */}
+            <SpotifyModal
+                isOpen={isSpotifyOpen}
+                onClose={closeSpotifyModal}
+                onPermissionError={triggerPermissionError}
+                onMinimize={handleSpotifyMinimize}
+                onMaximize={handleSpotifyMaximize}
+                modalState={spotifyModalState}
+            />
         </div>
     );
 }

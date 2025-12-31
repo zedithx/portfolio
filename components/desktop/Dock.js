@@ -10,7 +10,7 @@ const dockApps = [
     { name: 'Spotify', icon: '/dock-icons/spotify.png' },
 ];
 
-export default function Dock({ onPermissionError, onGmailClick, onTerminalClick, terminalState }) {
+export default function Dock({ onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, terminalState }) {
     return (
         <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40">
             <motion.div 
@@ -34,6 +34,8 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                                 window.open('https://github.com/zedithx', '_blank');
                             } else if (app.name === 'LinkedIn') {
                                 window.open('https://linkedin.com/in/yang-si-jun/', '_blank');
+                            } else if (app.name === 'Spotify') {
+                                onSpotifyClick();
                             } else {
                                 onPermissionError();
                             }
