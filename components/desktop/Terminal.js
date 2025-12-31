@@ -62,6 +62,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
     const measureRef = useRef(null);
+    const typingIntervalRef = useRef(null);
 
     // Variants for staggered animation
     const containerVariants = {
@@ -90,6 +91,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const dimensionsRef = useRef({ width: 850, height: 550, top: 100, left: 100 });
 
     const handleClear = (shouldAnimate = true) => {
+        // Clear any active typing interval
+        if (typingIntervalRef.current) {
+            clearInterval(typingIntervalRef.current);
+            typingIntervalRef.current = null;
+        }
+        
         setHistory([]);
         setShowWelcome(true);
         showWelcomeRef.current = true;
@@ -280,6 +287,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             window.removeEventListener('restore-terminal', onRestoreEvent);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
+            
+            // Clear any active typing interval on unmount
+            if (typingIntervalRef.current) {
+                clearInterval(typingIntervalRef.current);
+                typingIntervalRef.current = null;
+            }
         };
     }, []);
 
@@ -433,74 +446,101 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const handleCommandClick = useCallback((commandName) => {
         const cmd = commandName.trim().toLowerCase();
         
-        // Add to history
-        setHistory(prev => [...prev, { type: 'input', content: commandName }]);
-        
-        // Process the command directly
-        if (cmd === 'clear') {
-            handleClear(false);
-        } else if (cmd === 'github') {
-            setIsLoading(true);
-            setLoadingCommand('github');
-            
-            // Open link immediately to avoid mobile popup blocker, then show animation
-            requestAnimationFrame(() => {
-                const link = document.createElement('a');
-                link.href = 'https://github.com/zedithx';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-            
-            setTimeout(() => {
-                setIsLoading(false);
-                setLoadingCommand('');
-                setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
-            }, 1500);
-        } else if (cmd === 'linkedin') {
-            setIsLoading(true);
-            setLoadingCommand('linkedin');
-            
-            // Open link immediately to avoid mobile popup blocker, then show animation
-            requestAnimationFrame(() => {
-                const link = document.createElement('a');
-                link.href = 'https://linkedin.com/in/yang-si-jun/';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-            
-            setTimeout(() => {
-                setIsLoading(false);
-                setLoadingCommand('');
-                setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
-            }, 1500);
-        } else if (['background', 'projects', 'experience'].includes(cmd)) {
-            setIsLoading(true);
-            setLoadingCommand(cmd);
-            
-            setTimeout(() => {
-                onCommand(cmd);
-                setIsLoading(false);
-                setLoadingCommand('');
-            }, 1500);
-        } else {
-            setHistory(prev => [...prev, { type: 'error', content: `Command not found: ${cmd}.` }]);
+        // Clear any existing typing interval
+        if (typingIntervalRef.current) {
+            clearInterval(typingIntervalRef.current);
+            typingIntervalRef.current = null;
         }
         
-        // Clear input
-        setInput('');
-        setCursorPosition(0);
-        
-        // Focus the input
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [onCommand]);
+        // Simulate typing the command character by character
+        let typedText = '';
+        let charIndex = 0;
+        typingIntervalRef.current = setInterval(() => {
+            if (charIndex < commandName.length) {
+                typedText += commandName[charIndex];
+                setInput(typedText);
+                charIndex++;
+            } else {
+                clearInterval(typingIntervalRef.current);
+                typingIntervalRef.current = null;
+                
+                // Wait a moment after typing completes, then process the command
+                setTimeout(() => {
+                    // Add to history
+                    setHistory(prev => [...prev, { type: 'input', content: commandName }]);
+                    
+                    // Process the command
+                    if (cmd === 'clear') {
+                        handleClear(false);
+                    } else if (cmd === 'github') {
+                        setIsLoading(true);
+                        setLoadingCommand('github');
+                        
+                        // Open link immediately to avoid mobile popup blocker, then show animation
+                        requestAnimationFrame(() => {
+                            const link = document.createElement('a');
+                            link.href = 'https://github.com/zedithx';
+                            link.target = '_blank';
+                            link.rel = 'noopener noreferrer';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        });
+                        
+                        setTimeout(() => {
+                            setIsLoading(false);
+                            setLoadingCommand('');
+                            setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
+                            setInput('');
+                            setCursorPosition(0);
+                        }, 1500);
+                    } else if (cmd === 'linkedin') {
+                        setIsLoading(true);
+                        setLoadingCommand('linkedin');
+                        
+                        // Open link immediately to avoid mobile popup blocker, then show animation
+                        requestAnimationFrame(() => {
+                            const link = document.createElement('a');
+                            link.href = 'https://linkedin.com/in/yang-si-jun/';
+                            link.target = '_blank';
+                            link.rel = 'noopener noreferrer';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        });
+                        
+                        setTimeout(() => {
+                            setIsLoading(false);
+                            setLoadingCommand('');
+                            setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
+                            setInput('');
+                            setCursorPosition(0);
+                        }, 1500);
+                    } else if (['background', 'projects', 'experience'].includes(cmd)) {
+                        setIsLoading(true);
+                        setLoadingCommand(cmd);
+                        
+                        setTimeout(() => {
+                            onCommand(cmd);
+                            setIsLoading(false);
+                            setLoadingCommand('');
+                            setInput('');
+                            setCursorPosition(0);
+                        }, 1500);
+                    } else {
+                        setHistory(prev => [...prev, { type: 'error', content: `Command not found: ${cmd}.` }]);
+                        setInput('');
+                        setCursorPosition(0);
+                    }
+                    
+                    // Focus the input
+                    if (inputRef.current) {
+                        inputRef.current.focus();
+                    }
+                }, 200); // Brief pause after typing completes
+            }
+        }, 30); // Type each character every 30ms
+    }, [handleClear, onCommand]);
 
     // Calculate safe left position for mobile to prevent horizontal shifting
     const safeLeft = useMemo(() => {
