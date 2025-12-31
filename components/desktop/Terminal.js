@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const commands = [
@@ -434,6 +434,89 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         }
     };
 
+    const handleCommandClick = useCallback((commandName) => {
+        const cmd = commandName.trim().toLowerCase();
+        
+        // Add to history
+        setHistory(prev => [...prev, { type: 'input', content: commandName }]);
+        
+        // Process the command directly
+        if (cmd === 'clear') {
+            handleClear(false);
+        } else if (cmd === 'github') {
+            setIsLoading(true);
+            setLoadingCommand('github');
+            
+            const openTab = () => {
+                const link = document.createElement('a');
+                link.href = 'https://github.com/zedithx';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            
+            setTimeout(openTab, 1200);
+            
+            setTimeout(() => {
+                setIsLoading(false);
+                setLoadingCommand('');
+                setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
+            }, 1500);
+        } else if (cmd === 'linkedin') {
+            setIsLoading(true);
+            setLoadingCommand('linkedin');
+            
+            const openTab = () => {
+                const link = document.createElement('a');
+                link.href = 'https://linkedin.com/in/yang-si-jun/';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            
+            setTimeout(openTab, 1200);
+            
+            setTimeout(() => {
+                setIsLoading(false);
+                setLoadingCommand('');
+                setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
+            }, 1500);
+        } else if (['background', 'projects', 'experience'].includes(cmd)) {
+            setIsLoading(true);
+            setLoadingCommand(cmd);
+            
+            setTimeout(() => {
+                onCommand(cmd);
+                setIsLoading(false);
+                setLoadingCommand('');
+            }, 1500);
+        } else {
+            setHistory(prev => [...prev, { type: 'error', content: `Command not found: ${cmd}.` }]);
+        }
+        
+        // Clear input
+        setInput('');
+        setCursorPosition(0);
+        
+        // Focus the input
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [onCommand]);
+
+    // Calculate safe left position for mobile to prevent horizontal shifting
+    const safeLeft = useMemo(() => {
+        if (terminalState === 'maximized') return 0;
+        if (typeof window !== 'undefined' && window.innerWidth < 768) {
+            return Math.max(0, Math.min(dimensions.left, window.innerWidth - dimensions.width));
+        }
+        return dimensions.left;
+    }, [dimensions.left, dimensions.width, terminalState]);
+
     return (
         <motion.div
             initial={{ scale: 0, opacity: 0, y: 200 }}
@@ -444,7 +527,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 width: terminalState === 'maximized' ? '100vw' : dimensions.width,
                 height: terminalState === 'maximized' ? 'calc(100vh - 28px)' : dimensions.height,
                 top: terminalState === 'maximized' ? '28px' : dimensions.top,
-                left: terminalState === 'maximized' ? 0 : dimensions.left,
+                left: safeLeft,
                 pointerEvents: terminalState === 'minimized' ? 'none' : 'auto'
             }}
             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
@@ -454,9 +537,6 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 transformOrigin: 'bottom',
                 maxWidth: '100vw',
                 overflowX: 'hidden'
-            }}
-            style={{ 
-                transformOrigin: 'bottom'
             }}
         >
             {/* Custom Resize Handles */}
@@ -498,6 +578,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     ref={terminalRef}
                     onClick={handleTerminalClick}
                     className="flex-1 bg-[#1e1e1e]/95 backdrop-blur-xl p-4 overflow-y-auto overflow-x-hidden font-mono text-sm cursor-text scrollbar-hide relative"
+                    style={{ 
+                        maxWidth: '100%',
+                        width: '100%'
+                    }}
                 >
                     {showWelcome && !isLoading && (
                         <motion.div 
@@ -540,7 +624,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                         <span className="text-white/50 text-[10px] sm:text-xs uppercase tracking-wider">Available Commands</span>
                                     </div>
                                     {commands.map((cmd) => (
-                                        <div key={cmd.name} className="px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
+                                        <div 
+                                            key={cmd.name} 
+                                            onClick={() => handleCommandClick(cmd.name)}
+                                            className="px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b border-white/5 last:border-0 hover:bg-white/10 active:bg-white/15 transition-colors cursor-pointer"
+                                        >
                                             <span className="text-green-400 font-semibold w-20 sm:w-24 text-xs sm:text-sm">{cmd.name}</span>
                                             <span className="text-white/50 text-[10px] sm:text-xs leading-relaxed">{cmd.description}</span>
                                         </div>
@@ -629,8 +717,20 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
+                                onFocus={(e) => {
+                                    // Prevent terminal from shifting on mobile when keyboard appears
+                                    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                                        const terminalEl = e.target.closest('[class*="fixed"]') || e.target.closest('.fixed');
+                                        if (terminalEl) {
+                                            const computedLeft = window.getComputedStyle(terminalEl).left;
+                                            if (computedLeft && computedLeft !== 'auto') {
+                                                terminalEl.style.setProperty('left', computedLeft, 'important');
+                                            }
+                                        }
+                                    }
+                                }}
                                 className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5 font-mono"
-                                style={{ caretColor: 'transparent' }}
+                                style={{ caretColor: 'transparent', maxWidth: '100%' }}
                                 spellCheck={false}
                                 autoComplete="off"
                             />
