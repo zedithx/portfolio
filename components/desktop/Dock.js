@@ -6,8 +6,6 @@ const dockApps = [
     { name: 'GitHub', icon: '/platform-icons/github.webp' },
     { name: 'LinkedIn', icon: '/platform-icons/linkedin.webp' },
     { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
-    { name: 'Cursor', icon: '/dock-icons/cursor.jpg' },
-    { name: 'PyCharm', icon: '/dock-icons/pycharm.webp' },
     { name: 'Spotify', icon: '/dock-icons/spotify.png' },
     { name: 'Telegram', icon: '/dock-icons/telegram.webp' },
     { name: 'Settings', icon: '/dock-icons/settings.png' },

@@ -626,7 +626,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         >
                             <motion.pre 
                                 variants={itemVariants}
-                                className="text-green-400 text-[10px] sm:text-xs leading-tight mb-4 overflow-x-hidden"
+                                className="text-green-400 text-sm sm:text-xs leading-tight mb-4 overflow-x-hidden"
                             >
 {`┌───────────────────────────────────────┐
 │  ${sessionText.padEnd(37)}│
@@ -639,7 +639,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     variants={itemVariants} 
-                                    className="text-white/70 mb-4 text-xs sm:text-sm"
+                                    className="text-white/70 mb-4 text-sm sm:text-sm"
                                 >
                                     <Typewriter 
                                         text="Welcome to my interactive portfolio. Type a command to explore." 
@@ -655,7 +655,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     className="border border-white/10 rounded-lg overflow-hidden"
                                 >
                                     <div className="bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 border-b border-white/10">
-                                        <span className="text-white/50 text-[10px] sm:text-xs uppercase tracking-wider">Available Commands</span>
+                                        <span className="text-white/50 text-xs sm:text-xs uppercase tracking-wider">Available Commands</span>
                                     </div>
                                     {commands.map((cmd) => (
                                         <div 
@@ -663,8 +663,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                             onClick={() => handleCommandClick(cmd.name)}
                                             className="px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b border-white/5 last:border-0 hover:bg-white/10 active:bg-white/15 transition-colors cursor-pointer"
                                         >
-                                            <span className="text-green-400 font-semibold w-20 sm:w-24 text-xs sm:text-sm">{cmd.name}</span>
-                                            <span className="text-white/50 text-[10px] sm:text-xs leading-relaxed">{cmd.description}</span>
+                                            <span className="text-green-400 font-semibold w-20 sm:w-24 text-xs sm:text-sm shrink-0">{cmd.name}</span>
+                                            <span className="text-white/50 text-xs sm:text-xs leading-relaxed min-w-0 flex-1 truncate">{cmd.description}</span>
                                         </div>
                                     ))}
                                 </motion.div>
@@ -677,8 +677,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-start gap-2 mb-1">
-                                    <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap leading-5">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                    <span className="text-white text-xs sm:text-sm break-all leading-5">{item.content}</span>
+                                    <span className="text-white/70 font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0">
+                                        <span className="hidden sm:inline">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                        <span className="sm:hidden">(base) zedithx@Macbook ~ %</span>
+                                    </span>
+                                    <span className="text-white text-[14px] sm:text-sm break-all leading-5">{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
@@ -743,7 +746,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     {/* Input Line */}
                     {!isLoading && (
                         <div className="flex items-center gap-2">
-                            <span className="text-white/70 font-medium text-xs sm:text-sm whitespace-nowrap leading-5">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                            <span className="text-white/70 font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0">
+                                <span className="hidden sm:inline">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
+                                <span className="sm:hidden">(base) zedithx@Macbook ~ %</span>
+                            </span>
                             <div className="flex-1 min-w-0 relative flex items-center h-5">
                             <input
                                 ref={inputRef}
@@ -763,14 +769,14 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                         }
                                     }
                                 }}
-                                className="flex-1 bg-transparent text-white outline-none text-xs sm:text-sm leading-5 h-5 font-mono"
+                                className="flex-1 bg-transparent text-white outline-none text-[14px] sm:text-sm leading-5 h-5 font-mono"
                                 style={{ caretColor: 'transparent', maxWidth: '100%' }}
                                 spellCheck={false}
                                 autoComplete="off"
                             />
                             <span
                                 ref={measureRef}
-                                className="absolute invisible text-xs sm:text-sm leading-5 whitespace-pre font-mono"
+                                className="absolute invisible text-[14px] sm:text-sm leading-5 whitespace-pre font-mono"
                                 style={{ left: 0 }}
                             >
                                 {input}
