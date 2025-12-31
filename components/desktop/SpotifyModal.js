@@ -46,6 +46,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [isMuted, setIsMuted] = useState(false);
     const audioRef = useRef(null);
+    const shouldAutoPlayRef = useRef(false);
 
     const currentTrack = defaultTracks[currentTrackIndex];
 
@@ -57,7 +58,13 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
         const updateTime = () => setCurrentTime(audio.currentTime);
         const updateDuration = () => setDuration(audio.duration);
         const handleEnded = () => {
-            setCurrentTrackIndex(prev => (prev < defaultTracks.length - 1 ? prev + 1 : 0));
+            setCurrentTrackIndex(prev => {
+                const nextIndex = prev < defaultTracks.length - 1 ? prev + 1 : 0;
+                return nextIndex;
+            });
+            setIsPlaying(true);
+            shouldAutoPlayRef.current = true;
+            setCurrentTime(0);
         };
 
         audio.addEventListener('timeupdate', updateTime);
@@ -76,20 +83,57 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
         const audio = audioRef.current;
         if (!audio) return;
 
-        const wasPlaying = !audio.paused;
+        const wasPlaying = !audio.paused || isPlaying;
+        shouldAutoPlayRef.current = wasPlaying && isPlaying;
         audio.src = currentTrack.url;
         audio.volume = isMuted ? 0 : volume / 100;
+        setCurrentTime(0);
         
-        // Only auto-play if it was playing before (preserve play state)
-        if (wasPlaying && isPlaying) {
-            audio.play().catch(err => {
-                // Ignore play() interruption errors
-                if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
-                    console.error('Playback error:', err);
+        // Load the new track
+        audio.load();
+        
+        // Handle play after track loads - use a one-time handler
+        const handleCanPlay = () => {
+            // Only play if we should auto-play (check ref which is updated when user pauses)
+            if (shouldAutoPlayRef.current) {
+                audio.play().catch(err => {
+                    // Ignore play() interruption errors
+                    if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
+                        console.error('Playback error:', err);
+                    }
+                });
+            }
+            // Remove listener after first play attempt
+            audio.removeEventListener('canplay', handleCanPlay);
+        };
+        
+        audio.addEventListener('canplay', handleCanPlay);
+        
+        // Also try to play immediately if already playing (for fast track changes)
+        if (isPlaying && wasPlaying) {
+            const tryPlay = () => {
+                // Double-check shouldAutoPlayRef before playing
+                if (shouldAutoPlayRef.current) {
+                    audio.play().catch(() => {
+                        // If immediate play fails, wait for canplay event
+                    });
                 }
-            });
+            };
+            // Small delay to ensure src is set
+            setTimeout(tryPlay, 10);
         }
-    }, [currentTrackIndex, isMuted, volume, currentTrack.url]);
+        
+        return () => {
+            audio.removeEventListener('canplay', handleCanPlay);
+        };
+    }, [currentTrackIndex, currentTrack.url]); // Only run when track actually changes
+
+    // Update volume separately (don't reset track)
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        audio.volume = isMuted ? 0 : volume / 100;
+    }, [volume, isMuted]);
 
     // Handle play/pause
     useEffect(() => {
@@ -116,7 +160,11 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
     }, [volume, isMuted]);
 
     const togglePlayPause = () => {
-        setIsPlaying(!isPlaying);
+        setIsPlaying(prev => {
+            const newState = !prev;
+            shouldAutoPlayRef.current = newState;
+            return newState;
+        });
     };
 
     const handleSeek = (e) => {
@@ -178,22 +226,30 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
             {/* Hidden audio element - always rendered so music continues when minimized */}
             <audio ref={audioRef} preload="metadata" />
             
-            {/* Modal UI - hidden when minimized */}
-            <AnimatePresence>
-                {isOpen && !isMinimized && (
-                    <div 
-                        className={`fixed inset-0 z-[100] flex items-center justify-center ${isMaximized ? 'p-0' : 'p-4'} bg-black/40`}
-                        onClick={onClose}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                            className={`${isMaximized ? 'w-full h-full rounded-none' : 'w-full max-w-5xl h-full max-h-[90vh] rounded-lg'} flex flex-col bg-[#121212] shadow-2xl overflow-hidden`}
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                        {/* Title Bar */}
+            {/* Modal UI */}
+            {isOpen && (
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    animate={{ 
+                        scale: isMinimized ? 0 : 1,
+                        opacity: isMinimized ? 0 : 1,
+                        width: isMaximized ? '100vw' : '80rem',
+                        height: isMaximized ? 'calc(100vh - 28px)' : '90vh',
+                        top: isMaximized ? '28px' : '50%',
+                        left: isMaximized ? 0 : '50%',
+                        x: isMaximized ? 0 : '-50%',
+                        y: isMinimized ? 200 : (isMaximized ? 0 : '-50%'),
+                    }}
+                    exit={{ scale: 0, opacity: 0, y: 200 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                    className={`fixed z-[100] flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'rounded-none' : 'rounded-lg'}`}
+                    style={{ 
+                        transformOrigin: 'bottom',
+                        pointerEvents: isMinimized ? 'none' : 'auto',
+                        maxWidth: isMaximized ? '100vw' : '80rem'
+                    }}
+                >
+                    {/* Title Bar */}
                         <div className="flex items-center justify-between px-4 py-3 bg-[#1a1a1a] border-b border-white/10">
                             <div className="flex items-center gap-2">
                                 <button 
@@ -249,6 +305,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                             onClick={() => {
                                                 setCurrentTrackIndex(index);
                                                 setIsPlaying(true);
+                                                shouldAutoPlayRef.current = true;
                                             }}
                                             className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer transition-colors ${
                                                 index === currentTrackIndex
@@ -373,11 +430,8 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                 </div>
                             </div>
                         </div>
-
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                    </motion.div>
+            )}
         </>
     );
 }
