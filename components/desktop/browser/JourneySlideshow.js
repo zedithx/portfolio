@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -38,7 +38,7 @@ const preloadImages = (urls) => {
 };
 
 // Optimized animated value component showing +points then animating
-const AnimatedValue = ({ from, to, max, showGain = false }) => {
+const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
     const [displayValue, setDisplayValue] = useState(from || 0);
     const [showGainIndicator, setShowGainIndicator] = useState(false);
     const gainAmount = to - from;
@@ -142,7 +142,7 @@ const AnimatedValue = ({ from, to, max, showGain = false }) => {
             )}
         </span>
     );
-};
+});
 
 export default function JourneySlideshow({ journey, updateSkills, onSkillGain, hero, skills }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -157,9 +157,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [recentlyUpdatedSkills, setRecentlyUpdatedSkills] = useState(new Set());
     const [previousSkillValues, setPreviousSkillValues] = useState({});
 
-    const prefersReducedMotion = typeof window !== 'undefined' 
-        ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
-        : false;
+    // Memoize prefersReducedMotion to avoid checking on every render
+    const prefersReducedMotion = useMemo(() => {
+        if (typeof window === 'undefined') return false;
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }, []);
 
     const currentCard = journey[currentIndex];
     const currentDialogue = currentCard?.dialogues?.[dialogueIndex];
@@ -307,6 +309,26 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         return scene || '/background/absolum1.jpeg';
     }, []);
 
+    // Memoize particle arrays per slide to avoid recreation on every render
+    const rainParticles = useMemo(() => {
+        return Array.from({ length: 8 }, (_, i) => ({
+            id: i,
+            left: (i * 6.67) % 100,
+            duration: 1 + Math.random(),
+            delay: Math.random() * 0.5
+        }));
+    }, [currentIndex]); // Recreate only when slide changes
+
+    const floatingParticles = useMemo(() => {
+        return Array.from({ length: 5 }, (_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            duration: 3 + Math.random() * 2,
+            delay: Math.random() * 2
+        }));
+    }, [currentIndex]); // Recreate only when slide changes
+
     // Early return after all hooks
     if (!currentCard || !currentDialogue) return null;
 
@@ -401,8 +423,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         );
     }, [getSkillColor, getSkillIcon, prefersReducedMotion]);
 
-    // Define custom order for technical skills - SRE after Cloud Infrastructure
-    const technicalSkillOrder = [
+    // Memoize skill filtering and sorting to avoid recalculation on every render
+    const technicalSkillOrder = useMemo(() => [
         'Backend',
         'Frontend',
         'Hardware',
@@ -412,23 +434,27 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         'LLMs',
         'Cloud Infrastructure',
         'SRE'
-    ];
+    ], []);
     
-    const technicalSkills = Object.entries(skills)
-        .filter(([name]) => !['Product Management', 'Social', 'Recreational'].includes(name))
-        .sort(([a], [b]) => {
-            const indexA = technicalSkillOrder.indexOf(a);
-            const indexB = technicalSkillOrder.indexOf(b);
-            // If not in order array, put at end
-            if (indexA === -1 && indexB === -1) return 0;
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
-        });
+    const technicalSkills = useMemo(() => {
+        return Object.entries(skills)
+            .filter(([name]) => !['Product Management', 'Social', 'Recreational'].includes(name))
+            .sort(([a], [b]) => {
+                const indexA = technicalSkillOrder.indexOf(a);
+                const indexB = technicalSkillOrder.indexOf(b);
+                // If not in order array, put at end
+                if (indexA === -1 && indexB === -1) return 0;
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+            });
+    }, [skills, technicalSkillOrder]);
     
-    const nonTechnicalSkills = Object.entries(skills).filter(([name]) => 
-        ['Product Management', 'Social', 'Recreational'].includes(name)
-    );
+    const nonTechnicalSkills = useMemo(() => {
+        return Object.entries(skills).filter(([name]) => 
+            ['Product Management', 'Social', 'Recreational'].includes(name)
+        );
+    }, [skills]);
 
     return (
         <>
@@ -481,63 +507,52 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             <>
                                 {/* Rain/Water Effect - Reduced to 8 particles for better performance */}
                                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                                    {Array.from({ length: 8 }, (_, i) => {
-                                        const left = (i * 6.67) % 100;
-                                        const duration = 1 + Math.random();
-                                        const delay = Math.random() * 0.5;
-                                        return (
-                                            <motion.div
-                                                key={`rain-${i}`}
-                                                className="absolute w-0.5 bg-white/20"
-                                                style={{
-                                                    left: `${left}%`,
-                                                    top: '-10px',
-                                                    height: '20px',
-                                                }}
-                                                animate={{
-                                                    y: [0, 700],
-                                                    opacity: [0, 0.5, 0],
-                                                }}
-                                                transition={{
-                                                    duration,
-                                                    repeat: Infinity,
-                                                    delay,
-                                                    ease: 'linear'
-                                                }}
-                                            />
-                                        );
-                                    })}
+                                    {rainParticles.map((particle) => (
+                                        <motion.div
+                                            key={`rain-${particle.id}`}
+                                            className="absolute w-0.5 bg-white/20"
+                                            style={{
+                                                left: `${particle.left}%`,
+                                                top: '-10px',
+                                                height: '20px',
+                                            }}
+                                            animate={{
+                                                y: [0, 700],
+                                                opacity: [0, 0.5, 0],
+                                            }}
+                                            transition={{
+                                                duration: particle.duration,
+                                                repeat: Infinity,
+                                                delay: particle.delay,
+                                                ease: 'linear'
+                                            }}
+                                        />
+                                    ))}
                                 </div>
 
                                 {/* Floating particles - Reduced to 5 for better performance */}
                                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                                    {Array.from({ length: 5 }, (_, i) => {
-                                        const left = Math.random() * 100;
-                                        const top = Math.random() * 100;
-                                        const duration = 3 + Math.random() * 2;
-                                        const delay = Math.random() * 2;
-                                        return (
-                                            <motion.div
-                                                key={`particle-${i}`}
-                                                className="absolute w-2 h-2 bg-yellow-400/30 rounded-full"
-                                                style={{
-                                                    left: `${left}%`,
-                                                    top: `${top}%`,
-                                                }}
-                                                animate={{
-                                                    y: [0, -30, 0],
-                                                    opacity: [0.2, 0.6, 0.2],
-                                                    scale: [1, 1.5, 1],
-                                                }}
-                                                transition={{
-                                                    duration,
-                                                    repeat: Infinity,
-                                                    delay,
-                                                    ease: 'easeInOut'
-                                                }}
-                                            />
-                                        );
-                                    })}
+                                    {floatingParticles.map((particle) => (
+                                        <motion.div
+                                            key={`particle-${particle.id}`}
+                                            className="absolute w-2 h-2 bg-yellow-400/30 rounded-full"
+                                            style={{
+                                                left: `${particle.left}%`,
+                                                top: `${particle.top}%`,
+                                            }}
+                                            animate={{
+                                                y: [0, -30, 0],
+                                                opacity: [0.2, 0.6, 0.2],
+                                                scale: [1, 1.5, 1],
+                                            }}
+                                            transition={{
+                                                duration: particle.duration,
+                                                repeat: Infinity,
+                                                delay: particle.delay,
+                                                ease: 'easeInOut'
+                                            }}
+                                        />
+                                    ))}
                                 </div>
                             </>
                         )}
