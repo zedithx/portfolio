@@ -140,6 +140,7 @@ export default function Home() {
                 onTerminalClick={handleTerminalRestore}
                 onSpotifyClick={handleSpotifyClick}
                 terminalState={terminalState}
+                spotifyModalState={spotifyModalState}
             />
 
             {/* Browser Modal */}

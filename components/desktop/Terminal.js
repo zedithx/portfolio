@@ -374,11 +374,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 handleClear(false);
             } else if (cmd === 'github') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setInput('');
                 setIsLoading(true);
                 setLoadingCommand('github');
                 
-                // Open link immediately to avoid mobile popup blocker, then show animation
-                requestAnimationFrame(() => {
+                setTimeout(() => {
+                    // Open link after loading animation completes
                     const link = document.createElement('a');
                     link.href = 'https://github.com/zedithx';
                     link.target = '_blank';
@@ -386,22 +387,20 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                });
-                
-                setTimeout(() => {
+                    
                     setIsLoading(false);
                     setLoadingCommand('');
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
-                    setInput('');
                     setCursorPosition(0);
                 }, 1500);
             } else if (cmd === 'linkedin') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setInput('');
                 setIsLoading(true);
                 setLoadingCommand('linkedin');
                 
-                // Open link immediately to avoid mobile popup blocker, then show animation
-                requestAnimationFrame(() => {
+                setTimeout(() => {
+                    // Open link after loading animation completes
                     const link = document.createElement('a');
                     link.href = 'https://linkedin.com/in/yang-si-jun/';
                     link.target = '_blank';
@@ -409,13 +408,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                });
-                
-                setTimeout(() => {
+                    
                     setIsLoading(false);
                     setLoadingCommand('');
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
-                    setInput('');
                     setCursorPosition(0);
                 }, 1500);
             } else if (['background', 'projects', 'experience'].includes(cmd)) {
@@ -432,7 +428,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'error', content: `Command not found: ${cmd}.` }]);
             }
             
-            setInput('');
+            if (!['github', 'linkedin'].includes(cmd)) {
+                setInput('');
+            }
         }
     };
 
@@ -473,11 +471,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     if (cmd === 'clear') {
                         handleClear(false);
                     } else if (cmd === 'github') {
+                        setInput('');
                         setIsLoading(true);
                         setLoadingCommand('github');
                         
-                        // Open link immediately to avoid mobile popup blocker, then show animation
-                        requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            // Open link after loading animation completes
                             const link = document.createElement('a');
                             link.href = 'https://github.com/zedithx';
                             link.target = '_blank';
@@ -485,21 +484,19 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
-                        });
-                        
-                        setTimeout(() => {
+                            
                             setIsLoading(false);
                             setLoadingCommand('');
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
-                            setInput('');
                             setCursorPosition(0);
                         }, 1500);
                     } else if (cmd === 'linkedin') {
+                        setInput('');
                         setIsLoading(true);
                         setLoadingCommand('linkedin');
                         
-                        // Open link immediately to avoid mobile popup blocker, then show animation
-                        requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            // Open link after loading animation completes
                             const link = document.createElement('a');
                             link.href = 'https://linkedin.com/in/yang-si-jun/';
                             link.target = '_blank';
@@ -507,13 +504,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
-                        });
-                        
-                        setTimeout(() => {
+                            
                             setIsLoading(false);
                             setLoadingCommand('');
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
-                            setInput('');
                             setCursorPosition(0);
                         }, 1500);
                     } else if (['background', 'projects', 'experience'].includes(cmd)) {
