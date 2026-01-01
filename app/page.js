@@ -20,7 +20,7 @@ export default function Home() {
     const [isGmailSuccessOpen, setIsGmailSuccessOpen] = useState(false);
     const [visitorEmail, setVisitorEmail] = useState('');
     const [isSpotifyOpen, setIsSpotifyOpen] = useState(false);
-    const [spotifyModalState, setSpotifyModalState] = useState('normal'); // 'closed', 'minimized', 'normal', 'maximized'
+    const [spotifyModalState, setSpotifyModalState] = useState('closed'); // 'closed', 'minimized', 'normal', 'maximized'
 
     const handleCommand = useCallback((command) => {
         setActiveModal(command);
