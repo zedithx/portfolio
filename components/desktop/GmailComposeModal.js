@@ -87,13 +87,32 @@ export default function GmailComposeModal({ isOpen, onClose, visitorEmail, onPer
             setIsSubmitting(false);
         }
     }, [isOpen]);
+
+    // Add ESC key handler
+    useEffect(() => {
+        if (!isOpen) return;
+        
+        const handleEscape = (e) => {
+            if (e.key === 'Escape' && !isSubmitting) {
+                onClose();
+            }
+        };
+        
+        window.addEventListener('keydown', handleEscape);
+        return () => window.removeEventListener('keydown', handleEscape);
+    }, [isOpen, isSubmitting, onClose]);
     
     return (
         <AnimatePresence>
             {isOpen && (
                 <div 
                     className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40"
-                    onClick={onClose}
+                    onClick={(e) => {
+                        // Click outside to close (only if not submitting)
+                        if (!isSubmitting && e.target === e.currentTarget) {
+                            onClose();
+                        }
+                    }}
                 >
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}

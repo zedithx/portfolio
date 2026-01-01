@@ -333,6 +333,21 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         }
     }, [terminalState?.isOpen]);
 
+    // Add ESC key handler to close terminal
+    useEffect(() => {
+        if (terminalState === 'closed') return;
+        
+        const handleEscape = (e) => {
+            // Only close if not typing in input field and not loading
+            if (e.key === 'Escape' && !isLoading && document.activeElement !== inputRef.current) {
+                onClose();
+            }
+        };
+        
+        window.addEventListener('keydown', handleEscape);
+        return () => window.removeEventListener('keydown', handleEscape);
+    }, [terminalState, isLoading, onClose]);
+
     const startResize = (type, e) => {
         if (window.innerWidth < 768) return;
         e.preventDefault();

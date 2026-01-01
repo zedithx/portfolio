@@ -6,28 +6,22 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-rea
 // Your music tracks
 const defaultTracks = [
     {
-        title: "Ambient Chill Lofi Music",
-        artist: "Lofi Beats",
-        url: "/music/ambient-chill-lofi-music-hip-hop-beats-340449.mp3",
-        albumArt: null
+        title: "Golden State of Mind",
+        artist: "Luke Bergs",
+        url: "/music/Luke-Bergs_Golden-State-of-Mind.mp3",
+        albumArt: "/music/luke_bergs.jpg"
     },
     {
-        title: "Chill Lofi Ambient",
-        artist: "Lofi Beats",
-        url: "/music/chill-lofi-ambient-438053.mp3",
-        albumArt: null
+        title: "Lose This",
+        artist: "Dylan Emmet",
+        url: "/music/DylanEmmet_Lose-This.mp3",
+        albumArt: "/music/dylanemmet.jpg"
     },
     {
-        title: "Chill Lofi Ambient Music",
-        artist: "Lofi Beats",
-        url: "/music/chill-lofi-ambient-music-344109.mp3",
-        albumArt: null
-    },
-    {
-        title: "Lofi Chill Background",
-        artist: "Lofi Beats",
-        url: "/music/lofi-chill-background-187713.mp3",
-        albumArt: null
+        title: "Love Me Back",
+        artist: "Hotham",
+        url: "/music/Hotham_Love-Me-Back.mp3",
+        albumArt: "/music/hotham.jpeg"
     }
 ];
 
@@ -221,34 +215,55 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
     const isMaximized = modalState === 'maximized';
     const isMinimized = modalState === 'minimized';
 
+    // Add ESC key handler
+    useEffect(() => {
+        if (!isOpen || isMinimized) return;
+        
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+        
+        window.addEventListener('keydown', handleEscape);
+        return () => window.removeEventListener('keydown', handleEscape);
+    }, [isOpen, isMinimized, onClose]);
+
     return (
         <>
             {/* Hidden audio element - always rendered so music continues when minimized */}
             <audio ref={audioRef} preload="metadata" />
             
             {/* Modal UI */}
-            {isOpen && (
-                <motion.div
-                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                    animate={{ 
-                        scale: isMinimized ? 0 : 1,
-                        opacity: isMinimized ? 0 : 1,
-                        width: isMaximized ? '100vw' : '80rem',
-                        height: isMaximized ? 'calc(100vh - 28px)' : '90vh',
-                        top: isMaximized ? '28px' : '50%',
-                        left: isMaximized ? 0 : '50%',
-                        x: isMaximized ? 0 : '-50%',
-                        y: isMinimized ? 200 : (isMaximized ? 0 : '-50%'),
-                    }}
-                    exit={{ scale: 0, opacity: 0, y: 200 }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                    className={`fixed z-[100] flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'rounded-none' : 'rounded-lg'}`}
-                    style={{ 
-                        transformOrigin: 'bottom',
-                        pointerEvents: isMinimized ? 'none' : 'auto',
-                        maxWidth: isMaximized ? '100vw' : '80rem'
-                    }}
-                >
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ 
+                            scale: isMinimized ? 0 : 1,
+                            opacity: isMinimized ? 0 : 1,
+                            width: isMaximized ? '100vw' : '80rem',
+                            height: isMaximized ? 'calc(100vh - 28px)' : '90vh',
+                            top: isMaximized ? '28px' : '50%',
+                            left: isMaximized ? 0 : '50%',
+                            x: isMaximized ? 0 : '-50%',
+                            y: isMinimized ? 200 : (isMaximized ? 0 : '-50%'),
+                        }}
+                        exit={{ scale: 0, opacity: 0, y: 200 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                        className={`fixed z-[100] flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'rounded-none' : 'rounded-lg'}`}
+                        style={{ 
+                            transformOrigin: 'bottom',
+                            pointerEvents: isMinimized ? 'none' : 'auto',
+                            maxWidth: isMaximized ? '100vw' : '80rem'
+                        }}
+                        onClick={(e) => {
+                            // Click outside to close (only if not minimized and clicking the backdrop)
+                            if (!isMinimized && e.target === e.currentTarget) {
+                                onClose();
+                            }
+                        }}
+                    >
                     {/* Title Bar */}
                         <div className="flex items-center justify-between px-4 py-3 bg-[#1a1a1a] border-b border-white/10">
                             <div className="flex items-center gap-2">
@@ -281,10 +296,20 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                         <div className="flex-1 overflow-auto bg-[#121212] p-6 sm:p-8">
                             {/* Current Track Info */}
                             <div className="flex flex-col items-center justify-center mb-8">
-                                {/* Album Art Placeholder */}
-                                <div className="w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded-lg shadow-2xl mb-6 flex items-center justify-center">
-                                    <span className="text-6xl sm:text-8xl">♪</span>
-                                </div>
+                                {/* Album Art */}
+                                {currentTrack.albumArt ? (
+                                    <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg shadow-2xl mb-6 overflow-hidden">
+                                        <img 
+                                            src={currentTrack.albumArt} 
+                                            alt={`${currentTrack.title} album art`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded-lg shadow-2xl mb-6 flex items-center justify-center">
+                                        <span className="text-6xl sm:text-8xl">♪</span>
+                                    </div>
+                                )}
                                 
                                 {/* Track Info */}
                                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 text-center">
@@ -313,9 +338,19 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                                     : 'bg-[#1a1a1a] hover:bg-[#2a2a2a]'
                                             }`}
                                         >
-                                            <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
-                                                <span className="text-xl">♪</span>
-                                            </div>
+                                            {track.albumArt ? (
+                                                <div className="w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                                                    <img 
+                                                        src={track.albumArt} 
+                                                        alt={`${track.title} album art`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
+                                                    <span className="text-xl">♪</span>
+                                                </div>
+                                            )}
                                             <div className="flex-1 min-w-0">
                                                 <p className={`font-medium truncate ${
                                                     index === currentTrackIndex ? 'text-[#1db954]' : 'text-white'
@@ -360,9 +395,19 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                             <div className="flex items-center justify-between">
                                 {/* Track Info */}
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
-                                        <span className="text-lg">♪</span>
-                                    </div>
+                                    {currentTrack.albumArt ? (
+                                        <div className="w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                                            <img 
+                                                src={currentTrack.albumArt} 
+                                                alt={`${currentTrack.title} album art`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
+                                            <span className="text-lg">♪</span>
+                                        </div>
+                                    )}
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm font-medium text-white truncate">
                                             {currentTrack.title}
@@ -431,7 +476,8 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                             </div>
                         </div>
                     </motion.div>
-            )}
+                )}
+            </AnimatePresence>
         </>
     );
 }
