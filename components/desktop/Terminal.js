@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 
 const commands = [
-    { name: 'background', description: 'Learn about who I am and my journey' },
+    { name: 'whoami', description: 'Learn about who I am and my journey' },
     { name: 'projects', description: 'Browse through my portfolio of work' },
     { name: 'experience', description: 'View my professional experience' },
     { name: 'github', description: 'Visit my GitHub profile' },
@@ -429,7 +429,15 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
                     setCursorPosition(0);
                 }, 1500);
-            } else if (['background', 'projects', 'experience'].includes(cmd)) {
+            } else if (cmd === 'whoami') {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setIsLoading(true);
+                setLoadingCommand(cmd);
+                setTimeout(() => {
+                    // Navigate to /whoami route instead of opening modal
+                    window.location.href = '/whoami';
+                }, 1500);
+            } else if (['projects', 'experience'].includes(cmd)) {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand(cmd);
@@ -525,7 +533,15 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
                             setCursorPosition(0);
                         }, 1500);
-                    } else if (['background', 'projects', 'experience'].includes(cmd)) {
+                    } else if (cmd === 'whoami') {
+                        setIsLoading(true);
+                        setLoadingCommand(cmd);
+                        
+                        setTimeout(() => {
+                            // Navigate to /whoami route instead of opening modal
+                            window.location.href = '/whoami';
+                        }, 1500);
+                    } else if (['projects', 'experience'].includes(cmd)) {
                         setIsLoading(true);
                         setLoadingCommand(cmd);
                         

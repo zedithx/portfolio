@@ -18,9 +18,16 @@ export default function SkillBreakdown({ skills }) {
         switch(skillName) {
             case 'Frontend': return '🎨';
             case 'Backend': return '⚙️';
-            case 'Cloud': return '☁️';
+            case 'Hardware': return '🔌';
+            case 'Telegram Bots': return '🤖';
+            case 'Deployment': return '🚀';
             case 'DevOps': return '🔧';
+            case 'LLMs': return '🧠';
+            case 'Cloud Infrastructure': return '☁️';
             case 'SRE': return '🛡️';
+            case 'Product Management': return '📊';
+            case 'Social': return '🤝';
+            case 'Recreational': return '🎮';
             default: return '⚔️';
         }
     };
@@ -29,9 +36,16 @@ export default function SkillBreakdown({ skills }) {
         switch(skillName) {
             case 'Frontend': return { from: '#667eea', to: '#764ba2', glow: 'rgba(102, 126, 234, 0.6)' };
             case 'Backend': return { from: '#f093fb', to: '#f5576c', glow: 'rgba(240, 147, 251, 0.6)' };
-            case 'Cloud': return { from: '#4facfe', to: '#00f2fe', glow: 'rgba(79, 172, 254, 0.6)' };
+            case 'Hardware': return { from: '#4facfe', to: '#00f2fe', glow: 'rgba(79, 172, 254, 0.6)' };
+            case 'Telegram Bots': return { from: '#43e97b', to: '#38f9d7', glow: 'rgba(67, 233, 123, 0.6)' };
+            case 'Deployment': return { from: '#fa709a', to: '#fee140', glow: 'rgba(250, 112, 154, 0.6)' };
             case 'DevOps': return { from: '#43e97b', to: '#38f9d7', glow: 'rgba(67, 233, 123, 0.6)' };
+            case 'LLMs': return { from: '#fee140', to: '#fa709a', glow: 'rgba(254, 225, 64, 0.6)' };
+            case 'Cloud Infrastructure': return { from: '#4facfe', to: '#00f2fe', glow: 'rgba(79, 172, 254, 0.6)' };
             case 'SRE': return { from: '#fa709a', to: '#fee140', glow: 'rgba(250, 112, 154, 0.6)' };
+            case 'Product Management': return { from: '#667eea', to: '#764ba2', glow: 'rgba(102, 126, 234, 0.6)' };
+            case 'Social': return { from: '#f093fb', to: '#f5576c', glow: 'rgba(240, 147, 251, 0.6)' };
+            case 'Recreational': return { from: '#43e97b', to: '#38f9d7', glow: 'rgba(67, 233, 123, 0.6)' };
             default: return { from: '#667eea', to: '#764ba2', glow: 'rgba(102, 126, 234, 0.6)' };
         }
     };

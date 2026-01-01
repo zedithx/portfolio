@@ -9,15 +9,15 @@ export default function HeroSection({ hero, onStartJourney }) {
 
     return (
         <motion.section
-            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
-            transition={prefersReducedMotion ? {} : { duration: 0.5 }}
-            className="w-full px-4 py-6 md:py-8 mb-6 relative overflow-hidden"
+            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9, y: 20 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1, y: 0 }}
+            transition={prefersReducedMotion ? {} : { duration: 0.6, delay: 0.2 }}
+            className="w-full px-6 md:px-8 py-12 md:py-16 relative overflow-hidden"
             style={{
                 background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
                 border: '3px solid #ffd700',
-                borderRadius: '12px',
-                boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5)'
+                borderRadius: '16px',
+                boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)'
             }}
         >
             {/* Decorative corner elements */}
@@ -26,29 +26,36 @@ export default function HeroSection({ hero, onStartJourney }) {
             <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
             <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
 
-            {/* Glowing particles effect */}
+            {/* Optimized glowing particles effect - Reduced count and memoized */}
             {!prefersReducedMotion && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {[...Array(6)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                            style={{
-                                left: `${20 + i * 15}%`,
-                                top: `${30 + (i % 2) * 40}%`,
-                            }}
-                            animate={{
-                                y: [0, -20, 0],
-                                opacity: [0.3, 0.8, 0.3],
-                                scale: [1, 1.5, 1],
-                            }}
-                            transition={{
-                                duration: 2 + i * 0.3,
-                                repeat: Infinity,
-                                delay: i * 0.2,
-                            }}
-                        />
-                    ))}
+                    {Array.from({ length: 4 }, (_, i) => {
+                        const left = 20 + i * 20;
+                        const top = 30 + (i % 2) * 40;
+                        const duration = 2 + i * 0.3;
+                        const delay = i * 0.2;
+                        return (
+                            <motion.div
+                                key={`hero-particle-${i}`}
+                                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                                style={{
+                                    left: `${left}%`,
+                                    top: `${top}%`,
+                                }}
+                                animate={{
+                                    y: [0, -20, 0],
+                                    opacity: [0.3, 0.8, 0.3],
+                                    scale: [1, 1.5, 1],
+                                }}
+                                transition={{
+                                    duration,
+                                    repeat: Infinity,
+                                    delay,
+                                    ease: 'easeInOut'
+                                }}
+                            />
+                        );
+                    })}
                 </div>
             )}
 
@@ -73,6 +80,8 @@ export default function HeroSection({ hero, onStartJourney }) {
                                 alt={hero.name}
                                 className="w-full h-full object-cover"
                                 loading="eager"
+                                decoding="async"
+                                fetchPriority="high"
                             />
                         ) : (
                             <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center text-5xl md:text-6xl">
@@ -81,16 +90,6 @@ export default function HeroSection({ hero, onStartJourney }) {
                         )}
                         {/* Glow effect */}
                         <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-yellow-400/20 pointer-events-none" />
-                    </div>
-                    {/* Level badge */}
-                    <div 
-                        className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm border-2 border-yellow-400"
-                        style={{
-                            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
-                            boxShadow: '0 0 10px rgba(255, 107, 107, 0.8)'
-                        }}
-                    >
-                        Lv1
                     </div>
                 </motion.div>
 
@@ -133,30 +132,30 @@ export default function HeroSection({ hero, onStartJourney }) {
                     {/* Stats Bar Preview */}
                     <div className="space-y-2 mt-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-yellow-400 text-xs md:text-sm font-semibold w-16 text-right">HP</span>
+                            <span className="text-yellow-400 text-xs md:text-sm font-semibold">HP</span>
                             <div className="flex-1 h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
                                 <motion.div
                                     initial={prefersReducedMotion ? {} : { width: 0 }}
-                                    animate={prefersReducedMotion ? {} : { width: '85%' }}
+                                    animate={prefersReducedMotion ? {} : { width: '100%' }}
                                     transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
                                     className="h-full bg-gradient-to-r from-red-600 to-red-400"
                                     style={{ boxShadow: '0 0 10px rgba(239, 68, 68, 0.8)' }}
                                 />
                             </div>
-                            <span className="text-yellow-400 text-xs font-bold w-8">85%</span>
+                            <span className="text-yellow-400 text-xs font-bold">100%</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-yellow-400 text-xs md:text-sm font-semibold w-16 text-right">MP</span>
+                            <span className="text-yellow-400 text-xs md:text-sm font-semibold">MP</span>
                             <div className="flex-1 h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
                                 <motion.div
                                     initial={prefersReducedMotion ? {} : { width: 0 }}
-                                    animate={prefersReducedMotion ? {} : { width: '70%' }}
+                                    animate={prefersReducedMotion ? {} : { width: '100%' }}
                                     transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.7 }}
                                     className="h-full bg-gradient-to-r from-blue-600 to-blue-400"
                                     style={{ boxShadow: '0 0 10px rgba(59, 130, 246, 0.8)' }}
                                 />
                             </div>
-                            <span className="text-yellow-400 text-xs font-bold w-8">70%</span>
+                            <span className="text-yellow-400 text-xs font-bold">100%</span>
                         </div>
                     </div>
                 </div>

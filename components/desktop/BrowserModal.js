@@ -79,7 +79,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                    className="w-full max-w-4xl h-full max-h-[90vh] md:max-h-[85vh] flex flex-col"
+                    className="w-full max-w-7xl h-full max-h-[90vh] md:max-h-[85vh] flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <BrowserView 

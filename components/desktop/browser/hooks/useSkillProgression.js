@@ -27,13 +27,16 @@ export function useSkillProgression(initialSkills) {
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                // Merge with initial to ensure all properties exist
+                // Merge with initial to ensure all properties exist and use baseline if value is missing
                 const merged = {};
                 Object.keys(initialSkills).forEach(key => {
+                    // If stored value exists, use it; otherwise use baseline
+                    const storedValue = parsed[key]?.value;
+                    const baselineValue = initialSkills[key]?.baseline ?? 0;
                     merged[key] = {
                         ...initialSkills[key],
                         ...parsed[key],
-                        value: parsed[key]?.value ?? initialSkills[key]?.baseline ?? 0
+                        value: storedValue !== undefined ? storedValue : baselineValue
                     };
                 });
                 return merged;
