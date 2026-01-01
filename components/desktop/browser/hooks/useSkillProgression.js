@@ -7,17 +7,42 @@ const PROCESSED_CARDS_KEY = 'aboutMe_processedCards';
 export function useSkillProgression(initialSkills) {
     // Initialize skills from sessionStorage or baseline
     const [skills, setSkills] = useState(() => {
-        if (typeof window === 'undefined') return initialSkills;
+        // Helper to initialize skills with baseline values
+        const initializeSkills = (skillData) => {
+            const initialized = {};
+            Object.entries(skillData).forEach(([key, value]) => {
+                initialized[key] = {
+                    ...value,
+                    value: value.baseline || 0
+                };
+            });
+            return initialized;
+        };
+
+        if (typeof window === 'undefined') {
+            return initializeSkills(initialSkills);
+        }
         
         const stored = sessionStorage.getItem(STORAGE_KEY);
         if (stored) {
             try {
-                return JSON.parse(stored);
+                const parsed = JSON.parse(stored);
+                // Merge with initial to ensure all properties exist
+                const merged = {};
+                Object.keys(initialSkills).forEach(key => {
+                    merged[key] = {
+                        ...initialSkills[key],
+                        ...parsed[key],
+                        value: parsed[key]?.value ?? initialSkills[key]?.baseline ?? 0
+                    };
+                });
+                return merged;
             } catch {
-                return initialSkills;
+                return initializeSkills(initialSkills);
             }
         }
-        return initialSkills;
+        
+        return initializeSkills(initialSkills);
     });
 
     // Track which cards have been processed
