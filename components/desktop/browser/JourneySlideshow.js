@@ -587,11 +587,43 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         }));
     }, []);
 
-    // Memoize summary skills to ensure we use the latest values - recomputes whenever skills prop changes
+    // Calculate final skill values by summing all skillsGained from all journey segments
+    // This ensures the summary always shows the complete final values regardless of user progress
+    const finalSkills = useMemo(() => {
+        if (!skills || !journey) return {};
+        
+        // Start with baseline values from initial skills
+        const final = {};
+        Object.entries(skills).forEach(([skillName, skill]) => {
+            final[skillName] = {
+                ...skill,
+                value: skill.baseline || 0
+            };
+        });
+        
+        // Sum all skillsGained from all journey segments
+        journey.forEach((segment) => {
+            if (segment.skillsGained) {
+                Object.entries(segment.skillsGained).forEach(([skillName, gain]) => {
+                    if (final[skillName]) {
+                        final[skillName].value = (final[skillName].value || 0) + gain;
+                        // Cap at max value
+                        if (final[skillName].value > (final[skillName].max || 100)) {
+                            final[skillName].value = final[skillName].max || 100;
+                        }
+                    }
+                });
+            }
+        });
+        
+        return final;
+    }, [skills, journey]);
+
+    // Memoize summary skills using the calculated final values
     const summarySkills = useMemo(() => {
-        if (!skills) return { allSkills: [], technicalSkills: [], nonTechnicalSkills: [] };
-        // Filter out locked skills and get all unlocked skills
-        const allSkills = Object.entries(skills).filter(([_, skill]) => !skill.locked);
+        if (!finalSkills) return { allSkills: [], technicalSkills: [], nonTechnicalSkills: [] };
+        // Filter out locked skills and get all unlocked skills with final values
+        const allSkills = Object.entries(finalSkills).filter(([_, skill]) => !skill.locked);
         const technicalSkills = allSkills.filter(([name, _]) => 
             ['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
         );
@@ -599,7 +631,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
             !['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
         );
         return { allSkills, technicalSkills, nonTechnicalSkills };
-    }, [skills]); // This will recompute whenever skills prop updates
+    }, [finalSkills]);
 
     // Early return after all hooks - but handle summary case
     if (showSummary) {
@@ -621,7 +653,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         });
 
         return (
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-2 sm:p-2 md:p-4 lg:p-6 xl:p-8" style={{ background: 'radial-gradient(circle at center, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3))', willChange: 'auto' }}>
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-3 sm:p-2 md:p-4 lg:p-6 xl:p-8" style={{ background: 'radial-gradient(circle at center, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3))', willChange: 'auto' }}>
                 {/* Gamified background effects for summary page */}
                 {!prefersReducedMotion && (
                     <>
@@ -716,7 +748,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             ease: [0.25, 0.46, 0.45, 0.94]
                         }
                     }}
-                    className="relative w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-full max-h-[96vh] sm:max-h-[95vh] md:max-h-[90vh] flex flex-col px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 my-2 sm:my-0"
+                    className="relative w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-full max-h-[94vh] sm:max-h-[95vh] md:max-h-[90vh] flex flex-col px-4 sm:px-4 md:px-6 lg:px-8 xl:px-12 my-3 sm:my-0"
                     style={{
                         background: 'linear-gradient(to bottom, #d4aa68 0%, #e8c896 8%, #f0dd9c 20%, #e8c896 50%, #d4aa68 80%, #c19b5d 100%)',
                         color: '#3b2712',
@@ -790,7 +822,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                     {/* Scroll Body - Content Area with irregular edges */}
                     <div 
-                        className="relative flex-1 flex flex-col min-h-0 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-2 sm:py-3 md:py-4 lg:py-6 xl:py-8"
+                        className="relative flex-1 flex flex-col min-h-0 px-3 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-3 sm:py-3 md:py-4 lg:py-6 xl:py-8"
                         style={{
                             background: 'radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.4), transparent 60%)',
                             borderLeft: '2px solid rgba(139, 69, 19, 0.4)',
@@ -807,7 +839,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
                                 animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
                                 transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
-                                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 sm:mb-4 md:mb-6 shrink-0"
+                                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-4 sm:mb-4 md:mb-6 shrink-0 px-2"
                                 style={{
                                     color: '#8B4513',
                                     textShadow: '0 1px 0 #f7edd3, 2px 2px 4px rgba(0, 0, 0, 0.5)',
@@ -821,14 +853,14 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                             {/* Scrollable Content Container */}
                             <div 
-                                className="flex-1 overflow-y-auto min-h-0 py-2 md:py-4 custom-scrollbar"
+                                className="flex-1 overflow-y-auto min-h-0 py-3 sm:py-2 md:py-4 custom-scrollbar"
                                 style={{
                                     scrollbarWidth: 'thin',
                                     scrollbarColor: '#8B4513 transparent'
                                 }}
                             >
                             {/* Journey Transcript - Grouped by Categories */}
-                            <div className="space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
+                            <div className="space-y-3 sm:space-y-3 md:space-y-4 lg:space-y-6 mb-4 sm:mb-4 md:mb-6 lg:mb-8 px-1 sm:px-0">
                                 {Object.entries(journeySummaryContent).map(([key, section], index) => (
                                     <motion.div
                                         key={key}
@@ -898,7 +930,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
                                     animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                                     transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4 }}
-                                    className="mt-3 sm:mt-4 md:mt-6 lg:mt-8 pt-2 sm:pt-3 md:pt-4 lg:pt-6 border-t-2"
+                                    className="mt-5 sm:mt-4 md:mt-6 lg:mt-8 pt-3 sm:pt-3 md:pt-4 lg:pt-6 border-t-2 px-1 sm:px-0"
                                     style={{
                                         borderColor: 'rgba(139, 69, 19, 0.3)'
                                     }}
@@ -1064,7 +1096,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         </div>
 
                             {/* Return to MacBook Button - Fixed at bottom */}
-                            <div className="flex justify-center pt-2 sm:pt-3 md:pt-4 lg:pt-6 pb-2 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'visible', zIndex: 10 }}>
+                            <div className="flex justify-center pt-4 sm:pt-3 md:pt-4 lg:pt-6 pb-3 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'visible', zIndex: 10 }}>
                                 <motion.button
                                     ref={returnButtonRef}
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
