@@ -75,3 +75,4 @@ To add a new browser command/feature:
 - **Scalable**: Easy to add new features without touching existing code
 
 
+

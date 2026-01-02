@@ -26,39 +26,6 @@ export default function HeroSection({ hero, onStartJourney }) {
             <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
             <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
 
-            {/* Optimized glowing particles effect - Reduced count and memoized */}
-            {!prefersReducedMotion && (
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {Array.from({ length: 4 }, (_, i) => {
-                        const left = 20 + i * 20;
-                        const top = 30 + (i % 2) * 40;
-                        const duration = 2 + i * 0.3;
-                        const delay = i * 0.2;
-                        return (
-                            <motion.div
-                                key={`hero-particle-${i}`}
-                                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                                style={{
-                                    left: `${left}%`,
-                                    top: `${top}%`,
-                                }}
-                                animate={{
-                                    y: [0, -20, 0],
-                                    opacity: [0.3, 0.8, 0.3],
-                                    scale: [1, 1.5, 1],
-                                }}
-                                transition={{
-                                    duration,
-                                    repeat: Infinity,
-                                    delay,
-                                    ease: 'easeInOut'
-                                }}
-                            />
-                        );
-                    })}
-                </div>
-            )}
-
             <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 relative z-10">
                 {/* Character Portrait - Game Style */}
                 <motion.div

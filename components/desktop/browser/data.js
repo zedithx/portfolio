@@ -545,3 +545,34 @@ export const aboutMeData = {
     ]
 };
 
+// Summary content for journey summary page
+export const journeySummaryContent = {
+    "schoolBeforeUniversity": {
+        "title": "School before university",
+        "content": "Back then, I honestly wasn’t doing great in school. I had almost no discipline, hated studying, \
+        and spent most of my time doing anything except my actual work. I kept wondering if there was something like ADHD going on, \
+        because no matter how hard I tried, I just couldn’t stay focused on subjects like physics, chemistry, math, and science. \
+        I came close to retaining in secondary school and even hit around the bottom 23rd percentile in my college exams at one point. \
+        But at the same time, whenever it came to hands‑on projects and building things, I would get completely obsessed—in a good way—spending \
+        late nights working on them without even noticing the time. That contrast made me realize that I’m someone who learns and performs best when\
+        I’m creating and building, not just memorizing."
+    },
+    "internshipBeforeUniversity": {
+        "title": "Internship before university",
+        "content": "During my army days, I decided to try learning coding and quickly got hooked. I went through Harvard’s CS50 course and an Udemy course on the Django framework, which later helped me land an internship at Reluvate Technologies, where Django was used for client projects. I went in as a complete noob and spent about 13 hours a day in the first week just trying to keep up and not get overwhelmed. It was intense enough that I almost quit because of the stress and how useless I felt, but I pushed through, and after about a month I finally started to feel like I was genuinely contributing. By the end of the internship, I realised that I really enjoyed coding and loved the feeling of making changes to products that people actually use in the real world."
+    },
+    "university": {
+        "title": "University",
+        "content": "At SUTD, being surrounded by many strong software engineers, especially those from polytechnic backgrounds, pushed me to grow quickly. A classmate encouraged me to join the student government’s tech department, which at the time felt like a casual decision but ended up becoming one of the most defining parts of my university life. I went on to build the frontend site for SUTD’s largest annual event, Night Fiesta 2024, followed by the websites for Orientation 2024 and LCC 2024, and led the implementation of an RFID‑based game carnival system end‑to‑end (custom RFID bands from a supplier in China, RFID readers, and the supporting software). I also built multiple Telegram bots to run event logistics and engagement. Through these projects, my frontend skills grew rapidly, and I deepened my deployment and backend skills by repeatedly shipping and operating production‑facing tools for the school.\\n\\n\
+        I also tend to become hyper‑focused when building things. At SUTD, I often treated projects like a full‑time job, pulling late nights to get them to a level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, and in my computer science modules I pushed my teams and myself to ship products that felt polished and real. Across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be “doing well” – diving deep into projects out of genuine passion is where I produce my best work."
+    },
+    "internshipsInUniversity": {
+        "title": "Internships in university",
+        "content": "I completed multiple internships at Changi Airport Group, TSMC, and Bytedance, each teaching me different aspects of software engineering. From automation and software engineering at Changi Airport, to DevOps infrastructure at TSMC, to Site Reliability Engineering at Bytedance - each experience built upon the last."
+    },
+    "whatsNext": {
+        "title": "What's next?",
+        "content": "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey. With all the experiences I've gained, I'm ready to take on full-time opportunities and continue growing as a software engineer."
+    }
+};
+

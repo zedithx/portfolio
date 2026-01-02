@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ScrollText } from 'lucide-react';
+import { journeySummaryContent } from './data';
 
 // Optimized preload background images with priority and error handling
 const preloadImages = (urls) => {
@@ -240,7 +241,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     setShowDesktopPopup(false);
                     setDesktopPopupSkills(null);
                     desktopPopupTimeoutRef.current = null;
-                    // Navigate to summary after popup
+                    // Navigate to summary after popup - add extra delay to ensure skills state has updated
                     setTimeout(() => {
                         setIsTransitioning(true);
                         setShowDialogue(false);
@@ -248,7 +249,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             setShowSummary(true);
                             setIsTransitioning(false);
                         }, 300);
-                    }, 500);
+                    }, 800); // Increased from 500 to 800 to ensure skills state has propagated
                 }, 2000);
             } else {
                 // Show small popup for both mobile and desktop
@@ -347,32 +348,43 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         }
     }, [currentIndex, journey]);
 
-    // Attach non-passive touch event listeners for buttons that need preventDefault
+    // Attach touch event listeners for buttons on mobile
     useEffect(() => {
         const skipButton = skipButtonRef.current;
         const returnButton = returnButtonRef.current;
 
-        const handleTouchStart = (e) => {
+        const handleSkipTouch = (e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (!isTransitioning && skipButton) {
+                goToSummary();
+            }
+        };
+
+        const handleReturnTouch = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (returnButton) {
+                window.location.href = '/';
+            }
         };
 
         if (skipButton) {
-            skipButton.addEventListener('touchstart', handleTouchStart, { passive: false });
+            skipButton.addEventListener('touchend', handleSkipTouch, { passive: false });
         }
         if (returnButton) {
-            returnButton.addEventListener('touchstart', handleTouchStart, { passive: false });
+            returnButton.addEventListener('touchend', handleReturnTouch, { passive: false });
         }
 
         return () => {
             if (skipButton) {
-                skipButton.removeEventListener('touchstart', handleTouchStart);
+                skipButton.removeEventListener('touchend', handleSkipTouch);
             }
             if (returnButton) {
-                returnButton.removeEventListener('touchstart', handleTouchStart);
+                returnButton.removeEventListener('touchend', handleReturnTouch);
             }
         };
-    }, []);
+    }, [isTransitioning]);
 
     // Add custom scrollbar styles for parchment scroll
     useEffect(() => {
@@ -562,16 +574,37 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         );
     }, [skills]);
 
-    // Early return after all hooks - but handle summary case
-    if (showSummary) {
-        // Render summary page
-        const allSkills = skills ? Object.entries(skills).filter(([_, skill]) => !skill.locked) : [];
+    // Generate background particles for summary page - MUST be before early return
+    const summaryParticles = useMemo(() => {
+        return Array.from({ length: 20 }, (_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            size: 2 + Math.random() * 3,
+            duration: 3 + Math.random() * 4,
+            delay: Math.random() * 2,
+            type: Math.random() > 0.5 ? 'dot' : 'sparkle'
+        }));
+    }, []);
+
+    // Memoize summary skills to ensure we use the latest values - recomputes whenever skills prop changes
+    const summarySkills = useMemo(() => {
+        if (!skills) return { allSkills: [], technicalSkills: [], nonTechnicalSkills: [] };
+        // Filter out locked skills and get all unlocked skills
+        const allSkills = Object.entries(skills).filter(([_, skill]) => !skill.locked);
         const technicalSkills = allSkills.filter(([name, _]) => 
             ['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
         );
         const nonTechnicalSkills = allSkills.filter(([name, _]) => 
             !['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
         );
+        return { allSkills, technicalSkills, nonTechnicalSkills };
+    }, [skills]); // This will recompute whenever skills prop updates
+
+    // Early return after all hooks - but handle summary case
+    if (showSummary) {
+        // Render summary page - use memoized skills to ensure latest values
+        const { allSkills, technicalSkills, nonTechnicalSkills } = summarySkills;
 
         // Collect all journey dialogues for the transcript
         const journeyTranscript = journey.flatMap((card, cardIndex) => {
@@ -588,21 +621,112 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         });
 
         return (
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-4 md:p-6 lg:p-8" style={{ background: 'radial-gradient(circle at center, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3))' }}>
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-2 sm:p-2 md:p-4 lg:p-6 xl:p-8" style={{ background: 'radial-gradient(circle at center, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3))', willChange: 'auto' }}>
+                {/* Gamified background effects for summary page */}
+                {!prefersReducedMotion && (
+                    <>
+                        {/* Spawning dots */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                            {summaryParticles.filter(p => p.type === 'dot').map((particle) => (
+                                <motion.div
+                                    key={`summary-dot-${particle.id}`}
+                                    className="absolute rounded-full bg-yellow-400/40"
+                                    style={{
+                                        left: `${particle.left}%`,
+                                        top: '-10px',
+                                        width: `${particle.size}px`,
+                                        height: `${particle.size}px`,
+                                        boxShadow: '0 0 8px rgba(255, 215, 0, 0.6)'
+                                    }}
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{
+                                        opacity: [0, 0.8, 0.8, 0],
+                                        scale: [0, 1.5, 1, 0.5],
+                                        y: [0, 1000],
+                                        x: [0, Math.sin(particle.id) * 50, 0]
+                                    }}
+                                    transition={{
+                                        duration: particle.duration,
+                                        repeat: Infinity,
+                                        delay: particle.delay,
+                                        ease: 'easeInOut'
+                                    }}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Floating sparkles */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                            {summaryParticles.filter(p => p.type === 'sparkle').map((particle) => (
+                                <motion.div
+                                    key={`summary-sparkle-${particle.id}`}
+                                    className="absolute text-yellow-300/60"
+                                    style={{
+                                        left: `${particle.left}%`,
+                                        top: `${particle.top}%`,
+                                        fontSize: `${particle.size * 2}px`,
+                                        filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.7))'
+                                    }}
+                                    animate={{
+                                        opacity: [0.3, 1, 0.3],
+                                        scale: [0.8, 1.5, 0.8],
+                                        y: [0, -40, 0],
+                                        rotate: [0, 180, 360],
+                                        x: [0, Math.cos(particle.id) * 30, 0]
+                                    }}
+                                    transition={{
+                                        duration: particle.duration,
+                                        repeat: Infinity,
+                                        delay: particle.delay,
+                                        ease: 'easeInOut'
+                                    }}
+                                >
+                                    ✨
+                                </motion.div>
+                            ))}
+                        </div>
+                    </>
+                )}
+
                 {/* Parchment Scroll Container with aged edges */}
                 <motion.div
-                    initial={prefersReducedMotion ? {} : { scaleY: 0.8, opacity: 0 }}
-                    animate={prefersReducedMotion ? {} : { scaleY: 1, opacity: 1 }}
-                    transition={prefersReducedMotion ? {} : { duration: 0.6, ease: 'easeOut' }}
-                    className="relative w-full max-w-3xl md:max-w-4xl h-full max-h-[90vh] flex flex-col"
+                    initial={prefersReducedMotion ? {} : { 
+                        opacity: 0,
+                        clipPath: 'inset(0 0 100% 0)',
+                        scale: 0.95
+                    }}
+                    animate={prefersReducedMotion ? {} : { 
+                        opacity: 1,
+                        clipPath: 'inset(0 0 0% 0)',
+                        scale: 1
+                    }}
+                    transition={prefersReducedMotion ? {} : { 
+                        duration: 1.0,
+                        ease: [0.25, 0.46, 0.45, 0.94], // Smooth ease-out for natural unroll
+                        clipPath: {
+                            duration: 1.0,
+                            ease: [0.25, 0.46, 0.45, 0.94]
+                        },
+                        opacity: {
+                            duration: 0.6,
+                            ease: 'easeOut'
+                        },
+                        scale: {
+                            duration: 1.0,
+                            ease: [0.25, 0.46, 0.45, 0.94]
+                        }
+                    }}
+                    className="relative w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-full max-h-[96vh] sm:max-h-[95vh] md:max-h-[90vh] flex flex-col px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 my-2 sm:my-0"
                     style={{
                         background: 'linear-gradient(to bottom, #d4aa68 0%, #e8c896 8%, #f0dd9c 20%, #e8c896 50%, #d4aa68 80%, #c19b5d 100%)',
                         color: '#3b2712',
                         fontFamily: 'serif',
                         position: 'relative',
-                        padding: '40px 20px 40px 20px',
-                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-                        boxShadow: '0 0 0 1px rgba(139, 69, 19, 0.3), 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 50px rgba(255, 255, 255, 0.1)'
+                        paddingTop: '12px',
+                        paddingBottom: '12px',
+                        boxShadow: '0 0 0 1px rgba(139, 69, 19, 0.3), 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 50px rgba(255, 255, 255, 0.1)',
+                        transformOrigin: 'top center',
+                        willChange: prefersReducedMotion ? 'auto' : 'transform, opacity, clip-path'
                     }}
                 >
                     {/* Aged/broken top edge */}
@@ -666,14 +790,15 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                     {/* Scroll Body - Content Area with irregular edges */}
                     <div 
-                        className="relative flex-1 flex flex-col min-h-0 px-6 md:px-8 lg:px-12 py-6 md:py-8"
+                        className="relative flex-1 flex flex-col min-h-0 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-2 sm:py-3 md:py-4 lg:py-6 xl:py-8"
                         style={{
                             background: 'radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.4), transparent 60%)',
                             borderLeft: '2px solid rgba(139, 69, 19, 0.4)',
                             borderRight: '2px solid rgba(139, 69, 19, 0.4)',
-                            marginTop: '12px',
-                            marginBottom: '12px',
-                            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+                            marginTop: '4px',
+                            marginBottom: '4px',
+                            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+                            overflow: 'visible'
                         }}
                     >
                         <div className="w-full h-full flex flex-col overflow-hidden">
@@ -682,7 +807,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
                                 animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
                                 transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
-                                className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-4 md:mb-6 shrink-0"
+                                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 sm:mb-4 md:mb-6 shrink-0"
                                 style={{
                                     color: '#8B4513',
                                     textShadow: '0 1px 0 #f7edd3, 2px 2px 4px rgba(0, 0, 0, 0.5)',
@@ -703,262 +828,68 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 }}
                             >
                             {/* Journey Transcript - Grouped by Categories */}
-                            <div className="space-y-4 md:space-y-6 mb-6 md:mb-8">
-                                {/* School before university */}
-                                <motion.div
-                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 }}
-                                    className="relative space-y-3 md:space-y-4"
-                                    style={{
-                                        marginTop: '1rem',
-                                        paddingTop: '1.5rem'
-                                    }}
-                                >
-                                    <h2 
-                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                            <div className="space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
+                                {Object.entries(journeySummaryContent).map(([key, section], index) => (
+                                    <motion.div
+                                        key={key}
+                                        initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                        animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                        transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                                        className="relative space-y-1.5 sm:space-y-2 md:space-y-3 lg:space-y-4"
                                         style={{
-                                            color: '#8B4513',
-                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
-                                            fontFamily: 'serif',
-                                            letterSpacing: '0.05em',
-                                            textTransform: 'uppercase',
-                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
-                                            paddingBottom: '0.25rem',
-                                            paddingRight: '1rem',
-                                            marginTop: '0'
+                                            marginTop: index === 0 ? '0.25rem' : '1rem',
+                                            paddingTop: '1.25rem'
                                         }}
                                     >
-                                        School before university
-                                    </h2>
-                                    <div className="mt-6 md:mt-8">
-                                        {journey[0].dialogues.map((dialogue, dialogueIndex) => (
-                                            <motion.p
-                                                key={dialogueIndex}
-                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (dialogueIndex * 0.05) }}
-                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
-                                                style={{
-                                                    color: '#5D4037',
-                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
-                                                    fontFamily: 'serif',
-                                                    textAlign: 'justify',
-                                                    marginBottom: '1rem'
-                                                }}
-                                            >
-                                                {dialogue.speaker === 'hero' ? (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
-                                                    </span>
-                                                ) : (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
-                                                    </span>
-                                                )}
-                                            </motion.p>
-                                        ))}
-                                    </div>
-                                </motion.div>
-
-                                {/* University */}
-                                <motion.div
-                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2 }}
-                                    className="relative space-y-3 md:space-y-4"
-                                    style={{
-                                        marginTop: '2rem',
-                                        paddingTop: '1.5rem'
-                                    }}
-                                >
-                                    <h2 
-                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
-                                        style={{
-                                            color: '#8B4513',
-                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
-                                            fontFamily: 'serif',
-                                            letterSpacing: '0.05em',
-                                            textTransform: 'uppercase',
-                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
-                                            paddingBottom: '0.25rem',
-                                            paddingRight: '1rem',
-                                            marginTop: '0'
-                                        }}
-                                    >
-                                        University
-                                    </h2>
-                                    <div className="mt-6 md:mt-8">
-                                        {journey[2].dialogues.map((dialogue, dialogueIndex) => (
-                                            <motion.p
-                                                key={dialogueIndex}
-                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2 + (dialogueIndex * 0.05) }}
-                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
-                                                style={{
-                                                    color: '#5D4037',
-                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
-                                                    fontFamily: 'serif',
-                                                    textAlign: 'justify',
-                                                    marginBottom: '1rem'
-                                                }}
-                                            >
-                                                {dialogue.speaker === 'hero' ? (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
-                                                    </span>
-                                                ) : (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
-                                                    </span>
-                                                )}
-                                            </motion.p>
-                                        ))}
-                                    </div>
-                                </motion.div>
-
-                                {/* Internships in university */}
-                                <motion.div
-                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.3 }}
-                                    className="relative space-y-3 md:space-y-4"
-                                    style={{
-                                        marginTop: '2rem',
-                                        paddingTop: '1.5rem'
-                                    }}
-                                >
-                                    <h2 
-                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
-                                        style={{
-                                            color: '#8B4513',
-                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
-                                            fontFamily: 'serif',
-                                            letterSpacing: '0.05em',
-                                            textTransform: 'uppercase',
-                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
-                                            paddingBottom: '0.25rem',
-                                            paddingRight: '1rem',
-                                            marginTop: '0'
-                                        }}
-                                    >
-                                        Internships in university
-                                    </h2>
-                                    <div className="mt-6 md:mt-8">
-                                        {/* Internship before University */}
-                                        {journey[1].dialogues.map((dialogue, dialogueIndex) => (
-                                            <motion.p
-                                                key={`internship1-${dialogueIndex}`}
-                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.3 + (dialogueIndex * 0.05) }}
-                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
-                                                style={{
-                                                    color: '#5D4037',
-                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
-                                                    fontFamily: 'serif',
-                                                    textAlign: 'justify',
-                                                    marginBottom: '1rem'
-                                                }}
-                                            >
-                                                {dialogue.speaker === 'hero' ? (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
-                                                    </span>
-                                                ) : (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
-                                                    </span>
-                                                )}
-                                            </motion.p>
-                                        ))}
-                                        {/* Internships during university */}
-                                        {journey[3].dialogues.map((dialogue, dialogueIndex) => (
-                                            <motion.p
-                                                key={`internship2-${dialogueIndex}`}
-                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.35 + (dialogueIndex * 0.05) }}
-                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
-                                                style={{
-                                                    color: '#5D4037',
-                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
-                                                    fontFamily: 'serif',
-                                                    textAlign: 'justify',
-                                                    marginBottom: '1rem'
-                                                }}
-                                            >
-                                                {dialogue.speaker === 'hero' ? (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
-                                                    </span>
-                                                ) : (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
-                                                    </span>
-                                                )}
-                                            </motion.p>
-                                        ))}
-                                    </div>
-                                </motion.div>
-
-                                {/* What's next? */}
-                                <motion.div
-                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.4 }}
-                                    className="relative space-y-3 md:space-y-4"
-                                    style={{
-                                        marginTop: '2rem',
-                                        paddingTop: '1.5rem'
-                                    }}
-                                >
-                                    <h2 
-                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
-                                        style={{
-                                            color: '#8B4513',
-                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
-                                            fontFamily: 'serif',
-                                            letterSpacing: '0.05em',
-                                            textTransform: 'uppercase',
-                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
-                                            paddingBottom: '0.25rem',
-                                            paddingRight: '1rem',
-                                            marginTop: '0'
-                                        }}
-                                    >
-                                        What's next?
-                                    </h2>
-                                    <div className="mt-6 md:mt-8">
-                                        {journey[4].dialogues.map((dialogue, dialogueIndex) => (
-                                            <motion.p
-                                                key={dialogueIndex}
-                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.4 + (dialogueIndex * 0.05) }}
-                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
-                                                style={{
-                                                    color: '#5D4037',
-                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
-                                                    fontFamily: 'serif',
-                                                    textAlign: 'justify',
-                                                    marginBottom: '1rem'
-                                                }}
-                                            >
-                                                {dialogue.speaker === 'hero' ? (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
-                                                    </span>
-                                                ) : (
-                                                    <span>
-                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
-                                                    </span>
-                                                )}
-                                            </motion.p>
-                                        ))}
-                                    </div>
-                                </motion.div>
+                                        <h2 
+                                            className="text-sm sm:text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                                            style={{
+                                                color: '#8B4513',
+                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
+                                                fontFamily: 'serif',
+                                                letterSpacing: '0.05em',
+                                                textTransform: 'uppercase',
+                                                borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
+                                                paddingBottom: '0.25rem',
+                                                paddingRight: '0.75rem',
+                                                marginTop: '0',
+                                                maxWidth: '90%',
+                                                zIndex: 1,
+                                                lineHeight: '1.2'
+                                            }}
+                                        >
+                                            {section.title}
+                                        </h2>
+                                        <div className="mt-5 sm:mt-7 md:mt-8 lg:mt-10" style={{ position: 'relative', zIndex: 0 }}>
+                                            {section.content
+                                                .replace(/\\n\\n/g, '\n\n') // Replace literal \n\n with actual newlines
+                                                .split('\n\n')
+                                                .map((paragraph, paraIndex) => (
+                                                    paragraph.trim() && (
+                                                        <motion.p
+                                                            key={paraIndex}
+                                                            initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                            animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                            transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (index * 0.1) + (paraIndex * 0.05) }}
+                                                            className="text-sm sm:text-base md:text-lg leading-relaxed"
+                                                            style={{
+                                                                color: '#5D4037',
+                                                                textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
+                                                                fontFamily: 'serif',
+                                                                textAlign: 'justify',
+                                                                marginBottom: '0.75rem',
+                                                                hyphens: 'auto',
+                                                                wordBreak: 'break-word',
+                                                                lineHeight: '1.6'
+                                                            }}
+                                                        >
+                                                            {paragraph.trim()}
+                                                        </motion.p>
+                                                    )
+                                                ))}
+                                        </div>
+                                    </motion.div>
+                                ))}
                             </div>
 
                             {/* Final Skills Summary */}
@@ -967,13 +898,13 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
                                     animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                                     transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4 }}
-                                    className="mt-6 md:mt-8 pt-4 md:pt-6 border-t-2"
+                                    className="mt-3 sm:mt-4 md:mt-6 lg:mt-8 pt-2 sm:pt-3 md:pt-4 lg:pt-6 border-t-2"
                                     style={{
                                         borderColor: 'rgba(139, 69, 19, 0.3)'
                                     }}
                                 >
                                     <h2 
-                                        className="text-lg md:text-xl lg:text-2xl font-bold mb-4 md:mb-6"
+                                        className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 md:mb-6"
                                         style={{
                                             color: '#8B4513',
                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
@@ -985,9 +916,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     
                                     {/* Technical Skills */}
                                     {technicalSkills.length > 0 && (
-                                        <div className="mb-4 md:mb-6">
+                                        <div className="mb-3 sm:mb-4 md:mb-6">
                                             <h3 
-                                                className="text-base md:text-lg font-semibold mb-3"
+                                                className="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3"
                                                 style={{
                                                     color: '#8B4513',
                                                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
@@ -996,7 +927,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             >
                                                 Technical Skills
                                             </h3>
-                                            <div className="space-y-2 md:space-y-3">
+                                            <div className="space-y-1 sm:space-y-1.5 md:space-y-2 lg:space-y-3">
                                                 {technicalSkills.map(([skillName, skill]) => {
                                                     const value = skill.value || skill.baseline || 0;
                                                     const max = skill.max || 100;
@@ -1004,13 +935,13 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                     return (
                                                         <div
                                                             key={skillName}
-                                                            className="py-2"
+                                                            className="py-0.5 sm:py-1 md:py-2"
                                                         >
-                                                            <div className="flex items-center justify-between mb-1">
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-lg md:text-xl">{getSkillIcon(skillName)}</span>
+                                                            <div className="flex items-center justify-between mb-0.5 sm:mb-1 gap-1">
+                                                                <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-1 min-w-0">
+                                                                    <span className="text-base sm:text-lg md:text-xl flex-shrink-0">{getSkillIcon(skillName)}</span>
                                                                     <span 
-                                                                        className="text-sm md:text-base font-semibold"
+                                                                        className="text-xs sm:text-sm md:text-base font-semibold truncate"
                                                                         style={{
                                                                             color: '#8B4513',
                                                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
@@ -1060,7 +991,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     {nonTechnicalSkills.length > 0 && (
                                         <div>
                                             <h3 
-                                                className="text-base md:text-lg font-semibold mb-3"
+                                                className="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3"
                                                 style={{
                                                     color: '#8B4513',
                                                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
@@ -1069,7 +1000,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             >
                                                 Non-Technical Skills
                                             </h3>
-                                            <div className="space-y-2 md:space-y-3">
+                                            <div className="space-y-1.5 sm:space-y-2 md:space-y-3">
                                                 {nonTechnicalSkills.map(([skillName, skill]) => {
                                                     const value = skill.value || skill.baseline || 0;
                                                     const max = skill.max || 100;
@@ -1077,13 +1008,13 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                     return (
                                                         <div
                                                             key={skillName}
-                                                            className="py-2"
+                                                            className="py-1 sm:py-2"
                                                         >
-                                                            <div className="flex items-center justify-between mb-1">
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-lg md:text-xl">{getSkillIcon(skillName)}</span>
+                                                            <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                                                                <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-1 min-w-0">
+                                                                    <span className="text-base sm:text-lg md:text-xl flex-shrink-0">{getSkillIcon(skillName)}</span>
                                                                     <span 
-                                                                        className="text-sm md:text-base font-semibold"
+                                                                        className="text-xs sm:text-sm md:text-base font-semibold truncate"
                                                                         style={{
                                                                             color: '#8B4513',
                                                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
@@ -1094,7 +1025,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                     </span>
                                                                 </div>
                                                                 <span 
-                                                                    className="text-sm md:text-base font-bold"
+                                                                    className="text-xs sm:text-sm md:text-base font-bold flex-shrink-0"
                                                                     style={{
                                                                         color: '#8B4513',
                                                                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
@@ -1105,7 +1036,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                 </span>
                                                             </div>
                                                             <div 
-                                                                className="h-2 md:h-3 rounded-full overflow-hidden"
+                                                                className="h-1.5 sm:h-2 md:h-3 rounded-full overflow-hidden"
                                                                 style={{
                                                                     background: 'rgba(139, 69, 19, 0.2)',
                                                                     border: '1px solid rgba(139, 69, 19, 0.4)'
@@ -1133,7 +1064,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         </div>
 
                             {/* Return to MacBook Button - Fixed at bottom */}
-                            <div className="flex justify-center pt-4 md:pt-6 shrink-0">
+                            <div className="flex justify-center pt-2 sm:pt-3 md:pt-4 lg:pt-6 pb-2 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'visible', zIndex: 10 }}>
                                 <motion.button
                                     ref={returnButtonRef}
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
@@ -1144,19 +1075,80 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         e.stopPropagation();
                                         window.location.href = '/';
                                     }}
-                                    className="px-5 md:px-6 py-2 md:py-3 rounded-lg font-bold text-base md:text-lg mx-auto block touch-manipulation"
-                                    style={{
-                                        background: 'rgba(139, 69, 19, 0.3)',
-                                        border: '2px solid #8B4513',
-                                        color: '#8B4513',
-                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                        boxShadow: '0 0 15px rgba(139, 69, 19, 0.4)',
-                                        fontFamily: 'serif'
+                                    onTouchEnd={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        window.location.href = '/';
                                     }}
-                                    whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
-                                    whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
+                                    className="px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 lg:py-4 rounded-lg font-bold text-xs sm:text-sm md:text-base lg:text-lg mx-auto block touch-manipulation relative min-h-[40px] sm:min-h-[44px] z-[100]"
+                                    style={{
+                                        background: 'linear-gradient(to bottom, #e8c896, #d4aa68)',
+                                        border: '2px solid #b08b4c',
+                                        color: '#5D4037',
+                                        textShadow: '0 1px 2px rgba(255, 255, 255, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.3)',
+                                        boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(139, 69, 19, 0.3), 0 0 0 1px rgba(139, 69, 19, 0.2)',
+                                        fontFamily: 'serif',
+                                        letterSpacing: '0.05em',
+                                        transition: 'all 0.3s ease',
+                                        transformOrigin: 'center center',
+                                        willChange: 'transform',
+                                        pointerEvents: 'auto',
+                                        WebkitTapHighlightColor: 'transparent',
+                                        zIndex: 100
+                                    }}
+                                    whileHover={prefersReducedMotion ? {} : { 
+                                        scale: 1.08,
+                                        rotate: 1,
+                                        boxShadow: 'inset 0 1px 3px rgba(255, 255, 255, 0.5), 0 6px 20px rgba(139, 69, 19, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 0 2px rgba(139, 69, 19, 0.4)',
+                                        borderColor: '#8B4513',
+                                        background: 'linear-gradient(to bottom, #f0dd9c, #e8c896)',
+                                        transition: {
+                                            duration: 0.3,
+                                            ease: 'easeOut'
+                                        }
+                                    }}
+                                    whileTap={prefersReducedMotion ? {} : { 
+                                        scale: 0.96,
+                                        rotate: -0.5
+                                    }}
                                 >
-                                    Return to MacBook
+                                    <motion.span 
+                                        className="relative z-10"
+                                        whileHover={prefersReducedMotion ? {} : {
+                                            x: [0, -2, 2, 0],
+                                            transition: {
+                                                duration: 0.5,
+                                                repeat: Infinity,
+                                                ease: 'easeInOut'
+                                            }
+                                        }}
+                                    >
+                                        Return to MacBook
+                                    </motion.span>
+                                    {/* Shimmer effect on hover */}
+                                    <motion.div 
+                                        className="absolute inset-0 opacity-0 pointer-events-none"
+                                        style={{
+                                            background: 'linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.4) 50%, transparent 60%)',
+                                            backgroundSize: '200% 100%'
+                                        }}
+                                        whileHover={prefersReducedMotion ? {} : {
+                                            opacity: [0, 1, 0],
+                                            x: ['-100%', '100%'],
+                                            transition: {
+                                                duration: 0.8,
+                                                ease: 'easeInOut'
+                                            }
+                                        }}
+                                    />
+                                    {/* Subtle texture overlay */}
+                                    <div 
+                                        className="absolute inset-0 opacity-10 pointer-events-none"
+                                        style={{
+                                            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+                                            mixBlendMode: 'multiply'
+                                        }}
+                                    />
                                 </motion.button>
                             </div>
                         </div>
@@ -1285,8 +1277,15 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         goToSummary();
                                     }
                                 }}
+                                onTouchEnd={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (!isTransitioning) {
+                                        goToSummary();
+                                    }
+                                }}
                                 disabled={isTransitioning}
-                                className={`px-2 py-2 md:px-3 md:py-1.5 rounded-lg flex items-center gap-1.5 md:gap-2 transition-all touch-manipulation min-h-[44px] md:min-h-0 ${
+                                className={`px-2 py-2 md:px-3 md:py-1.5 rounded-lg flex items-center gap-1.5 md:gap-2 transition-all touch-manipulation min-h-[44px] md:min-h-0 z-[100] ${
                                     isTransitioning ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:scale-105 active:scale-95'
                                 }`}
                                 style={{
@@ -1296,7 +1295,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     color: '#ffd700',
                                     boxShadow: '0 0 15px rgba(139, 69, 19, 0.5)',
                                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                    pointerEvents: isTransitioning ? 'none' : 'auto'
+                                    pointerEvents: isTransitioning ? 'none' : 'auto',
+                                    position: 'relative',
+                                    zIndex: 100
                                 }}
                                 whileHover={prefersReducedMotion || isTransitioning ? {} : { scale: 1.05 }}
                                 whileTap={prefersReducedMotion || isTransitioning ? {} : { scale: 0.95 }}

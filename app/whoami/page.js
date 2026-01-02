@@ -52,25 +52,26 @@ export default function WhoAmIPage() {
         return () => window.removeEventListener('keydown', handleEscape);
     }, [handleExit]);
 
-    // Attach non-passive touch event listener for exit button
+    // Attach touch event listener for exit button on mobile
     useEffect(() => {
         const exitButton = exitButtonRef.current;
         
-        const handleTouchStart = (e) => {
+        const handleTouchEnd = (e) => {
             e.preventDefault();
             e.stopPropagation();
+            handleExit(e);
         };
 
         if (exitButton) {
-            exitButton.addEventListener('touchstart', handleTouchStart, { passive: false });
+            exitButton.addEventListener('touchend', handleTouchEnd, { passive: false });
         }
 
         return () => {
             if (exitButton) {
-                exitButton.removeEventListener('touchstart', handleTouchStart);
+                exitButton.removeEventListener('touchend', handleTouchEnd);
             }
         };
-    }, []);
+    }, [handleExit]);
 
     return (
         <div className="fixed inset-0 w-full h-full overflow-hidden">
@@ -84,11 +85,16 @@ export default function WhoAmIPage() {
                     e.stopPropagation();
                     handleExit(e);
                 }}
+                onTouchEnd={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleExit(e);
+                }}
                 onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                 }}
-                className="fixed top-2 right-2 md:right-4 z-[10000] min-h-[36px] min-w-[36px] p-2 rounded-lg flex items-center justify-center touch-manipulation"
+                className="fixed top-2 right-2 md:right-4 z-[10000] min-h-[44px] min-w-[44px] md:min-h-[36px] md:min-w-[36px] p-2 rounded-lg flex items-center justify-center touch-manipulation"
                 style={{
                     background: 'rgba(0, 0, 0, 0.8)',
                     backdropFilter: 'blur(10px)',
@@ -96,7 +102,8 @@ export default function WhoAmIPage() {
                     color: '#ffd700',
                     boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
                     position: 'fixed',
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    WebkitTapHighlightColor: 'transparent'
                 }}
                 whileHover={{ 
                     scale: 1.1, 
@@ -105,8 +112,10 @@ export default function WhoAmIPage() {
                     transition: { duration: 0, ease: 'linear' }
                 }}
                 transition={{ 
-                    duration: 0.3, 
-                    delay: 0.5
+                    opacity: { duration: 0.3, delay: 0.5 },
+                    scale: { duration: 0 },
+                    boxShadow: { duration: 0 },
+                    background: { duration: 0 }
                 }}
                 whileTap={{ 
                     scale: 0.95,
