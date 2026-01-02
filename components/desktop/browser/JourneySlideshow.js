@@ -160,6 +160,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [recentlyUpdatedSkills, setRecentlyUpdatedSkills] = useState(new Set());
     const [previousSkillValues, setPreviousSkillValues] = useState({});
     const [showSummary, setShowSummary] = useState(false);
+    const [activeTab, setActiveTab] = useState('summary'); // 'summary' or 'skills'
 
     // Memoize prefersReducedMotion to avoid checking on every render
     const prefersReducedMotion = useMemo(() => {
@@ -576,7 +577,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
     // Generate background particles for summary page - MUST be before early return
     const summaryParticles = useMemo(() => {
-        return Array.from({ length: 20 }, (_, i) => ({
+        return Array.from({ length: 40 }, (_, i) => ({
             id: i,
             left: Math.random() * 100,
             top: Math.random() * 100,
@@ -851,16 +852,177 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 Journey Summary
                             </motion.h1>
 
+                            {/* Tabs - Ancient scroll style tabs */}
+                            <div className="flex gap-0 mb-0 shrink-0 relative" style={{ marginTop: '-4px' }}>
+                                <motion.button
+                                    onClick={() => setActiveTab('summary')}
+                                    className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 font-bold text-xs sm:text-sm md:text-base flex-1 touch-manipulation min-h-[44px] sm:min-h-[48px] relative overflow-hidden`}
+                                    style={{
+                                        background: activeTab === 'summary' 
+                                            ? 'linear-gradient(to bottom, #e8c896 0%, #f0dd9c 20%, #e8c896 50%, #d4aa68 100%)' 
+                                            : 'linear-gradient(to bottom, #c19b5d 0%, #d4aa68 30%, #c19b5d 100%)',
+                                        border: `1px solid ${activeTab === 'summary' ? 'rgba(139, 69, 19, 0.6)' : 'rgba(139, 69, 19, 0.4)'}`,
+                                        borderBottom: activeTab === 'summary' ? 'none' : '1px solid rgba(139, 69, 19, 0.4)',
+                                        borderTopLeftRadius: '6px',
+                                        borderTopRightRadius: '6px',
+                                        color: '#5D4037',
+                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 4px rgba(139, 69, 19, 0.3)',
+                                        fontFamily: 'serif',
+                                        letterSpacing: '0.08em',
+                                        textTransform: 'uppercase',
+                                        boxShadow: activeTab === 'summary' 
+                                            ? 'inset 0 1px 3px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(139, 69, 19, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3)' 
+                                            : 'inset 0 1px 2px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(139, 69, 19, 0.1)',
+                                        zIndex: activeTab === 'summary' ? 3 : 1,
+                                        position: 'relative',
+                                        marginRight: activeTab === 'summary' ? '0' : '-1px'
+                                    }}
+                                    whileHover={prefersReducedMotion ? {} : {
+                                        scale: activeTab === 'summary' ? 1 : 1.01
+                                    }}
+                                    whileTap={prefersReducedMotion ? {} : {
+                                        scale: 0.98
+                                    }}
+                                    transition={{
+                                        scale: { duration: 0 },
+                                        background: { duration: 0 },
+                                        borderColor: { duration: 0 }
+                                    }}
+                                >
+                                    {/* Parchment texture overlay with noise - matching scroll */}
+                                    <div 
+                                        className="absolute inset-0 pointer-events-none"
+                                        style={{
+                                            backgroundImage: `
+                                                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E"),
+                                                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                                                radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.08) 0%, transparent 50%)
+                                            `,
+                                            mixBlendMode: 'multiply',
+                                            opacity: 0.6
+                                        }}
+                                    />
+                                    {/* Aged spots/burns - matching scroll */}
+                                    <div 
+                                        className="absolute inset-0 pointer-events-none"
+                                        style={{
+                                            backgroundImage: `
+                                                radial-gradient(circle at 15% 25%, rgba(139, 69, 19, 0.15) 0%, transparent 3%),
+                                                radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.12) 0%, transparent 2.5%),
+                                                radial-gradient(circle at 50% 10%, rgba(139, 69, 19, 0.1) 0%, transparent 2%)
+                                            `,
+                                            mixBlendMode: 'multiply'
+                                        }}
+                                    />
+                                    {/* Decorative corner elements for active tab */}
+                                    {activeTab === 'summary' && (
+                                        <>
+                                            <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-[#8B4513] opacity-60" />
+                                            <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-[#8B4513] opacity-60" />
+                                            <div 
+                                                className="absolute bottom-0 left-0 right-0 h-1"
+                                                style={{
+                                                    background: 'linear-gradient(to bottom, #e8c896, #d4aa68)',
+                                                    zIndex: 4
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                    <span className="relative z-10">Summary</span>
+                                </motion.button>
+                                <motion.button
+                                    onClick={() => setActiveTab('skills')}
+                                    className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 font-bold text-xs sm:text-sm md:text-base flex-1 touch-manipulation min-h-[44px] sm:min-h-[48px] relative overflow-hidden`}
+                                    style={{
+                                        background: activeTab === 'skills' 
+                                            ? 'linear-gradient(to bottom, #e8c896 0%, #f0dd9c 20%, #e8c896 50%, #d4aa68 100%)' 
+                                            : 'linear-gradient(to bottom, #c19b5d 0%, #d4aa68 30%, #c19b5d 100%)',
+                                        border: `1px solid ${activeTab === 'skills' ? 'rgba(139, 69, 19, 0.6)' : 'rgba(139, 69, 19, 0.4)'}`,
+                                        borderBottom: activeTab === 'skills' ? 'none' : '1px solid rgba(139, 69, 19, 0.4)',
+                                        borderTopLeftRadius: '6px',
+                                        borderTopRightRadius: '6px',
+                                        color: '#5D4037',
+                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 4px rgba(139, 69, 19, 0.3)',
+                                        fontFamily: 'serif',
+                                        letterSpacing: '0.08em',
+                                        textTransform: 'uppercase',
+                                        boxShadow: activeTab === 'skills' 
+                                            ? 'inset 0 1px 3px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(139, 69, 19, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3)' 
+                                            : 'inset 0 1px 2px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(139, 69, 19, 0.1)',
+                                        zIndex: activeTab === 'skills' ? 3 : 1,
+                                        position: 'relative',
+                                        marginLeft: activeTab === 'skills' ? '0' : '-1px'
+                                    }}
+                                    whileHover={prefersReducedMotion ? {} : {
+                                        scale: activeTab === 'skills' ? 1 : 1.01
+                                    }}
+                                    whileTap={prefersReducedMotion ? {} : {
+                                        scale: 0.98
+                                    }}
+                                    transition={{
+                                        scale: { duration: 0 },
+                                        background: { duration: 0 },
+                                        borderColor: { duration: 0 }
+                                    }}
+                                >
+                                    {/* Parchment texture overlay with noise - matching scroll */}
+                                    <div 
+                                        className="absolute inset-0 pointer-events-none"
+                                        style={{
+                                            backgroundImage: `
+                                                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E"),
+                                                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                                                radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.08) 0%, transparent 50%)
+                                            `,
+                                            mixBlendMode: 'multiply',
+                                            opacity: 0.6
+                                        }}
+                                    />
+                                    {/* Aged spots/burns - matching scroll */}
+                                    <div 
+                                        className="absolute inset-0 pointer-events-none"
+                                        style={{
+                                            backgroundImage: `
+                                                radial-gradient(circle at 15% 25%, rgba(139, 69, 19, 0.15) 0%, transparent 3%),
+                                                radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.12) 0%, transparent 2.5%),
+                                                radial-gradient(circle at 50% 10%, rgba(139, 69, 19, 0.1) 0%, transparent 2%)
+                                            `,
+                                            mixBlendMode: 'multiply'
+                                        }}
+                                    />
+                                    {/* Decorative corner elements for active tab */}
+                                    {activeTab === 'skills' && (
+                                        <>
+                                            <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-[#8B4513] opacity-60" />
+                                            <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-[#8B4513] opacity-60" />
+                                            <div 
+                                                className="absolute bottom-0 left-0 right-0 h-1"
+                                                style={{
+                                                    background: 'linear-gradient(to bottom, #e8c896, #d4aa68)',
+                                                    zIndex: 4
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                    <span className="relative z-10">Skills</span>
+                                </motion.button>
+                            </div>
+
                             {/* Scrollable Content Container */}
                             <div 
                                 className="flex-1 overflow-y-auto min-h-0 py-3 sm:py-2 md:py-4 custom-scrollbar"
                                 style={{
                                     scrollbarWidth: 'thin',
-                                    scrollbarColor: '#8B4513 transparent'
+                                    scrollbarColor: '#8B4513 transparent',
+                                    borderTop: '2px solid rgba(139, 69, 19, 0.3)',
+                                    marginTop: '-2px',
+                                    position: 'relative',
+                                    zIndex: 2
                                 }}
                             >
-                            {/* Journey Transcript - Grouped by Categories */}
-                            <div className="space-y-3 sm:space-y-3 md:space-y-4 lg:space-y-6 mb-4 sm:mb-4 md:mb-6 lg:mb-8 px-1 sm:px-0">
+                            {/* Journey Transcript Tab */}
+                            {activeTab === 'summary' && (
+                            <div className="space-y-3 sm:space-y-3 md:space-y-4 lg:space-y-6 mb-4 sm:mb-4 md:mb-6 lg:mb-8 px-1 sm:px-0 pt-2 sm:pt-2">
                                 {Object.entries(journeySummaryContent).map(([key, section], index) => (
                                     <motion.div
                                         key={key}
@@ -923,17 +1085,15 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     </motion.div>
                                 ))}
                             </div>
+                            )}
 
-                            {/* Final Skills Summary */}
-                            {skills && (
+                            {/* Skills Tab */}
+                            {activeTab === 'skills' && skills && (
                                 <motion.div
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
                                     animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                                     transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4 }}
-                                    className="mt-5 sm:mt-4 md:mt-6 lg:mt-8 pt-3 sm:pt-3 md:pt-4 lg:pt-6 border-t-2 px-1 sm:px-0"
-                                    style={{
-                                        borderColor: 'rgba(139, 69, 19, 0.3)'
-                                    }}
+                                    className="pt-3 sm:pt-3 md:pt-4 lg:pt-6 px-1 sm:px-0"
                                 >
                                     <h2 
                                         className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 md:mb-6"
@@ -1101,7 +1261,6 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     ref={returnButtonRef}
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
                                     animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.6 }}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
@@ -1121,7 +1280,6 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(139, 69, 19, 0.3), 0 0 0 1px rgba(139, 69, 19, 0.2)',
                                         fontFamily: 'serif',
                                         letterSpacing: '0.05em',
-                                        transition: 'all 0.3s ease',
                                         transformOrigin: 'center center',
                                         willChange: 'transform',
                                         pointerEvents: 'auto',
@@ -1133,15 +1291,21 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         rotate: 1,
                                         boxShadow: 'inset 0 1px 3px rgba(255, 255, 255, 0.5), 0 6px 20px rgba(139, 69, 19, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 0 2px rgba(139, 69, 19, 0.4)',
                                         borderColor: '#8B4513',
-                                        background: 'linear-gradient(to bottom, #f0dd9c, #e8c896)',
-                                        transition: {
-                                            duration: 0.3,
-                                            ease: 'easeOut'
-                                        }
+                                        background: 'linear-gradient(to bottom, #f0dd9c, #e8c896)'
+                                    }}
+                                    transition={{
+                                        opacity: { duration: 0.5, delay: 0.6 },
+                                        y: { duration: 0.5, delay: 0.6 },
+                                        scale: { duration: 0 },
+                                        rotate: { duration: 0 },
+                                        boxShadow: { duration: 0 },
+                                        borderColor: { duration: 0 },
+                                        background: { duration: 0 }
                                     }}
                                     whileTap={prefersReducedMotion ? {} : { 
                                         scale: 0.96,
-                                        rotate: -0.5
+                                        rotate: -0.5,
+                                        transition: { duration: 0, ease: 'linear' }
                                     }}
                                 >
                                     <motion.span 
