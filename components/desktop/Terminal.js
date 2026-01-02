@@ -584,14 +584,14 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 opacity: terminalState === 'minimized' ? 0 : 1,
                 y: terminalState === 'minimized' ? 200 : 0,
                 width: terminalState === 'maximized' ? '100vw' : dimensions.width,
-                height: terminalState === 'maximized' ? 'calc(100vh - 28px)' : dimensions.height,
-                top: terminalState === 'maximized' ? '28px' : dimensions.top,
-                left: safeLeft,
+                height: terminalState === 'maximized' ? '100vh' : dimensions.height,
+                top: terminalState === 'maximized' ? 0 : dimensions.top,
+                left: terminalState === 'maximized' ? 0 : safeLeft,
                 pointerEvents: terminalState === 'minimized' ? 'none' : 'auto'
             }}
             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
             onMouseDown={startDrag}
-            className="fixed z-20 shadow-2xl rounded-xl overflow-hidden border border-white/10"
+            className={`fixed shadow-2xl overflow-hidden border border-white/10 ${terminalState === 'maximized' ? 'z-[60] rounded-none' : 'z-20 rounded-xl'}`}
             style={{ 
                 transformOrigin: 'bottom',
                 maxWidth: '100vw',

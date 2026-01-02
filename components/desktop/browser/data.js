@@ -346,92 +346,68 @@ export const aboutMeData = {
         // Technical Skills
         Backend: {
             baseline: 0,
-            max: 100,
-            description: "Developing robust server-side applications and APIs using Node.js, Python, Ruby on Rails, and Go. Building scalable systems that handle real-world traffic.",
-            subSkills: ["Node.js", "Python", "Ruby on Rails", "Go", "RESTful APIs", "Database Design"]
+            max: 100
         },
         Frontend: {
             baseline: 0,
-            max: 100,
-            description: "Building modern, responsive user interfaces with React, Next.js, and TypeScript. Creating engaging user experiences that are both beautiful and performant.",
-            subSkills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Responsive Design"]
+            max: 100
         },
         Hardware: {
             baseline: 0,
-            max: 100,
-            description: "Working with physical computing, embedded systems, and hardware integration. Understanding the bridge between software and hardware.",
-            subSkills: ["Embedded Systems", "IoT", "Hardware Integration"]
+            max: 100
         },
         'Telegram Bots': {
             baseline: 0,
-            max: 100,
-            description: "Building interactive Telegram bots for automation, customer service, and user engagement. Creating seamless chat-based experiences.",
-            subSkills: ["Bot API", "Webhooks", "Chat Automation"]
+            max: 100
         },
         Deployment: {
             baseline: 0,
-            max: 100,
-            description: "Deploying applications to production environments. Managing releases, rollbacks, and ensuring zero-downtime deployments.",
-            subSkills: ["CI/CD", "Docker", "Kubernetes", "Release Management"]
+            max: 100
         },
         DevOps: {
             baseline: 0,
-            max: 100,
-            description: "Implementing CI/CD pipelines, monitoring systems, and infrastructure automation. Ensuring reliable deployments and system observability.",
-            subSkills: ["CI/CD", "Grafana", "Prometheus", "Monitoring", "Automation"]
+            max: 100
         },
         LLMs: {
             baseline: 0,
-            max: 100,
-            description: "Working with Large Language Models, AI integration, and natural language processing. Building intelligent applications powered by AI.",
-            subSkills: ["OpenAI API", "Prompt Engineering", "AI Integration", "NLP"]
+            max: 100
         },
         'Cloud Infrastructure': {
             baseline: 0,
-            max: 100,
-            description: "Designing and managing cloud infrastructure. Working with containerization, orchestration, and distributed systems.",
-            subSkills: ["Docker", "Container Orchestration", "Cloud Architecture", "Service Networking"]
+            max: 100
         },
         SRE: {
             baseline: 0,
             max: 100,
             locked: true,
-            unlockThreshold: { Backend: 70, 'Cloud Infrastructure': 70, DevOps: 70 },
-            description: "Site Reliability Engineering - ensuring systems are reliable, scalable, and maintainable. Combining software engineering practices with operations expertise.",
-            subSkills: ["System Reliability", "Performance Optimization", "Incident Response", "Capacity Planning"]
+            unlockThreshold: { Backend: 70, 'Cloud Infrastructure': 70, DevOps: 70 }
         },
         // Non-Technical Skills
         'Product Management': {
             baseline: 0,
-            max: 100,
-            description: "Leading product development from conception to launch. Balancing user needs, business goals, and technical constraints.",
-            subSkills: ["Roadmapping", "User Research", "Stakeholder Management", "Agile"]
+            max: 100
         },
         Social: {
             baseline: 50,
-            max: 100,
-            description: "Building relationships, networking, and collaborating with teams. Effective communication and community engagement.",
-            subSkills: ["Networking", "Communication", "Team Collaboration"]
+            max: 100
         },
         Recreational: {
             baseline: 100,
-            max: 100,
-            description: "Personal interests and hobbies that contribute to work-life balance and creative thinking.",
-            subSkills: ["Photography", "Gaming", "Reading"]
+            max: 100
         }
     },
     journey: [
         {
             id: 1,
-            title: "Victoria Secondary School",
+            title: "Before Uni - Victoria School and Victoria Junior College",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "My journey began at Victoria Secondary School, where I first discovered my passion for technology and coding."
+                    text: "My journey began at Victoria Secondary School and continued at Victoria Junior College, where I first discovered my passion for technology and coding."
                 },
                 {
                     speaker: "hero",
-                    text: "This was where I laid the foundation for my future in software development."
+                    text: "This period laid the foundation for my future in software development, teaching me the fundamentals of programming and problem-solving."
                 },
                 {
                     speaker: "npc",
@@ -442,54 +418,25 @@ export const aboutMeData = {
             ],
             category: "Education",
             icon: "🎓",
-            skillsGained: { Frontend: 10, Backend: 5 },
+            skillsGained: { Frontend: 15, Backend: 10, Social: 5 },
             npc: {
                 name: "The Teacher",
                 avatar: "👨‍🏫",
                 position: "right"
             },
-            scene: "/background/victoria.jpg"
-        },
-        {
-            id: 2,
-            title: "Victoria Junior College",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "At Victoria Junior College, I continued to develop my technical skills and began exploring more advanced concepts."
-                },
-                {
-                    speaker: "hero",
-                    text: "This period helped me build a stronger foundation in programming and problem-solving."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Mentor",
-                    avatar: "👨‍💼",
-                    text: "You're growing stronger. Keep pushing forward."
-                }
-            ],
-            category: "Education",
-            icon: "📚",
-            skillsGained: { Frontend: 15, Backend: 10, 'Product Management': 5 },
-            npc: {
-                name: "The Mentor",
-                avatar: "👨‍💼",
-                position: "center"
-            },
             scene: "/background/vjc.jpeg"
         },
         {
-            id: 3,
-            title: "Internship at Reluvate Technology",
+            id: 2,
+            title: "Internship before University - Reluvate Technologies",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "My first professional experience at Reluvate Technology opened my eyes to real-world software development."
+                    text: "My first professional experience at Reluvate Technologies opened my eyes to real-world software development in a startup environment."
                 },
                 {
                     speaker: "hero",
-                    text: "I learned how to work in a team and deliver production-ready code."
+                    text: "I learned how to work in a fast-paced team, deliver production-ready code, and adapt to the dynamic nature of startup culture."
                 },
                 {
                     speaker: "npc",
@@ -500,7 +447,7 @@ export const aboutMeData = {
             ],
             category: "Internship",
             icon: "💼",
-            skillsGained: { Frontend: 20, Backend: 20, 'Product Management': 5 },
+            skillsGained: { Frontend: 20, Backend: 20, 'Product Management': 10 },
             npc: {
                 name: "The Senior Developer",
                 avatar: "👨‍💻",
@@ -509,299 +456,91 @@ export const aboutMeData = {
             scene: "/background/reluvate.gif"
         },
         {
-            id: 4,
-            title: "Student Government - Frontend and Backend",
+            id: 3,
+            title: "University - SUTD",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "In Student Government, I led technical projects, building both frontend and backend systems."
+                    text: "At SUTD, I deepened my technical knowledge through rigorous coursework, design thinking modules, and hands-on projects."
                 },
                 {
                     speaker: "hero",
-                    text: "I was awarded 3 service awards for my tech contributions, recognizing my impact on the community."
+                    text: "I worked on hardware projects, built AI chatbots, led student government tech initiatives, and received recognition for my work through various awards."
                 },
                 {
                     speaker: "npc",
-                    name: "The Council",
-                    avatar: "👥",
-                    text: "Your technical leadership has made a real difference. Congratulations on the awards."
+                    name: "The Professor",
+                    avatar: "👨‍🏫",
+                    text: "You've excelled in both technical and leadership roles. Your growth has been remarkable."
                 }
             ],
-            category: "Student Government",
+            category: "Education",
             icon: "🏛️",
-            skillsGained: { Frontend: 25, Backend: 25, 'Product Management': 15, Social: 10 },
+            skillsGained: { Frontend: 25, Backend: 25, Hardware: 20, 'Telegram Bots': 20, LLMs: 20, DevOps: 15, 'Cloud Infrastructure': 20, 'Product Management': 20, Social: 15 },
             npc: {
-                name: "The Council",
-                avatar: "👥",
-                position: "left"
-            },
-            scene: "/background/Root-Student-Government.JPG"
-        },
-        {
-            id: 5,
-            title: "SUTD Design Thinking Module - Hardware",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "The Design Thinking Module at SUTD introduced me to hardware development and physical computing."
-                },
-                {
-                    speaker: "hero",
-                    text: "I learned to bridge the gap between software and hardware, creating integrated solutions."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Engineer",
-                    avatar: "🔧",
-                    text: "You've mastered the art of connecting digital and physical worlds."
-                }
-            ],
-            category: "Education",
-            icon: "⚙️",
-            skillsGained: { Hardware: 30, Frontend: 10, Backend: 10 },
-            npc: {
-                name: "The Engineer",
-                avatar: "🔧",
-                position: "right"
-            },
-            scene: "/background/DesignThinking.JPG"
-        },
-        {
-            id: 6,
-            title: "School Project Awards",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "I received recognition for my projects: 3rd Singtel Information System Award, Top 3 Dell Cloud Native Finalist, and 3rd Advisors Clique Student Leadership Award."
-                },
-                {
-                    speaker: "hero",
-                    text: "These awards validated my technical skills and leadership abilities."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Judge",
-                    avatar: "🏆",
-                    text: "Your work stands out. These awards are well-deserved."
-                }
-            ],
-            category: "Achievements",
-            icon: "🏆",
-            skillsGained: { 'Cloud Infrastructure': 20, DevOps: 15, 'Product Management': 20, Social: 10 },
-            npc: {
-                name: "The Judge",
-                avatar: "🏆",
-                position: "center"
-            },
-            scene: "/background/SchoolProjectAwards.JPG"
-        },
-        {
-            id: 7,
-            title: "DevOps Final Year Master Course",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "The DevOps Final Year Master Course deepened my understanding of infrastructure, automation, and cloud technologies."
-                },
-                {
-                    speaker: "hero",
-                    text: "I mastered CI/CD pipelines, containerization, and infrastructure as code."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Architect",
-                    avatar: "🏗️",
-                    text: "You've become a true DevOps engineer. The infrastructure is your domain now."
-                }
-            ],
-            category: "Education",
-            icon: "🔧",
-            skillsGained: { DevOps: 35, 'Cloud Infrastructure': 30, Deployment: 25 },
-            npc: {
-                name: "The Architect",
-                avatar: "🏗️",
-                position: "right"
-            },
-            scene: "/background/devopsMasterCourse.JPG"
-        },
-        {
-            id: 8,
-            title: "SUTD Contracted Work - AI Registration Chatbot",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "I developed an AI Registration Chatbot for SUTD, combining natural language processing with practical automation."
-                },
-                {
-                    speaker: "hero",
-                    text: "This project taught me how to build intelligent systems that interact with users naturally."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Client",
-                    avatar: "🤖",
-                    text: "Your chatbot has transformed our registration process. Excellent work."
-                }
-            ],
-            category: "Projects",
-            icon: "🤖",
-            skillsGained: { 'Telegram Bots': 30, LLMs: 25, Backend: 20, 'Product Management': 10 },
-            npc: {
-                name: "The Client",
-                avatar: "🤖",
+                name: "The Professor",
+                avatar: "👨‍🏫",
                 position: "center"
             },
             scene: "/background/sutdcontractedwork.webp"
         },
         {
-            id: 9,
-            title: "Changi Airport Internship - Automation/SWE",
+            id: 4,
+            title: "Internships - Changi Airport Group, TSMC, and Bytedance",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "At Changi Airport, I worked on automation and software engineering projects that improved operational efficiency."
+                    text: "I completed multiple internships at Changi Airport Group, TSMC, and Bytedance, each teaching me different aspects of software engineering."
                 },
                 {
                     speaker: "hero",
-                    text: "I learned to build scalable systems that handle real-world traffic and critical operations."
+                    text: "From automation and software engineering at Changi Airport, to DevOps infrastructure at TSMC, to Site Reliability Engineering at Bytedance - each experience built upon the last."
                 },
                 {
                     speaker: "npc",
-                    name: "The Manager",
-                    avatar: "✈️",
-                    text: "Your automation solutions have made a significant impact on our operations."
+                    name: "The Mentor",
+                    avatar: "👨‍💼",
+                    text: "You've gained invaluable experience across different industries and roles. You're ready for what's next."
                 }
             ],
             category: "Internship",
-            icon: "✈️",
-            skillsGained: { Backend: 30, DevOps: 20, Deployment: 20, 'Product Management': 15 },
+            icon: "🌐",
+            skillsGained: { Backend: 30, DevOps: 40, 'Cloud Infrastructure': 35, SRE: 30, Deployment: 25, 'Product Management': 15 },
             npc: {
-                name: "The Manager",
-                avatar: "✈️",
-                position: "right"
-            },
-            scene: "/background/changiairport.webp"
-        },
-        {
-            id: 10,
-            title: "TSMC Internship - DevOps",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "At TSMC, I worked on DevOps infrastructure, managing complex systems and ensuring high availability."
-                },
-                {
-                    speaker: "hero",
-                    text: "This experience taught me how to maintain critical infrastructure at scale."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Lead",
-                    avatar: "🏭",
-                    text: "You've proven yourself capable of handling enterprise-level infrastructure."
-                }
-            ],
-            category: "Internship",
-            icon: "🏭",
-            skillsGained: { DevOps: 40, 'Cloud Infrastructure': 35, SRE: 20 },
-            npc: {
-                name: "The Lead",
-                avatar: "🏭",
-                position: "left"
-            },
-            scene: "/background/tsmc.webp"
-        },
-        {
-            id: 11,
-            title: "Tangled Startup - Project Management",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "At Tangled Startup, I took on project management responsibilities, leading cross-functional teams."
-                },
-                {
-                    speaker: "hero",
-                    text: "I learned to balance technical execution with business objectives and stakeholder management."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Founder",
-                    avatar: "🚀",
-                    text: "Your leadership has been instrumental in our success. You've grown into a true product manager."
-                }
-            ],
-            category: "Work",
-            icon: "🚀",
-            skillsGained: { 'Product Management': 40, Backend: 15, Frontend: 10, Social: 15 },
-            npc: {
-                name: "The Founder",
-                avatar: "🚀",
-                position: "center"
-            },
-            scene: "/background/tangled.jpeg"
-        },
-        {
-            id: 12,
-            title: "Bytedance Internship - SRE",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "At Bytedance, I worked as a Site Reliability Engineer, ensuring the reliability and performance of large-scale systems."
-                },
-                {
-                    speaker: "hero",
-                    text: "I mastered observability, incident response, and building resilient systems that serve millions of users."
-                },
-                {
-                    speaker: "npc",
-                    name: "The SRE Lead",
-                    avatar: "🛡️",
-                    text: "You've become a true SRE. Your skills in reliability engineering are exceptional."
-                }
-            ],
-            category: "Internship",
-            icon: "🛡️",
-            skillsGained: { SRE: 50, DevOps: 30, 'Cloud Infrastructure': 30, Backend: 20 },
-            npc: {
-                name: "The SRE Lead",
-                avatar: "🛡️",
+                name: "The Mentor",
+                avatar: "👨‍💼",
                 position: "right"
             },
             scene: "/background/bytedance.webp"
-        }
-    ],
-    recreational: [
-        {
-            title: "Photography",
-            description: "Capturing moments and exploring creative perspectives through the lens.",
-            icon: "📸"
         },
         {
-            title: "Gaming",
-            description: "Enjoying strategy games and exploring virtual worlds in my free time.",
-            icon: "🎮"
-        },
-        {
-            title: "Reading",
-            description: "Staying updated with tech blogs, system design books, and industry trends.",
-            icon: "📚"
-        }
-    ],
-    social: [
-        {
-            title: "Open Source Contributor",
-            description: "Contributing to open source projects and sharing knowledge with the community.",
-            icon: "💻"
-        },
-        {
-            title: "Tech Meetups",
-            description: "Attending and speaking at local developer meetups and conferences.",
-            icon: "🤝"
-        },
-        {
-            title: "Mentoring",
-            description: "Helping junior developers grow and sharing experiences from my journey.",
-            icon: "👥"
+            id: 5,
+            title: "Back to SUTD - Waiting for Full Time Job",
+            dialogues: [
+                {
+                    speaker: "hero",
+                    text: "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey."
+                },
+                {
+                    speaker: "hero",
+                    text: "With all the experiences I've gained, I'm ready to take on full-time opportunities and continue growing as a software engineer."
+                },
+                {
+                    speaker: "npc",
+                    name: "The Future",
+                    avatar: "🚀",
+                    text: "Your journey has prepared you well. The future holds great opportunities."
+                }
+            ],
+            category: "Future",
+            icon: "🚀",
+            skillsGained: { Social: 10, 'Product Management': 10 },
+            npc: {
+                name: "The Future",
+                avatar: "🚀",
+                position: "center"
+            },
+            scene: "/background/sutdcontractedwork.webp"
         }
     ]
 };

@@ -74,3 +74,4 @@ To add a new browser command/feature:
 - **Reusable**: Components can be reused across different views
 - **Scalable**: Easy to add new features without touching existing code
 
+

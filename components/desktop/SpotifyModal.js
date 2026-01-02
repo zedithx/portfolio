@@ -214,6 +214,16 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
 
     const isMaximized = modalState === 'maximized';
     const isMinimized = modalState === 'minimized';
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 640);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // Add ESC key handler
     useEffect(() => {
@@ -242,20 +252,19 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                         animate={{ 
                             scale: isMinimized ? 0 : 1,
                             opacity: isMinimized ? 0 : 1,
-                            width: isMaximized ? '100vw' : '80rem',
-                            height: isMaximized ? 'calc(100vh - 28px)' : '90vh',
-                            top: isMaximized ? '28px' : '50%',
+                            width: isMaximized ? '100vw' : (isMobile ? '95vw' : '90vw'),
+                            height: isMaximized ? '100vh' : (isMobile ? '85vh' : '90vh'),
+                            top: isMaximized ? 0 : '50%',
                             left: isMaximized ? 0 : '50%',
                             x: isMaximized ? 0 : '-50%',
-                            y: isMinimized ? 200 : (isMaximized ? 0 : '-50%'),
+                            y: isMinimized ? '100vh' : (isMaximized ? 0 : '-50%'),
                         }}
-                        exit={{ scale: 0, opacity: 0, y: 200 }}
+                        exit={{ scale: 0, opacity: 0, y: '100vh' }}
                         transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                        className={`fixed z-[100] flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'rounded-none' : 'rounded-lg'}`}
+                        className={`fixed flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'z-[60] rounded-none' : 'z-[100] rounded-lg'} ${isMaximized ? '' : 'max-w-[80rem]'}`}
                         style={{ 
-                            transformOrigin: 'bottom',
+                            transformOrigin: 'center',
                             pointerEvents: isMinimized ? 'none' : 'auto',
-                            maxWidth: isMaximized ? '100vw' : '80rem'
                         }}
                         onClick={(e) => {
                             // Click outside to close (only if not minimized and clicking the backdrop)
@@ -265,40 +274,65 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                         }}
                     >
                     {/* Title Bar */}
-                        <div className="flex items-center justify-between px-4 py-3 bg-[#1a1a1a] border-b border-white/10">
-                            <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between px-4 py-3 sm:px-4 sm:py-3 bg-[#1a1a1a] border-b border-white/10">
+                            <div className="flex items-center gap-2 sm:gap-2">
                                 <button 
-                                    onClick={onClose} 
-                                    className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onClose();
+                                    }}
+                                    onTouchStart={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }}
+                                    className="w-4 h-4 sm:w-3 sm:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 active:brightness-75 transition-all touch-manipulation"
+                                    aria-label="Close"
                                 ></button>
                                 <button 
                                     onClick={(e) => {
+                                        e.preventDefault();
                                         e.stopPropagation();
-                                        if (onMinimize) onMinimize();
+                                        if (onMinimize) {
+                                            onMinimize();
+                                        }
                                     }}
-                                    className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all"
+                                    onTouchStart={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }}
+                                    className="w-4 h-4 sm:w-3 sm:h-3 rounded-full bg-[#febc2e] hover:brightness-90 active:brightness-75 transition-all touch-manipulation"
+                                    aria-label="Minimize"
                                 />
                                 <button 
                                     onClick={(e) => {
+                                        e.preventDefault();
                                         e.stopPropagation();
-                                        if (onMaximize) onMaximize();
+                                        if (onMaximize) {
+                                            onMaximize();
+                                        }
                                     }}
-                                    className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all"
+                                    onTouchStart={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }}
+                                    className="w-4 h-4 sm:w-3 sm:h-3 rounded-full bg-[#28c840] hover:brightness-90 active:brightness-75 transition-all touch-manipulation"
+                                    aria-label="Maximize"
                                 />
                             </div>
-                            <div className="absolute left-1/2 -translate-x-1/2 text-sm text-white font-medium">
+                            <div className="absolute left-1/2 -translate-x-1/2 text-sm sm:text-sm text-white font-medium">
                                 Spotify
                             </div>
-                            <div className="w-12"></div>
+                            <div className="w-12 sm:w-12"></div>
                         </div>
 
                         {/* Main Content Area */}
-                        <div className="flex-1 overflow-auto bg-[#121212] p-6 sm:p-8">
+                        <div className="flex-1 overflow-auto bg-[#121212] p-4 sm:p-6 md:p-8">
                             {/* Current Track Info */}
-                            <div className="flex flex-col items-center justify-center mb-8">
+                            <div className="flex flex-col items-center justify-center mb-6 sm:mb-8">
                                 {/* Album Art */}
                                 {currentTrack.albumArt ? (
-                                    <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg shadow-2xl mb-6 overflow-hidden">
+                                    <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-lg shadow-2xl mb-4 sm:mb-6 overflow-hidden">
                                         <img 
                                             src={currentTrack.albumArt} 
                                             alt={`${currentTrack.title} album art`}
@@ -306,23 +340,23 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                         />
                                     </div>
                                 ) : (
-                                    <div className="w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded-lg shadow-2xl mb-6 flex items-center justify-center">
-                                        <span className="text-6xl sm:text-8xl">♪</span>
+                                    <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded-lg shadow-2xl mb-4 sm:mb-6 flex items-center justify-center">
+                                        <span className="text-5xl sm:text-6xl md:text-8xl">♪</span>
                                     </div>
                                 )}
                                 
                                 {/* Track Info */}
-                                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 text-center">
+                                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 text-center px-2">
                                     {currentTrack.title}
                                 </h2>
-                                <p className="text-lg sm:text-xl text-gray-400 text-center">
+                                <p className="text-base sm:text-lg md:text-xl text-gray-400 text-center px-2">
                                     {currentTrack.artist}
                                 </p>
                             </div>
 
                             {/* Track List */}
-                            <div className="mt-8">
-                                <h3 className="text-xl font-semibold text-white mb-4">Songs</h3>
+                            <div className="mt-6 sm:mt-8">
+                                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Songs</h3>
                                 <div className="space-y-2">
                                     {defaultTracks.map((track, index) => (
                                         <div
@@ -332,14 +366,14 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                                 setIsPlaying(true);
                                                 shouldAutoPlayRef.current = true;
                                             }}
-                                            className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer transition-colors ${
+                                            className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-3 rounded-lg cursor-pointer transition-colors touch-manipulation ${
                                                 index === currentTrackIndex
                                                     ? 'bg-[#1db954]/20 border border-[#1db954]/50'
-                                                    : 'bg-[#1a1a1a] hover:bg-[#2a2a2a]'
+                                                    : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] active:bg-[#2a2a2a]'
                                             }`}
                                         >
                                             {track.albumArt ? (
-                                                <div className="w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                                                <div className="w-12 h-12 sm:w-12 sm:h-12 rounded overflow-hidden flex-shrink-0">
                                                     <img 
                                                         src={track.albumArt} 
                                                         alt={`${track.title} album art`}
@@ -347,22 +381,22 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
+                                                <div className="w-12 h-12 sm:w-12 sm:h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
                                                     <span className="text-xl">♪</span>
                                                 </div>
                                             )}
                                             <div className="flex-1 min-w-0">
-                                                <p className={`font-medium truncate ${
+                                                <p className={`text-sm sm:text-base font-medium truncate ${
                                                     index === currentTrackIndex ? 'text-[#1db954]' : 'text-white'
                                                 }`}>
                                                     {track.title}
                                                 </p>
-                                                <p className="text-sm text-gray-400 truncate">
+                                                <p className="text-xs sm:text-sm text-gray-400 truncate">
                                                     {track.artist}
                                                 </p>
                                             </div>
                                             {index === currentTrackIndex && isPlaying && (
-                                                <div className="w-2 h-2 bg-[#1db954] rounded-full animate-pulse"></div>
+                                                <div className="w-2 h-2 bg-[#1db954] rounded-full animate-pulse flex-shrink-0"></div>
                                             )}
                                         </div>
                                     ))}
@@ -371,16 +405,16 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                         </div>
 
                         {/* Player Controls Bar */}
-                        <div className="bg-[#181818] border-t border-white/10 p-4 sm:p-6">
+                        <div className="bg-[#181818] border-t border-white/10 p-3 sm:p-4 md:p-6">
                             {/* Progress Bar */}
-                            <div className="mb-4">
+                            <div className="mb-3 sm:mb-4">
                                 <input
                                     type="range"
                                     min="0"
                                     max={duration || 0}
                                     value={currentTime}
                                     onChange={handleSeek}
-                                    className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#1db954]"
+                                    className="w-full h-1.5 sm:h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#1db954] touch-manipulation"
                                     style={{
                                         background: `linear-gradient(to right, #1db954 0%, #1db954 ${(currentTime / duration) * 100}%, #535353 ${(currentTime / duration) * 100}%, #535353 100%)`
                                     }}
@@ -392,9 +426,9 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                             </div>
 
                             {/* Controls */}
-                            <div className="flex items-center justify-between">
-                                {/* Track Info */}
-                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+                                {/* Track Info - Hidden on mobile, shown on desktop */}
+                                <div className="hidden sm:flex items-center gap-3 flex-1 min-w-0">
                                     {currentTrack.albumArt ? (
                                         <div className="w-12 h-12 rounded overflow-hidden flex-shrink-0">
                                             <img 
@@ -419,45 +453,45 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                 </div>
 
                                 {/* Playback Controls */}
-                                <div className="flex items-center gap-2 sm:gap-4">
+                                <div className="flex items-center gap-3 sm:gap-2 md:gap-4">
                                     <button
                                         onClick={handlePrevious}
-                                        className="p-2 text-gray-400 hover:text-white transition-colors"
+                                        className="p-2 sm:p-2 text-gray-400 hover:text-white active:text-white transition-colors touch-manipulation"
                                         aria-label="Previous track"
                                     >
-                                        <SkipBack size={20} />
+                                        <SkipBack size={22} className="sm:w-5 sm:h-5" />
                                     </button>
                                     <button
                                         onClick={togglePlayPause}
-                                        className="w-12 h-12 sm:w-14 sm:h-14 bg-white hover:scale-105 rounded-full flex items-center justify-center transition-transform shadow-lg"
+                                        className="w-14 h-14 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white hover:scale-105 active:scale-95 rounded-full flex items-center justify-center transition-transform shadow-lg touch-manipulation"
                                         aria-label={isPlaying ? 'Pause' : 'Play'}
                                     >
                                         {isPlaying ? (
-                                            <Pause size={24} className="text-black" fill="black" />
+                                            <Pause size={26} className="text-black sm:w-6 sm:h-6" fill="black" />
                                         ) : (
-                                            <Play size={24} className="text-black ml-0.5" fill="black" />
+                                            <Play size={26} className="text-black ml-0.5 sm:w-6 sm:h-6" fill="black" />
                                         )}
                                     </button>
                                     <button
                                         onClick={handleNext}
-                                        className="p-2 text-gray-400 hover:text-white transition-colors"
+                                        className="p-2 sm:p-2 text-gray-400 hover:text-white active:text-white transition-colors touch-manipulation"
                                         aria-label="Next track"
                                     >
-                                        <SkipForward size={20} />
+                                        <SkipForward size={22} className="sm:w-5 sm:h-5" />
                                     </button>
                                 </div>
 
                                 {/* Volume Control */}
-                                <div className="flex items-center gap-2 flex-1 justify-end">
+                                <div className="flex items-center gap-2 flex-1 sm:flex-1 justify-end">
                                     <button
                                         onClick={toggleMute}
-                                        className="p-2 text-gray-400 hover:text-white transition-colors"
+                                        className="p-2 text-gray-400 hover:text-white active:text-white transition-colors touch-manipulation"
                                         aria-label={isMuted ? 'Unmute' : 'Mute'}
                                     >
                                         {isMuted || volume === 0 ? (
-                                            <VolumeX size={20} />
+                                            <VolumeX size={20} className="sm:w-5 sm:h-5" />
                                         ) : (
-                                            <Volume2 size={20} />
+                                            <Volume2 size={20} className="sm:w-5 sm:h-5" />
                                         )}
                                     </button>
                                     <input
@@ -466,7 +500,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                         max="100"
                                         value={isMuted ? 0 : volume}
                                         onChange={handleVolumeChange}
-                                        className="w-20 sm:w-24 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#1db954]"
+                                        className="w-16 sm:w-20 md:w-24 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#1db954] touch-manipulation"
                                         style={{
                                             background: `linear-gradient(to right, #1db954 0%, #1db954 ${volume}%, #535353 ${volume}%, #535353 100%)`
                                         }}

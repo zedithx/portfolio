@@ -12,19 +12,19 @@ const dockApps = [
 
 function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, terminalState, spotifyModalState, onLoadingStart }) {
     const handleClick = (e) => {
-        if (app.name === 'Terminal') {
-            onTerminalClick();
-        } else if (app.name === 'Gmail') {
-            onGmailClick();
-        } else if (app.name === 'GitHub') {
+                            if (app.name === 'Terminal') {
+                                onTerminalClick();
+                            } else if (app.name === 'Gmail') {
+                                onGmailClick();
+                            } else if (app.name === 'GitHub') {
             onLoadingStart('github', 'https://github.com/zedithx');
-        } else if (app.name === 'LinkedIn') {
+                            } else if (app.name === 'LinkedIn') {
             onLoadingStart('linkedin', 'https://linkedin.com/in/yang-si-jun/');
         } else if (app.name === 'Spotify') {
             onSpotifyClick();
-        } else {
-            onPermissionError();
-        }
+                            } else {
+                                onPermissionError();
+                            }
     };
     
     return (
@@ -37,23 +37,23 @@ function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpo
                 damping: 17
             }}
             onClick={handleClick}
-        >
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                {app.name}
-            </div>
+                    >
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                            {app.name}
+                        </div>
             <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl overflow-hidden shadow-lg cursor-pointer flex items-center justify-center">
-                <img 
-                    src={app.icon} 
-                    alt={app.name} 
-                    className={`w-full h-full object-cover ${app.name === 'LinkedIn' ? 'scale-[85%]' : ''}`}
-                />
-            </div>
+                            <img 
+                                src={app.icon} 
+                                alt={app.name} 
+                                className={`w-full h-full object-cover ${app.name === 'LinkedIn' ? 'scale-[85%]' : ''}`}
+                            />
+                        </div>
             {(app.active || 
               (app.name === 'Terminal' && terminalState !== 'closed') ||
               (app.name === 'Spotify' && spotifyModalState !== 'closed')) && (
-                <div className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/80 rounded-full" />
-            )}
-        </motion.div>
+                            <div className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/80 rounded-full" />
+                        )}
+                    </motion.div>
     );
 }
 

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MenuBar({ onPermissionError }) {
     const [time, setTime] = useState(new Date());
+    const [isMounted, setIsMounted] = useState(false);
     const [isAppleMenuOpen, setIsAppleMenuOpen] = useState(false);
     const [isiTermMenuOpen, setIsiTermMenuOpen] = useState(false);
     const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
@@ -31,6 +32,7 @@ export default function MenuBar({ onPermissionError }) {
     const widgetScreenRef = useRef(null);
 
     useEffect(() => {
+        setIsMounted(true);
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
@@ -94,10 +96,20 @@ export default function MenuBar({ onPermissionError }) {
     };
 
     const formatDate = (date) => {
-        if (typeof window !== 'undefined' && window.innerWidth < 380) {
+        // During SSR or before mount, always return full format to prevent hydration mismatch
+        if (!isMounted) {
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        // After mount, apply responsive formatting
+        if (window.innerWidth < 380) {
             // Very small screens: just show time
             return '';
-        } else if (typeof window !== 'undefined' && window.innerWidth < 550) {
+        } else if (window.innerWidth < 550) {
             // Small screens: abbreviated format
             return date.toLocaleDateString('en-US', { 
                 month: 'short', 

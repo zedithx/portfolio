@@ -305,3 +305,4 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
     );
 }
 
+

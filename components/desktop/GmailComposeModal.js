@@ -87,7 +87,7 @@ export default function GmailComposeModal({ isOpen, onClose, visitorEmail, onPer
             setIsSubmitting(false);
         }
     }, [isOpen]);
-
+    
     // Add ESC key handler
     useEffect(() => {
         if (!isOpen) return;

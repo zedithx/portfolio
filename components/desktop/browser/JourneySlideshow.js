@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ScrollText } from 'lucide-react';
 
 // Optimized preload background images with priority and error handling
 const preloadImages = (urls) => {
@@ -153,9 +153,12 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [processedCards, setProcessedCards] = useState(new Set());
     const [isTransitioning, setIsTransitioning] = useState(false);
     const desktopPopupTimeoutRef = useRef(null);
+    const skipButtonRef = useRef(null);
+    const returnButtonRef = useRef(null);
     const [isSkillsExpanded, setIsSkillsExpanded] = useState(false);
     const [recentlyUpdatedSkills, setRecentlyUpdatedSkills] = useState(new Set());
     const [previousSkillValues, setPreviousSkillValues] = useState({});
+    const [showSummary, setShowSummary] = useState(false);
 
     // Memoize prefersReducedMotion to avoid checking on every render
     const prefersReducedMotion = useMemo(() => {
@@ -164,6 +167,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     }, []);
 
     const currentCard = journey[currentIndex];
+    // Use safe dialogue access - will be validated later
     const currentDialogue = currentCard?.dialogues?.[dialogueIndex];
 
     // Reset dialogue index when slide changes
@@ -222,21 +226,47 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 }
             }
             
-            // Show small popup for both mobile and desktop
-            setDesktopPopupSkills(currentCard.skillsGained);
-            setShowDesktopPopup(true);
-            
-            // Auto-dismiss after 3 seconds
-            if (desktopPopupTimeoutRef.current) {
-                clearTimeout(desktopPopupTimeoutRef.current);
+            // Check if this is the last slide - if so, go to summary automatically
+            const isLastSlide = currentIndex === journey.length - 1;
+            if (isLastSlide) {
+                // Auto-dismiss popup quickly, then show summary
+                setDesktopPopupSkills(currentCard.skillsGained);
+                setShowDesktopPopup(true);
+                
+                if (desktopPopupTimeoutRef.current) {
+                    clearTimeout(desktopPopupTimeoutRef.current);
+                }
+                desktopPopupTimeoutRef.current = setTimeout(() => {
+                    setShowDesktopPopup(false);
+                    setDesktopPopupSkills(null);
+                    desktopPopupTimeoutRef.current = null;
+                    // Navigate to summary after popup
+                    setTimeout(() => {
+                        setIsTransitioning(true);
+                        setShowDialogue(false);
+                        setTimeout(() => {
+                            setShowSummary(true);
+                            setIsTransitioning(false);
+                        }, 300);
+                    }, 500);
+                }, 2000);
+            } else {
+                // Show small popup for both mobile and desktop
+                setDesktopPopupSkills(currentCard.skillsGained);
+                setShowDesktopPopup(true);
+                
+                // Auto-dismiss after 3 seconds
+                if (desktopPopupTimeoutRef.current) {
+                    clearTimeout(desktopPopupTimeoutRef.current);
+                }
+                desktopPopupTimeoutRef.current = setTimeout(() => {
+                    setShowDesktopPopup(false);
+                    setDesktopPopupSkills(null);
+                    desktopPopupTimeoutRef.current = null;
+                }, 3000);
             }
-            desktopPopupTimeoutRef.current = setTimeout(() => {
-                setShowDesktopPopup(false);
-                setDesktopPopupSkills(null);
-                desktopPopupTimeoutRef.current = null;
-            }, 3000);
         }
-    }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain]);
+    }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, journey.length]);
 
     const goNext = useCallback(() => {
         if (currentIndex < journey.length - 1 && !isTransitioning) {
@@ -259,11 +289,24 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const goToSlide = useCallback((index) => {
         if (!isTransitioning && index !== currentIndex) {
             setIsTransitioning(true);
+            setShowSummary(false);
             setTimeout(() => {
                 setCurrentIndex(index);
             }, 300);
         }
     }, [currentIndex, isTransitioning]);
+
+    const goToSummary = useCallback(() => {
+        if (!isTransitioning) {
+            setIsTransitioning(true);
+            setShowDialogue(false);
+            setTimeout(() => {
+                setShowSummary(true);
+                setIsTransitioning(false);
+            }, 300);
+        }
+    }, [isTransitioning]);
+
 
     // Memoize all unique background images from journey and preload them
     const bgImages = useMemo(() => {
@@ -304,37 +347,100 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         }
     }, [currentIndex, journey]);
 
+    // Attach non-passive touch event listeners for buttons that need preventDefault
+    useEffect(() => {
+        const skipButton = skipButtonRef.current;
+        const returnButton = returnButtonRef.current;
+
+        const handleTouchStart = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
+        if (skipButton) {
+            skipButton.addEventListener('touchstart', handleTouchStart, { passive: false });
+        }
+        if (returnButton) {
+            returnButton.addEventListener('touchstart', handleTouchStart, { passive: false });
+        }
+
+        return () => {
+            if (skipButton) {
+                skipButton.removeEventListener('touchstart', handleTouchStart);
+            }
+            if (returnButton) {
+                returnButton.removeEventListener('touchstart', handleTouchStart);
+            }
+        };
+    }, []);
+
+    // Add custom scrollbar styles for parchment scroll
+    useEffect(() => {
+        const styleId = 'parchment-scrollbar-styles';
+        if (document.getElementById(styleId)) return;
+
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 8px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background-color: #8B4513;
+                border-radius: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background-color: #6B3410;
+            }
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            const existingStyle = document.getElementById(styleId);
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+        };
+    }, []);
+
     const getSceneBackground = useCallback((scene) => {
         // Scene is now a direct path, return it as-is
         return scene || '/background/absolum1.jpeg';
     }, []);
 
+    // Seeded random function for deterministic values (fixes hydration mismatch)
+    const seededRandom = useCallback((seed, index) => {
+        const x = Math.sin(seed + index) * 10000;
+        return x - Math.floor(x);
+    }, []);
+
     // Memoize particle arrays per slide to avoid recreation on every render
+    // Use seeded random to ensure server and client render the same values
     const rainParticles = useMemo(() => {
+        const seed = currentIndex * 1000; // Use currentIndex as seed
         return Array.from({ length: 8 }, (_, i) => ({
             id: i,
             left: (i * 6.67) % 100,
-            duration: 1 + Math.random(),
-            delay: Math.random() * 0.5
+            duration: 1 + seededRandom(seed, i * 2),
+            delay: seededRandom(seed, i * 2 + 1) * 0.5
         }));
-    }, [currentIndex]); // Recreate only when slide changes
+    }, [currentIndex, seededRandom]); // Recreate only when slide changes
 
     const floatingParticles = useMemo(() => {
+        const seed = currentIndex * 1000 + 500; // Different seed for floating particles
         return Array.from({ length: 5 }, (_, i) => ({
             id: i,
-            left: Math.random() * 100,
-            top: Math.random() * 100,
-            duration: 3 + Math.random() * 2,
-            delay: Math.random() * 2
+            left: seededRandom(seed, i * 3) * 100,
+            top: seededRandom(seed, i * 3 + 1) * 100,
+            duration: 3 + seededRandom(seed, i * 3 + 2) * 2,
+            delay: seededRandom(seed, i * 3 + 3) * 2
         }));
-    }, [currentIndex]); // Recreate only when slide changes
+    }, [currentIndex, seededRandom]); // Recreate only when slide changes
 
-    // Early return after all hooks
-    if (!currentCard || !currentDialogue) return null;
-
-    const isLastDialogue = dialogueIndex === (currentCard.dialogues?.length || 0) - 1;
-
-    // Memoize skill icon and color functions
+    // Memoize skill icon and color functions (needed for summary)
     const getSkillIcon = useCallback((skill) => {
         const iconMap = {
             'Frontend': '🎨',
@@ -371,7 +477,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         return colorMap[skill] || '#667eea';
     }, []);
 
-    // Render skill item component (reusable)
+    // Render skill item component (reusable) - MUST be before any early returns
     const renderSkillItem = useCallback((skillName, skill) => {
         if (skill.locked) return null;
         
@@ -437,7 +543,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     ], []);
     
     const technicalSkills = useMemo(() => {
-        return Object.entries(skills)
+        return Object.entries(skills || {})
             .filter(([name]) => !['Product Management', 'Social', 'Recreational'].includes(name))
             .sort(([a], [b]) => {
                 const indexA = technicalSkillOrder.indexOf(a);
@@ -451,10 +557,703 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     }, [skills, technicalSkillOrder]);
     
     const nonTechnicalSkills = useMemo(() => {
-        return Object.entries(skills).filter(([name]) => 
+        return Object.entries(skills || {}).filter(([name]) => 
             ['Product Management', 'Social', 'Recreational'].includes(name)
         );
     }, [skills]);
+
+    // Early return after all hooks - but handle summary case
+    if (showSummary) {
+        // Render summary page
+        const allSkills = skills ? Object.entries(skills).filter(([_, skill]) => !skill.locked) : [];
+        const technicalSkills = allSkills.filter(([name, _]) => 
+            ['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
+        );
+        const nonTechnicalSkills = allSkills.filter(([name, _]) => 
+            !['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
+        );
+
+        // Collect all journey dialogues for the transcript
+        const journeyTranscript = journey.flatMap((card, cardIndex) => {
+            const cardTitle = card.title;
+            const dialogues = card.dialogues || [];
+            return dialogues.map((dialogue, dialogueIndex) => ({
+                cardTitle,
+                cardIndex,
+                dialogueIndex,
+                speaker: dialogue.speaker,
+                name: dialogue.name,
+                text: dialogue.text
+            }));
+        });
+
+        return (
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-4 md:p-6 lg:p-8" style={{ background: 'radial-gradient(circle at center, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3))' }}>
+                {/* Parchment Scroll Container with aged edges */}
+                <motion.div
+                    initial={prefersReducedMotion ? {} : { scaleY: 0.8, opacity: 0 }}
+                    animate={prefersReducedMotion ? {} : { scaleY: 1, opacity: 1 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.6, ease: 'easeOut' }}
+                    className="relative w-full max-w-3xl md:max-w-4xl h-full max-h-[90vh] flex flex-col"
+                    style={{
+                        background: 'linear-gradient(to bottom, #d4aa68 0%, #e8c896 8%, #f0dd9c 20%, #e8c896 50%, #d4aa68 80%, #c19b5d 100%)',
+                        color: '#3b2712',
+                        fontFamily: 'serif',
+                        position: 'relative',
+                        padding: '40px 20px 40px 20px',
+                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+                        boxShadow: '0 0 0 1px rgba(139, 69, 19, 0.3), 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 50px rgba(255, 255, 255, 0.1)'
+                    }}
+                >
+                    {/* Aged/broken top edge */}
+                    <div 
+                        className="absolute top-0 left-0 right-0 h-3 pointer-events-none z-20"
+                        style={{
+                            backgroundImage: `
+                                repeating-linear-gradient(90deg, 
+                                    transparent 0px, transparent 2px,
+                                    rgba(139, 69, 19, 0.4) 2px, rgba(139, 69, 19, 0.4) 3px,
+                                    transparent 3px, transparent 5px
+                                )
+                            `,
+                            clipPath: 'polygon(0 0, 2% 100%, 5% 0, 8% 100%, 12% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 98% 0, 100% 100%)'
+                        }}
+                    />
+
+                    {/* Top curled edge with shadow */}
+                    <div 
+                        className="absolute -top-6 left-0 right-0 h-12 pointer-events-none z-10"
+                        style={{
+                            backgroundImage: `
+                                radial-gradient(ellipse 60px 24px at 0% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
+                                radial-gradient(ellipse 60px 24px at 100% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
+                                linear-gradient(to bottom, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                            `,
+                            backgroundSize: '80px 100%, 80px 100%, 100% 100%',
+                            backgroundPosition: '0% 50%, 100% 50%, center',
+                            backgroundRepeat: 'no-repeat',
+                            filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))',
+                            clipPath: 'polygon(0 0, 3% 100%, 7% 0, 12% 100%, 18% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 97% 0, 100% 100%)'
+                        }}
+                    />
+
+                    {/* Parchment texture overlay with noise */}
+                    <div 
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            backgroundImage: `
+                                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E"),
+                                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                                radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.08) 0%, transparent 50%)
+                            `,
+                            mixBlendMode: 'multiply',
+                            opacity: 0.6
+                        }}
+                    />
+
+                    {/* Aged spots/burns */}
+                    <div 
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            backgroundImage: `
+                                radial-gradient(circle at 15% 25%, rgba(139, 69, 19, 0.15) 0%, transparent 3%),
+                                radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.12) 0%, transparent 2.5%),
+                                radial-gradient(circle at 50% 10%, rgba(139, 69, 19, 0.1) 0%, transparent 2%)
+                            `,
+                            mixBlendMode: 'multiply'
+                        }}
+                    />
+
+                    {/* Scroll Body - Content Area with irregular edges */}
+                    <div 
+                        className="relative flex-1 flex flex-col min-h-0 px-6 md:px-8 lg:px-12 py-6 md:py-8"
+                        style={{
+                            background: 'radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.4), transparent 60%)',
+                            borderLeft: '2px solid rgba(139, 69, 19, 0.4)',
+                            borderRight: '2px solid rgba(139, 69, 19, 0.4)',
+                            marginTop: '12px',
+                            marginBottom: '12px',
+                            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+                        }}
+                    >
+                        <div className="w-full h-full flex flex-col overflow-hidden">
+                            {/* Title */}
+                            <motion.h1
+                                initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
+                                animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                                transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
+                                className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-4 md:mb-6 shrink-0"
+                                style={{
+                                    color: '#8B4513',
+                                    textShadow: '0 1px 0 #f7edd3, 2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                    fontFamily: 'serif',
+                                    letterSpacing: '0.12em',
+                                    textTransform: 'uppercase'
+                                }}
+                            >
+                                Journey Summary
+                            </motion.h1>
+
+                            {/* Scrollable Content Container */}
+                            <div 
+                                className="flex-1 overflow-y-auto min-h-0 py-2 md:py-4 custom-scrollbar"
+                                style={{
+                                    scrollbarWidth: 'thin',
+                                    scrollbarColor: '#8B4513 transparent'
+                                }}
+                            >
+                            {/* Journey Transcript - Grouped by Categories */}
+                            <div className="space-y-4 md:space-y-6 mb-6 md:mb-8">
+                                {/* School before university */}
+                                <motion.div
+                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 }}
+                                    className="relative space-y-3 md:space-y-4"
+                                    style={{
+                                        marginTop: '1rem',
+                                        paddingTop: '1.5rem'
+                                    }}
+                                >
+                                    <h2 
+                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                                        style={{
+                                            color: '#8B4513',
+                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
+                                            fontFamily: 'serif',
+                                            letterSpacing: '0.05em',
+                                            textTransform: 'uppercase',
+                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
+                                            paddingBottom: '0.25rem',
+                                            paddingRight: '1rem',
+                                            marginTop: '0'
+                                        }}
+                                    >
+                                        School before university
+                                    </h2>
+                                    <div className="mt-6 md:mt-8">
+                                        {journey[0].dialogues.map((dialogue, dialogueIndex) => (
+                                            <motion.p
+                                                key={dialogueIndex}
+                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (dialogueIndex * 0.05) }}
+                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
+                                                style={{
+                                                    color: '#5D4037',
+                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
+                                                    fontFamily: 'serif',
+                                                    textAlign: 'justify',
+                                                    marginBottom: '1rem'
+                                                }}
+                                            >
+                                                {dialogue.speaker === 'hero' ? (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
+                                                    </span>
+                                                )}
+                                            </motion.p>
+                                        ))}
+                                    </div>
+                                </motion.div>
+
+                                {/* University */}
+                                <motion.div
+                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2 }}
+                                    className="relative space-y-3 md:space-y-4"
+                                    style={{
+                                        marginTop: '2rem',
+                                        paddingTop: '1.5rem'
+                                    }}
+                                >
+                                    <h2 
+                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                                        style={{
+                                            color: '#8B4513',
+                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
+                                            fontFamily: 'serif',
+                                            letterSpacing: '0.05em',
+                                            textTransform: 'uppercase',
+                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
+                                            paddingBottom: '0.25rem',
+                                            paddingRight: '1rem',
+                                            marginTop: '0'
+                                        }}
+                                    >
+                                        University
+                                    </h2>
+                                    <div className="mt-6 md:mt-8">
+                                        {journey[2].dialogues.map((dialogue, dialogueIndex) => (
+                                            <motion.p
+                                                key={dialogueIndex}
+                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2 + (dialogueIndex * 0.05) }}
+                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
+                                                style={{
+                                                    color: '#5D4037',
+                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
+                                                    fontFamily: 'serif',
+                                                    textAlign: 'justify',
+                                                    marginBottom: '1rem'
+                                                }}
+                                            >
+                                                {dialogue.speaker === 'hero' ? (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
+                                                    </span>
+                                                )}
+                                            </motion.p>
+                                        ))}
+                                    </div>
+                                </motion.div>
+
+                                {/* Internships in university */}
+                                <motion.div
+                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.3 }}
+                                    className="relative space-y-3 md:space-y-4"
+                                    style={{
+                                        marginTop: '2rem',
+                                        paddingTop: '1.5rem'
+                                    }}
+                                >
+                                    <h2 
+                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                                        style={{
+                                            color: '#8B4513',
+                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
+                                            fontFamily: 'serif',
+                                            letterSpacing: '0.05em',
+                                            textTransform: 'uppercase',
+                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
+                                            paddingBottom: '0.25rem',
+                                            paddingRight: '1rem',
+                                            marginTop: '0'
+                                        }}
+                                    >
+                                        Internships in university
+                                    </h2>
+                                    <div className="mt-6 md:mt-8">
+                                        {/* Internship before University */}
+                                        {journey[1].dialogues.map((dialogue, dialogueIndex) => (
+                                            <motion.p
+                                                key={`internship1-${dialogueIndex}`}
+                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.3 + (dialogueIndex * 0.05) }}
+                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
+                                                style={{
+                                                    color: '#5D4037',
+                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
+                                                    fontFamily: 'serif',
+                                                    textAlign: 'justify',
+                                                    marginBottom: '1rem'
+                                                }}
+                                            >
+                                                {dialogue.speaker === 'hero' ? (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
+                                                    </span>
+                                                )}
+                                            </motion.p>
+                                        ))}
+                                        {/* Internships during university */}
+                                        {journey[3].dialogues.map((dialogue, dialogueIndex) => (
+                                            <motion.p
+                                                key={`internship2-${dialogueIndex}`}
+                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.35 + (dialogueIndex * 0.05) }}
+                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
+                                                style={{
+                                                    color: '#5D4037',
+                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
+                                                    fontFamily: 'serif',
+                                                    textAlign: 'justify',
+                                                    marginBottom: '1rem'
+                                                }}
+                                            >
+                                                {dialogue.speaker === 'hero' ? (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
+                                                    </span>
+                                                )}
+                                            </motion.p>
+                                        ))}
+                                    </div>
+                                </motion.div>
+
+                                {/* What's next? */}
+                                <motion.div
+                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.4 }}
+                                    className="relative space-y-3 md:space-y-4"
+                                    style={{
+                                        marginTop: '2rem',
+                                        paddingTop: '1.5rem'
+                                    }}
+                                >
+                                    <h2 
+                                        className="text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                                        style={{
+                                            color: '#8B4513',
+                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
+                                            fontFamily: 'serif',
+                                            letterSpacing: '0.05em',
+                                            textTransform: 'uppercase',
+                                            borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
+                                            paddingBottom: '0.25rem',
+                                            paddingRight: '1rem',
+                                            marginTop: '0'
+                                        }}
+                                    >
+                                        What's next?
+                                    </h2>
+                                    <div className="mt-6 md:mt-8">
+                                        {journey[4].dialogues.map((dialogue, dialogueIndex) => (
+                                            <motion.p
+                                                key={dialogueIndex}
+                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.4 + (dialogueIndex * 0.05) }}
+                                                className="text-sm md:text-base lg:text-lg leading-relaxed"
+                                                style={{
+                                                    color: '#5D4037',
+                                                    textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
+                                                    fontFamily: 'serif',
+                                                    textAlign: 'justify',
+                                                    marginBottom: '1rem'
+                                                }}
+                                            >
+                                                {dialogue.speaker === 'hero' ? (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>ZEDITHX:</strong> {dialogue.text}
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <strong style={{ color: '#8B4513' }}>{dialogue.name || 'NPC'}:</strong> {dialogue.text}
+                                                    </span>
+                                                )}
+                                            </motion.p>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            </div>
+
+                            {/* Final Skills Summary */}
+                            {skills && (
+                                <motion.div
+                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4 }}
+                                    className="mt-6 md:mt-8 pt-4 md:pt-6 border-t-2"
+                                    style={{
+                                        borderColor: 'rgba(139, 69, 19, 0.3)'
+                                    }}
+                                >
+                                    <h2 
+                                        className="text-lg md:text-xl lg:text-2xl font-bold mb-4 md:mb-6"
+                                        style={{
+                                            color: '#8B4513',
+                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                            fontFamily: 'serif'
+                                        }}
+                                    >
+                                        Final Skills
+                                    </h2>
+                                    
+                                    {/* Technical Skills */}
+                                    {technicalSkills.length > 0 && (
+                                        <div className="mb-4 md:mb-6">
+                                            <h3 
+                                                className="text-base md:text-lg font-semibold mb-3"
+                                                style={{
+                                                    color: '#8B4513',
+                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                                    fontFamily: 'serif'
+                                                }}
+                                            >
+                                                Technical Skills
+                                            </h3>
+                                            <div className="space-y-2 md:space-y-3">
+                                                {technicalSkills.map(([skillName, skill]) => {
+                                                    const value = skill.value || skill.baseline || 0;
+                                                    const max = skill.max || 100;
+                                                    const percentage = (value / max) * 100;
+                                                    return (
+                                                        <div
+                                                            key={skillName}
+                                                            className="py-2"
+                                                        >
+                                                            <div className="flex items-center justify-between mb-1">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-lg md:text-xl">{getSkillIcon(skillName)}</span>
+                                                                    <span 
+                                                                        className="text-sm md:text-base font-semibold"
+                                                                        style={{
+                                                                            color: '#8B4513',
+                                                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                                                            fontFamily: 'serif'
+                                                                        }}
+                                                                    >
+                                                                        {skillName}
+                                                                    </span>
+                                                                </div>
+                                                                <span 
+                                                                    className="text-sm md:text-base font-bold"
+                                                                    style={{
+                                                                        color: '#8B4513',
+                                                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                                                        fontFamily: 'serif'
+                                                                    }}
+                                                                >
+                                                                    {value}/{max}
+                                                                </span>
+                                                            </div>
+                                                            <div 
+                                                                className="h-2 md:h-3 rounded-full overflow-hidden"
+                                                                style={{
+                                                                    background: 'rgba(139, 69, 19, 0.2)',
+                                                                    border: '1px solid rgba(139, 69, 19, 0.4)'
+                                                                }}
+                                                            >
+                                                                <motion.div
+                                                                    initial={prefersReducedMotion ? {} : { width: 0 }}
+                                                                    animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
+                                                                    transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
+                                                                    className="h-full rounded-full"
+                                                                    style={{
+                                                                        background: `linear-gradient(90deg, ${getSkillColor(skillName)}, ${getSkillColor(skillName)}dd)`,
+                                                                        boxShadow: `0 0 8px ${getSkillColor(skillName)}80`
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Non-Technical Skills */}
+                                    {nonTechnicalSkills.length > 0 && (
+                                        <div>
+                                            <h3 
+                                                className="text-base md:text-lg font-semibold mb-3"
+                                                style={{
+                                                    color: '#8B4513',
+                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                                    fontFamily: 'serif'
+                                                }}
+                                            >
+                                                Non-Technical Skills
+                                            </h3>
+                                            <div className="space-y-2 md:space-y-3">
+                                                {nonTechnicalSkills.map(([skillName, skill]) => {
+                                                    const value = skill.value || skill.baseline || 0;
+                                                    const max = skill.max || 100;
+                                                    const percentage = (value / max) * 100;
+                                                    return (
+                                                        <div
+                                                            key={skillName}
+                                                            className="py-2"
+                                                        >
+                                                            <div className="flex items-center justify-between mb-1">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-lg md:text-xl">{getSkillIcon(skillName)}</span>
+                                                                    <span 
+                                                                        className="text-sm md:text-base font-semibold"
+                                                                        style={{
+                                                                            color: '#8B4513',
+                                                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                                                            fontFamily: 'serif'
+                                                                        }}
+                                                                    >
+                                                                        {skillName}
+                                                                    </span>
+                                                                </div>
+                                                                <span 
+                                                                    className="text-sm md:text-base font-bold"
+                                                                    style={{
+                                                                        color: '#8B4513',
+                                                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                                                        fontFamily: 'serif'
+                                                                    }}
+                                                                >
+                                                                    {value}/{max}
+                                                                </span>
+                                                            </div>
+                                                            <div 
+                                                                className="h-2 md:h-3 rounded-full overflow-hidden"
+                                                                style={{
+                                                                    background: 'rgba(139, 69, 19, 0.2)',
+                                                                    border: '1px solid rgba(139, 69, 19, 0.4)'
+                                                                }}
+                                                            >
+                                                                <motion.div
+                                                                    initial={prefersReducedMotion ? {} : { width: 0 }}
+                                                                    animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
+                                                                    transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
+                                                                    className="h-full rounded-full"
+                                                                    style={{
+                                                                        background: `linear-gradient(90deg, ${getSkillColor(skillName)}, ${getSkillColor(skillName)}dd)`,
+                                                                        boxShadow: `0 0 8px ${getSkillColor(skillName)}80`
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            )}
+                        </div>
+
+                            {/* Return to MacBook Button - Fixed at bottom */}
+                            <div className="flex justify-center pt-4 md:pt-6 shrink-0">
+                                <motion.button
+                                    ref={returnButtonRef}
+                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.6 }}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        window.location.href = '/';
+                                    }}
+                                    className="px-5 md:px-6 py-2 md:py-3 rounded-lg font-bold text-base md:text-lg mx-auto block touch-manipulation"
+                                    style={{
+                                        background: 'rgba(139, 69, 19, 0.3)',
+                                        border: '2px solid #8B4513',
+                                        color: '#8B4513',
+                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                                        boxShadow: '0 0 15px rgba(139, 69, 19, 0.4)',
+                                        fontFamily: 'serif'
+                                    }}
+                                    whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                                    whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
+                                >
+                                    Return to MacBook
+                                </motion.button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Bottom curled edge with shadow */}
+                    <div 
+                        className="absolute -bottom-6 left-0 right-0 h-12 pointer-events-none z-10"
+                        style={{
+                            backgroundImage: `
+                                radial-gradient(ellipse 60px 24px at 0% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
+                                radial-gradient(ellipse 60px 24px at 100% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
+                                linear-gradient(to top, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                            `,
+                            backgroundSize: '80px 100%, 80px 100%, 100% 100%',
+                            backgroundPosition: '0% 50%, 100% 50%, center',
+                            backgroundRepeat: 'no-repeat',
+                            filter: 'drop-shadow(0 -4px 8px rgba(0, 0, 0, 0.4))',
+                            clipPath: 'polygon(0 0, 3% 100%, 7% 0, 12% 100%, 18% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 97% 0, 100% 100%)'
+                        }}
+                    />
+
+                    {/* Aged/broken bottom edge */}
+                    <div 
+                        className="absolute bottom-0 left-0 right-0 h-3 pointer-events-none z-20"
+                        style={{
+                            backgroundImage: `
+                                repeating-linear-gradient(90deg, 
+                                    transparent 0px, transparent 2px,
+                                    rgba(139, 69, 19, 0.4) 2px, rgba(139, 69, 19, 0.4) 3px,
+                                    transparent 3px, transparent 5px
+                                )
+                            `,
+                            clipPath: 'polygon(0 0, 2% 100%, 5% 0, 8% 100%, 12% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 98% 0, 100% 100%)'
+                        }}
+                    />
+
+                    {/* Left side curl detail */}
+                    <div 
+                        className="absolute left-0 top-1/4 bottom-1/4 w-8 pointer-events-none z-10"
+                        style={{
+                            background: 'radial-gradient(ellipse 32px 100% at 0% 50%, rgba(139, 69, 19, 0.3) 0%, transparent 70%)',
+                            filter: 'drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.3))'
+                        }}
+                    />
+
+                    {/* Right side curl detail */}
+                    <div 
+                        className="absolute right-0 top-1/4 bottom-1/4 w-8 pointer-events-none z-10"
+                        style={{
+                            background: 'radial-gradient(ellipse 32px 100% at 100% 50%, rgba(139, 69, 19, 0.3) 0%, transparent 70%)',
+                            filter: 'drop-shadow(2px 0 4px rgba(0, 0, 0, 0.3))'
+                        }}
+                    />
+                </motion.div>
+            </div>
+        );
+    }
+
+    // Early return after all hooks - ensure we have valid data
+    // Don't return null, render a loading/empty state instead to maintain hook consistency
+    // Only show loading if journey is empty or currentIndex is invalid
+    if (!journey || journey.length === 0 || currentIndex < 0 || currentIndex >= journey.length) {
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                <div className="text-yellow-400 text-xl">Loading adventure...</div>
+            </div>
+        );
+    }
+
+    // If currentCard doesn't exist, show loading
+    if (!currentCard) {
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                <div className="text-yellow-400 text-xl">Loading adventure...</div>
+            </div>
+        );
+    }
+
+    // If dialogue is missing or out of bounds, use the first dialogue
+    // This can happen during transitions before useEffect resets dialogueIndex
+    const validDialogueIndex = currentCard.dialogues && currentCard.dialogues.length > 0
+        ? Math.min(dialogueIndex, currentCard.dialogues.length - 1)
+        : 0;
+    const activeDialogue = currentCard.dialogues?.[validDialogueIndex];
+
+    // If no valid dialogue exists, show loading
+    if (!activeDialogue) {
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                <div className="text-yellow-400 text-xl">Loading adventure...</div>
+            </div>
+        );
+    }
+
+    // Use the active dialogue for rendering
+    const isLastDialogue = validDialogueIndex === (currentCard.dialogues?.length || 0) - 1;
 
     return (
         <>
@@ -471,7 +1270,43 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         letterSpacing: '1px'
                     }}
                 >
-                    ADVENTURE LOG
+                    <div className="flex items-center justify-between w-full pr-12 md:pr-16">
+                        <span>ADVENTURE LOG</span>
+                        {!showSummary && (
+                            <motion.button
+                                ref={skipButtonRef}
+                                initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
+                                animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.5 }}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (!isTransitioning) {
+                                        goToSummary();
+                                    }
+                                }}
+                                disabled={isTransitioning}
+                                className={`px-2 py-2 md:px-3 md:py-1.5 rounded-lg flex items-center gap-1.5 md:gap-2 transition-all touch-manipulation min-h-[44px] md:min-h-0 ${
+                                    isTransitioning ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:scale-105 active:scale-95'
+                                }`}
+                                style={{
+                                    background: 'rgba(139, 69, 19, 0.8)',
+                                    backdropFilter: 'blur(10px)',
+                                    border: '2px solid #8B4513',
+                                    color: '#ffd700',
+                                    boxShadow: '0 0 15px rgba(139, 69, 19, 0.5)',
+                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                    pointerEvents: isTransitioning ? 'none' : 'auto'
+                                }}
+                                whileHover={prefersReducedMotion || isTransitioning ? {} : { scale: 1.05 }}
+                                whileTap={prefersReducedMotion || isTransitioning ? {} : { scale: 0.95 }}
+                                aria-label="Skip to summary"
+                            >
+                                <ScrollText className="w-6 h-6 md:w-4 md:h-4" />
+                                <span className="text-xs md:text-sm font-bold hidden sm:inline">Skip to Summary</span>
+                            </motion.button>
+                        )}
+                    </div>
                 </motion.h2>
 
                 {/* Main Content - Desktop: Side by side, Mobile: Stacked, Focus on Adventure Log */}
@@ -613,9 +1448,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                         {/* Dialogue Box - Click to Advance */}
                         <AnimatePresence mode="wait">
-                            {showDialogue && currentDialogue && (
+                            {showDialogue && activeDialogue && (
                                 <motion.div
-                                    key={dialogueIndex}
+                                    key={validDialogueIndex}
                                     initial={prefersReducedMotion ? {} : { y: 100, opacity: 0 }}
                                     animate={prefersReducedMotion ? {} : { y: 0, opacity: 1 }}
                                     exit={prefersReducedMotion ? {} : { y: 100, opacity: 0 }}
@@ -660,9 +1495,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                 letterSpacing: '1px'
                                             }}
                                         >
-                                            {currentDialogue.speaker === 'hero' 
+                                            {activeDialogue.speaker === 'hero' 
                                                 ? 'ZEDITHX' 
-                                                : currentDialogue.name?.toUpperCase() || 'ZEDITHX'}
+                                                : activeDialogue.name?.toUpperCase() || 'ZEDITHX'}
                                         </div>
                                     </div>
 
@@ -678,7 +1513,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             overflowWrap: 'break-word'
                                         }}
                                     >
-                                        {currentDialogue.text}
+                                        {activeDialogue.text}
                                     </motion.p>
 
                                     {/* Click to Continue Indicator */}
@@ -993,10 +1828,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 <button
                                     key={index}
                                     onClick={() => goToSlide(index)}
-                                    disabled={isTransitioning || showDialogue}
+                                    disabled={isTransitioning || showDialogue || showSummary}
                                     className={`min-h-[14px] min-w-[14px] rounded-full transition-all touch-manipulation ${
                                         index === currentIndex ? 'w-10' : 'w-3'
-                                    } ${isTransitioning || showDialogue ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    } ${isTransitioning || showDialogue || showSummary ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     style={{
                                         background: index === currentIndex ? '#ffd700' : 'rgba(255, 215, 0, 0.3)',
                                         border: '2px solid #ffd700',
@@ -1006,6 +1841,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 />
                             ))}
                         </div>
+
                     </div>
 
                     {/* Skills Accordion - Mobile (Below Adventure Log) */}

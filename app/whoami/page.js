@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
@@ -21,6 +21,7 @@ const AboutMeView = dynamic(
 
 export default function WhoAmIPage() {
     const router = useRouter();
+    const exitButtonRef = useRef(null);
 
     // Reset sessionStorage on page load to start fresh each time
     useEffect(() => {
@@ -51,10 +52,31 @@ export default function WhoAmIPage() {
         return () => window.removeEventListener('keydown', handleEscape);
     }, [handleExit]);
 
+    // Attach non-passive touch event listener for exit button
+    useEffect(() => {
+        const exitButton = exitButtonRef.current;
+        
+        const handleTouchStart = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
+        if (exitButton) {
+            exitButton.addEventListener('touchstart', handleTouchStart, { passive: false });
+        }
+
+        return () => {
+            if (exitButton) {
+                exitButton.removeEventListener('touchstart', handleTouchStart);
+            }
+        };
+    }, []);
+
     return (
         <div className="fixed inset-0 w-full h-full overflow-hidden">
             {/* Exit Button - High z-index to ensure it's always on top and clickable */}
             <motion.button
+                ref={exitButtonRef}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={(e) => {
@@ -63,10 +85,6 @@ export default function WhoAmIPage() {
                     handleExit(e);
                 }}
                 onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }}
-                onTouchStart={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                 }}
@@ -83,14 +101,17 @@ export default function WhoAmIPage() {
                 whileHover={{ 
                     scale: 1.1, 
                     boxShadow: '0 0 30px rgba(255, 215, 0, 0.8)',
-                    background: 'rgba(0, 0, 0, 0.95)'
+                    background: 'rgba(0, 0, 0, 0.95)',
+                    transition: { duration: 0, ease: 'linear' }
                 }}
                 transition={{ 
-                    duration: 0, 
-                    ease: 'linear',
-                    default: { duration: 0.3, delay: 0.5 }
+                    duration: 0.3, 
+                    delay: 0.5
                 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ 
+                    scale: 0.95,
+                    transition: { duration: 0, ease: 'linear' }
+                }}
                 aria-label="Exit to main page"
             >
                 <X className="w-4 h-4" />
