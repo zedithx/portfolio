@@ -164,6 +164,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [recentlyUpdatedSkills, setRecentlyUpdatedSkills] = useState(new Set());
     const [previousSkillValues, setPreviousSkillValues] = useState({});
     const [showSummary, setShowSummary] = useState(false);
+    const [isLoadingSummary, setIsLoadingSummary] = useState(false);
     const [activeTab, setActiveTab] = useState('summary'); // 'summary' or 'skills'
     const [unlockedSkills, setUnlockedSkills] = useState([]); // Track newly unlocked skills (array for multiple unlocks)
     const [recentlyUnlockedSkills, setRecentlyUnlockedSkills] = useState(new Set()); // Track skills that just unlocked for animation
@@ -728,7 +729,70 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         return { allSkills, technicalSkills, nonTechnicalSkills };
     }, [finalSkills]);
 
-    // Early return after all hooks - but handle summary case
+    // Early return after all hooks - but handle loading and summary case
+    if (isLoadingSummary) {
+        return (
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-3 sm:p-2 md:p-4 lg:p-6">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="w-full max-w-2xl flex flex-col items-center justify-center p-8 md:p-12 relative"
+                    style={{
+                        background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
+                        border: '3px solid #ffd700',
+                        borderRadius: '16px',
+                        boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)'
+                    }}
+                >
+                    {/* Decorative corner elements */}
+                    <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-400 opacity-60" />
+                    <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-400 opacity-60" />
+                    <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
+                    <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
+
+                    {/* Loading spinner */}
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className="w-16 h-16 md:w-20 md:h-20 mb-6"
+                        style={{
+                            border: '4px solid rgba(255, 215, 0, 0.3)',
+                            borderTop: '4px solid #ffd700',
+                            borderRadius: '50%',
+                            boxShadow: '0 0 20px rgba(255, 215, 0, 0.6)'
+                        }}
+                    />
+                    
+                    {/* Loading text */}
+                    <motion.h2
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-2xl md:text-3xl font-bold mb-2"
+                        style={{
+                            color: '#ffd700',
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
+                            letterSpacing: '2px',
+                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                        }}
+                    >
+                        LOADING SUMMARY...
+                    </motion.h2>
+                    
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="text-yellow-400/80 text-sm md:text-base"
+                        style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
+                    >
+                        Preparing your journey report
+                    </motion.p>
+                </motion.div>
+            </div>
+        );
+    }
+
     if (showSummary) {
         // Render summary page - use memoized skills to ensure latest values
         const { allSkills, technicalSkills, nonTechnicalSkills } = summarySkills;
@@ -748,356 +812,126 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         });
 
         return (
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-3 sm:p-2 md:p-4 lg:p-6 xl:p-8" style={{ background: 'radial-gradient(circle at center, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3))', willChange: 'auto' }}>
-                {/* Gamified background effects for summary page */}
-                {!prefersReducedMotion && (
-                    <>
-                        {/* Spawning dots */}
-                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                            {summaryParticles.filter(p => p.type === 'dot').map((particle) => (
-                                <motion.div
-                                    key={`summary-dot-${particle.id}`}
-                                    className="absolute rounded-full bg-yellow-400/40"
-                                    style={{
-                                        left: `${particle.left}%`,
-                                        top: '-10px',
-                                        width: `${particle.size}px`,
-                                        height: `${particle.size}px`,
-                                        boxShadow: '0 0 8px rgba(255, 215, 0, 0.6)'
-                                    }}
-                                    initial={{ opacity: 0, scale: 0 }}
-                                    animate={{
-                                        opacity: [0, 0.8, 0.8, 0],
-                                        scale: [0, 1.5, 1, 0.5],
-                                        y: [0, 1000],
-                                        x: [0, Math.sin(particle.id) * 50, 0]
-                                    }}
-                                    transition={{
-                                        duration: particle.duration,
-                                        repeat: Infinity,
-                                        delay: particle.delay,
-                                        ease: 'easeInOut'
-                                    }}
-                                />
-                            ))}
-                        </div>
-
-                        {/* Floating sparkles */}
-                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                            {summaryParticles.filter(p => p.type === 'sparkle').map((particle) => (
-                                <motion.div
-                                    key={`summary-sparkle-${particle.id}`}
-                                    className="absolute text-yellow-300/60"
-                                    style={{
-                                        left: `${particle.left}%`,
-                                        top: `${particle.top}%`,
-                                        fontSize: `${particle.size * 2}px`,
-                                        filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.7))'
-                                    }}
-                                    animate={{
-                                        opacity: [0.3, 1, 0.3],
-                                        scale: [0.8, 1.5, 0.8],
-                                        y: [0, -40, 0],
-                                        rotate: [0, 180, 360],
-                                        x: [0, Math.cos(particle.id) * 30, 0]
-                                    }}
-                                    transition={{
-                                        duration: particle.duration,
-                                        repeat: Infinity,
-                                        delay: particle.delay,
-                                        ease: 'easeInOut'
-                                    }}
-                                >
-                                    ✨
-                                </motion.div>
-                            ))}
-                        </div>
-                    </>
-                )}
-
-                {/* Parchment Scroll Container with aged edges */}
-                <motion.div
-                    initial={prefersReducedMotion ? {} : { 
-                        opacity: 0,
-                        clipPath: 'inset(0 0 100% 0)',
-                        scale: 0.95
-                    }}
-                    animate={prefersReducedMotion ? {} : { 
-                        opacity: 1,
-                        clipPath: 'inset(0 0 0% 0)',
-                        scale: 1
-                    }}
-                    transition={prefersReducedMotion ? {} : { 
-                        duration: 1.0,
-                        ease: [0.25, 0.46, 0.45, 0.94], // Smooth ease-out for natural unroll
-                        clipPath: {
-                            duration: 1.0,
-                            ease: [0.25, 0.46, 0.45, 0.94]
-                        },
-                        opacity: {
-                            duration: 0.6,
-                            ease: 'easeOut'
-                        },
-                        scale: {
-                            duration: 1.0,
-                            ease: [0.25, 0.46, 0.45, 0.94]
-                        }
-                    }}
-                    className="relative w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-full max-h-[94vh] sm:max-h-[95vh] md:max-h-[90vh] flex flex-col px-4 sm:px-4 md:px-6 lg:px-8 xl:px-12 my-3 sm:my-0"
+            <div className="relative w-full h-full flex items-center justify-center p-3 sm:p-2 md:p-4 lg:p-6" style={{ overflowX: 'hidden', overflowY: 'hidden' }}>
+                {/* Game-style Container matching Hero Section */}
+                <motion.section
+                    initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9, y: 20 }}
+                    animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1, y: 0 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.6 }}
+                    className="w-full max-w-6xl h-full max-h-[95vh] flex flex-col relative"
                     style={{
-                        background: 'linear-gradient(to bottom, #d4aa68 0%, #e8c896 8%, #f0dd9c 20%, #e8c896 50%, #d4aa68 80%, #c19b5d 100%)',
-                        color: '#3b2712',
-                        fontFamily: 'serif',
-                        position: 'relative',
-                        paddingTop: '12px',
-                        paddingBottom: '12px',
-                        boxShadow: '0 0 0 1px rgba(139, 69, 19, 0.3), 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 50px rgba(255, 255, 255, 0.1)',
-                        transformOrigin: 'top center',
-                        willChange: prefersReducedMotion ? 'auto' : 'transform, opacity, clip-path'
+                        background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
+                        border: '3px solid #ffd700',
+                        borderRadius: '16px',
+                        boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)',
+                        overflowX: 'hidden',
+                        overflowY: 'hidden'
                     }}
                 >
-                    {/* Aged/broken top edge */}
-                    <div 
-                        className="absolute top-0 left-0 right-0 h-3 pointer-events-none z-20"
-                        style={{
-                            backgroundImage: `
-                                repeating-linear-gradient(90deg, 
-                                    transparent 0px, transparent 2px,
-                                    rgba(139, 69, 19, 0.4) 2px, rgba(139, 69, 19, 0.4) 3px,
-                                    transparent 3px, transparent 5px
-                                )
-                            `,
-                            clipPath: 'polygon(0 0, 2% 100%, 5% 0, 8% 100%, 12% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 98% 0, 100% 100%)'
-                        }}
-                    />
+                    {/* Decorative corner elements */}
+                    <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-400 opacity-60" />
+                    <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-400 opacity-60" />
+                    <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
+                    <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
 
-                    {/* Top curled edge with shadow */}
-                    <div 
-                        className="absolute -top-6 left-0 right-0 h-12 pointer-events-none z-10"
-                        style={{
-                            backgroundImage: `
-                                radial-gradient(ellipse 60px 24px at 0% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
-                                radial-gradient(ellipse 60px 24px at 100% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
-                                linear-gradient(to bottom, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
-                            `,
-                            backgroundSize: '80px 100%, 80px 100%, 100% 100%',
-                            backgroundPosition: '0% 50%, 100% 50%, center',
-                            backgroundRepeat: 'no-repeat',
-                            filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))',
-                            clipPath: 'polygon(0 0, 3% 100%, 7% 0, 12% 100%, 18% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 97% 0, 100% 100%)'
-                        }}
-                    />
-
-                    {/* Parchment texture overlay with noise */}
-                    <div 
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                            backgroundImage: `
-                                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E"),
-                                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
-                                radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.08) 0%, transparent 50%)
-                            `,
-                            mixBlendMode: 'multiply',
-                            opacity: 0.6
-                        }}
-                    />
-
-                    {/* Aged spots/burns */}
-                    <div 
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                            backgroundImage: `
-                                radial-gradient(circle at 15% 25%, rgba(139, 69, 19, 0.15) 0%, transparent 3%),
-                                radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.12) 0%, transparent 2.5%),
-                                radial-gradient(circle at 50% 10%, rgba(139, 69, 19, 0.1) 0%, transparent 2%)
-                            `,
-                            mixBlendMode: 'multiply'
-                        }}
-                    />
-
-                    {/* Scroll Body - Content Area with irregular edges */}
-                    <div 
-                        className="relative flex-1 flex flex-col min-h-0 px-3 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-3 sm:py-3 md:py-4 lg:py-6 xl:py-8"
-                        style={{
-                            background: 'radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.4), transparent 60%)',
-                            borderLeft: '2px solid rgba(139, 69, 19, 0.4)',
-                            borderRight: '2px solid rgba(139, 69, 19, 0.4)',
-                            marginTop: '4px',
-                            marginBottom: '4px',
-                            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-                            overflow: 'visible'
-                        }}
-                    >
-                        <div className="w-full h-full flex flex-col overflow-hidden">
-                            {/* Title */}
-                            <motion.h1
-                                initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
-                                animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                    {/* Content Container */}
+                    <div className="relative flex-1 flex flex-col min-h-0 px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8 z-10" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+                        <div className="w-full h-full flex flex-col" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+                            {/* Title - Badge/Panel Style */}
+                            <motion.div
+                                initial={prefersReducedMotion ? {} : { opacity: 0, y: -20 }}
+                                animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                                 transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
-                                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-4 sm:mb-4 md:mb-6 shrink-0 px-2"
-                                style={{
-                                    color: '#8B4513',
-                                    textShadow: '0 1px 0 #f7edd3, 2px 2px 4px rgba(0, 0, 0, 0.5)',
-                                    fontFamily: 'serif',
-                                    letterSpacing: '0.12em',
-                                    textTransform: 'uppercase'
-                                }}
+                                className="flex justify-center mb-4 sm:mb-4 md:mb-6 shrink-0"
                             >
-                                Journey Summary
-                            </motion.h1>
+                                <div
+                                    className="relative px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%)',
+                                        border: '2px solid #ffd700',
+                                        borderRadius: '12px',
+                                        boxShadow: '0 0 25px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.1)',
+                                        position: 'relative',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    {/* Decorative corner elements */}
+                                    <div className="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-yellow-400 opacity-60" />
+                                    <div className="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-yellow-400 opacity-60" />
+                                    <div className="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-yellow-400 opacity-60" />
+                                    <div className="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-yellow-400 opacity-60" />
+                                    
+                                    <h1
+                                        className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-center"
+                                        style={{
+                                            color: '#ffd700',
+                                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                                            letterSpacing: '3px',
+                                            textTransform: 'uppercase',
+                                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.6)',
+                                            position: 'relative',
+                                            zIndex: 1
+                                        }}
+                                    >
+                                        Journey Summary
+                                    </h1>
+                                </div>
+                            </motion.div>
 
-                            {/* Tabs - Ancient scroll style tabs */}
-                            <div className="flex gap-0 mb-0 shrink-0 relative" style={{ marginTop: '-4px' }}>
+                            {/* Tabs - Game Style matching Hero Section */}
+                            <div className="flex gap-2 mb-4 shrink-0" style={{ overflow: 'hidden' }}>
                                 <motion.button
                                     onClick={() => setActiveTab('summary')}
-                                    className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 font-bold text-xs sm:text-sm md:text-base flex-1 touch-manipulation min-h-[44px] sm:min-h-[48px] relative overflow-hidden`}
+                                    className={`px-6 md:px-8 py-3 md:py-3.5 font-bold text-sm md:text-base flex-1 touch-manipulation min-h-[48px] relative overflow-visible rounded-lg`}
                                     style={{
                                         background: activeTab === 'summary' 
-                                            ? 'linear-gradient(to bottom, #e8c896 0%, #f0dd9c 20%, #e8c896 50%, #d4aa68 100%)' 
-                                            : 'linear-gradient(to bottom, #c19b5d 0%, #d4aa68 30%, #c19b5d 100%)',
-                                        border: `1px solid ${activeTab === 'summary' ? 'rgba(139, 69, 19, 0.6)' : 'rgba(139, 69, 19, 0.4)'}`,
-                                        borderBottom: activeTab === 'summary' ? 'none' : '1px solid rgba(139, 69, 19, 0.4)',
-                                        borderTopLeftRadius: '6px',
-                                        borderTopRightRadius: '6px',
-                                        color: '#5D4037',
-                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 4px rgba(139, 69, 19, 0.3)',
-                                        fontFamily: 'serif',
-                                        letterSpacing: '0.08em',
+                                            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                                            : 'rgba(102, 126, 234, 0.3)',
+                                        border: `2px solid #ffd700`,
+                                        color: '#fff',
+                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                                        letterSpacing: '1px',
                                         textTransform: 'uppercase',
                                         boxShadow: activeTab === 'summary' 
-                                            ? 'inset 0 1px 3px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(139, 69, 19, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3)' 
-                                            : 'inset 0 1px 2px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(139, 69, 19, 0.1)',
-                                        zIndex: activeTab === 'summary' ? 3 : 1,
-                                        position: 'relative',
-                                        marginRight: activeTab === 'summary' ? '0' : '-1px'
+                                            ? '0 0 15px rgba(102, 126, 234, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1)' 
+                                            : '0 0 5px rgba(102, 126, 234, 0.3)'
                                     }}
                                     whileHover={prefersReducedMotion ? {} : {
-                                        scale: activeTab === 'summary' ? 1 : 1.01
+                                        scale: 1.02,
+                                        boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)'
                                     }}
                                     whileTap={prefersReducedMotion ? {} : {
                                         scale: 0.98
                                     }}
-                                    transition={{
-                                        scale: { duration: 0 },
-                                        background: { duration: 0 },
-                                        borderColor: { duration: 0 }
-                                    }}
                                 >
-                                    {/* Parchment texture overlay with noise - matching scroll */}
-                                    <div 
-                                        className="absolute inset-0 pointer-events-none"
-                                        style={{
-                                            backgroundImage: `
-                                                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E"),
-                                                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
-                                                radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.08) 0%, transparent 50%)
-                                            `,
-                                            mixBlendMode: 'multiply',
-                                            opacity: 0.6
-                                        }}
-                                    />
-                                    {/* Aged spots/burns - matching scroll */}
-                                    <div 
-                                        className="absolute inset-0 pointer-events-none"
-                                        style={{
-                                            backgroundImage: `
-                                                radial-gradient(circle at 15% 25%, rgba(139, 69, 19, 0.15) 0%, transparent 3%),
-                                                radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.12) 0%, transparent 2.5%),
-                                                radial-gradient(circle at 50% 10%, rgba(139, 69, 19, 0.1) 0%, transparent 2%)
-                                            `,
-                                            mixBlendMode: 'multiply'
-                                        }}
-                                    />
-                                    {/* Decorative corner elements for active tab */}
-                                    {activeTab === 'summary' && (
-                                        <>
-                                            <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-[#8B4513] opacity-60" />
-                                            <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-[#8B4513] opacity-60" />
-                                            <div 
-                                                className="absolute bottom-0 left-0 right-0 h-1"
-                                                style={{
-                                                    background: 'linear-gradient(to bottom, #e8c896, #d4aa68)',
-                                                    zIndex: 4
-                                                }}
-                                            />
-                                        </>
-                                    )}
                                     <span className="relative z-10">Summary</span>
                                 </motion.button>
                                 <motion.button
                                     onClick={() => setActiveTab('skills')}
-                                    className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-3.5 font-bold text-xs sm:text-sm md:text-base flex-1 touch-manipulation min-h-[44px] sm:min-h-[48px] relative overflow-hidden`}
+                                    className={`px-6 md:px-8 py-3 md:py-3.5 font-bold text-sm md:text-base flex-1 touch-manipulation min-h-[48px] relative overflow-visible rounded-lg`}
                                     style={{
                                         background: activeTab === 'skills' 
-                                            ? 'linear-gradient(to bottom, #e8c896 0%, #f0dd9c 20%, #e8c896 50%, #d4aa68 100%)' 
-                                            : 'linear-gradient(to bottom, #c19b5d 0%, #d4aa68 30%, #c19b5d 100%)',
-                                        border: `1px solid ${activeTab === 'skills' ? 'rgba(139, 69, 19, 0.6)' : 'rgba(139, 69, 19, 0.4)'}`,
-                                        borderBottom: activeTab === 'skills' ? 'none' : '1px solid rgba(139, 69, 19, 0.4)',
-                                        borderTopLeftRadius: '6px',
-                                        borderTopRightRadius: '6px',
-                                        color: '#5D4037',
-                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 4px rgba(139, 69, 19, 0.3)',
-                                        fontFamily: 'serif',
-                                        letterSpacing: '0.08em',
+                                            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                                            : 'rgba(102, 126, 234, 0.3)',
+                                        border: `2px solid #ffd700`,
+                                        color: '#fff',
+                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                                        letterSpacing: '1px',
                                         textTransform: 'uppercase',
                                         boxShadow: activeTab === 'skills' 
-                                            ? 'inset 0 1px 3px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(139, 69, 19, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3)' 
-                                            : 'inset 0 1px 2px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(139, 69, 19, 0.1)',
-                                        zIndex: activeTab === 'skills' ? 3 : 1,
-                                        position: 'relative',
-                                        marginLeft: activeTab === 'skills' ? '0' : '-1px'
+                                            ? '0 0 15px rgba(102, 126, 234, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1)' 
+                                            : '0 0 5px rgba(102, 126, 234, 0.3)'
                                     }}
                                     whileHover={prefersReducedMotion ? {} : {
-                                        scale: activeTab === 'skills' ? 1 : 1.01
+                                        scale: 1.02,
+                                        boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)'
                                     }}
                                     whileTap={prefersReducedMotion ? {} : {
                                         scale: 0.98
                                     }}
-                                    transition={{
-                                        scale: { duration: 0 },
-                                        background: { duration: 0 },
-                                        borderColor: { duration: 0 }
-                                    }}
                                 >
-                                    {/* Parchment texture overlay with noise - matching scroll */}
-                                    <div 
-                                        className="absolute inset-0 pointer-events-none"
-                                        style={{
-                                            backgroundImage: `
-                                                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E"),
-                                                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
-                                                radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.08) 0%, transparent 50%)
-                                            `,
-                                            mixBlendMode: 'multiply',
-                                            opacity: 0.6
-                                        }}
-                                    />
-                                    {/* Aged spots/burns - matching scroll */}
-                                    <div 
-                                        className="absolute inset-0 pointer-events-none"
-                                        style={{
-                                            backgroundImage: `
-                                                radial-gradient(circle at 15% 25%, rgba(139, 69, 19, 0.15) 0%, transparent 3%),
-                                                radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.12) 0%, transparent 2.5%),
-                                                radial-gradient(circle at 50% 10%, rgba(139, 69, 19, 0.1) 0%, transparent 2%)
-                                            `,
-                                            mixBlendMode: 'multiply'
-                                        }}
-                                    />
-                                    {/* Decorative corner elements for active tab */}
-                                    {activeTab === 'skills' && (
-                                        <>
-                                            <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-[#8B4513] opacity-60" />
-                                            <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-[#8B4513] opacity-60" />
-                                            <div 
-                                                className="absolute bottom-0 left-0 right-0 h-1"
-                                                style={{
-                                                    background: 'linear-gradient(to bottom, #e8c896, #d4aa68)',
-                                                    zIndex: 4
-                                                }}
-                                            />
-                                        </>
-                                    )}
                                     <span className="relative z-10">Skills</span>
                                 </motion.button>
                             </div>
@@ -1107,9 +941,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 className="flex-1 overflow-y-auto min-h-0 py-3 sm:py-2 md:py-4 custom-scrollbar"
                                 style={{
                                     scrollbarWidth: 'thin',
-                                    scrollbarColor: '#8B4513 transparent',
-                                    borderTop: '2px solid rgba(139, 69, 19, 0.3)',
-                                    marginTop: '-2px',
+                                    scrollbarColor: '#ffd700 transparent',
                                     position: 'relative',
                                     zIndex: 2
                                 }}
@@ -1130,25 +962,20 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         }}
                                     >
                                         <h2 
-                                            className="text-sm sm:text-base md:text-lg lg:text-xl font-bold absolute top-0 left-0"
+                                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-4"
                                             style={{
-                                                color: '#8B4513',
-                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(139, 69, 19, 0.3)',
-                                                fontFamily: 'serif',
-                                                letterSpacing: '0.05em',
+                                                color: '#ffd700',
+                                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
+                                                fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                letterSpacing: '1px',
                                                 textTransform: 'uppercase',
-                                                borderBottom: '2px solid rgba(139, 69, 19, 0.4)',
-                                                paddingBottom: '0.25rem',
-                                                paddingRight: '0.75rem',
-                                                marginTop: '0',
-                                                maxWidth: '90%',
-                                                zIndex: 1,
-                                                lineHeight: '1.2'
+                                                borderBottom: '2px solid rgba(255, 215, 0, 0.5)',
+                                                paddingBottom: '0.5rem'
                                             }}
                                         >
                                             {section.title}
                                         </h2>
-                                        <div className="mt-5 sm:mt-7 md:mt-8 lg:mt-10" style={{ position: 'relative', zIndex: 0 }}>
+                                        <div className="mt-4">
                                             {section.content
                                                 .replace(/\\n\\n/g, '\n\n') // Replace literal \n\n with actual newlines
                                                 .split('\n\n')
@@ -1159,16 +986,13 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                             initial={prefersReducedMotion ? {} : { opacity: 0 }}
                                                             animate={prefersReducedMotion ? {} : { opacity: 1 }}
                                                             transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (index * 0.1) + (paraIndex * 0.05) }}
-                                                            className="text-sm sm:text-base md:text-lg leading-relaxed"
+                                                            className="text-sm sm:text-base md:text-lg leading-relaxed mb-4"
                                                             style={{
-                                                                color: '#5D4037',
-                                                                textShadow: '0.5px 0.5px 1px rgba(0, 0, 0, 0.3)',
-                                                                fontFamily: 'serif',
-                                                                textAlign: 'justify',
-                                                                marginBottom: '0.75rem',
-                                                                hyphens: 'auto',
-                                                                wordBreak: 'break-word',
-                                                                lineHeight: '1.6'
+                                                                color: '#e0e0e0',
+                                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                                textAlign: 'left',
+                                                                lineHeight: '1.7'
                                                             }}
                                                         >
                                                             {paragraph.trim()}
@@ -1190,28 +1014,32 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     className="pt-3 sm:pt-3 md:pt-4 lg:pt-6 px-1 sm:px-0"
                                 >
                                     <h2 
-                                        className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 md:mb-6"
+                                        className="text-xl sm:text-2xl md:text-3xl font-bold mb-6"
                                         style={{
-                                            color: '#8B4513',
-                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                            fontFamily: 'serif'
+                                            color: '#ffd700',
+                                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
+                                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                                            letterSpacing: '1px',
+                                            textTransform: 'uppercase'
                                         }}
                                     >
-                                        Final Skills
+                                        FINAL SKILLS
                                     </h2>
                                     
                                     {/* Technical Skills */}
                                     {technicalSkills.length > 0 && (
-                                        <div className="mb-3 sm:mb-4 md:mb-6">
+                                        <div className="mb-6">
                                             <h3 
-                                                className="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3"
+                                                className="text-base sm:text-lg md:text-xl font-bold mb-4"
                                                 style={{
-                                                    color: '#8B4513',
-                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                                    fontFamily: 'serif'
+                                                    color: '#ffd700',
+                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                    letterSpacing: '0.5px',
+                                                    textTransform: 'uppercase'
                                                 }}
                                             >
-                                                Technical Skills
+                                                TECHNICAL
                                             </h3>
                                             <div className="space-y-1 sm:space-y-1.5 md:space-y-2 lg:space-y-3">
                                                 {technicalSkills.map(([skillName, skill]) => {
@@ -1230,9 +1058,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                     <span 
                                                                         className="text-xs sm:text-sm md:text-base font-semibold truncate"
                                                                         style={{
-                                                                            color: '#8B4513',
-                                                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                                                            fontFamily: 'serif'
+                                                                            color: '#ffd700',
+                                                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
                                                                         }}
                                                                     >
                                                                         {displayName}
@@ -1241,63 +1069,34 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                 <span 
                                                                     className="text-sm md:text-base font-bold"
                                                                     style={{
-                                                                        color: '#8B4513',
-                                                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                                                        fontFamily: 'serif'
+                                                                        color: '#ffd700',
+                                                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                        fontFamily: 'system-ui, -apple-system, sans-serif'
                                                                     }}
                                                                 >
                                                                     {value}/{max}
                                                                 </span>
                                                             </div>
                                                             <div 
-                                                                className="h-3 sm:h-4 md:h-5 relative overflow-hidden"
+                                                                className="h-3 sm:h-4 md:h-5 relative overflow-hidden rounded-full"
                                                                 style={{
-                                                                    background: 'linear-gradient(to bottom, #d4aa68, #c19b5d)',
-                                                                    border: '2px solid rgba(139, 69, 19, 0.5)',
-                                                                    borderRadius: '2px',
-                                                                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(139, 69, 19, 0.3)',
+                                                                    background: 'rgba(0, 0, 0, 0.5)',
+                                                                    border: '1px solid rgba(255, 215, 0, 0.3)',
+                                                                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)',
                                                                     position: 'relative'
                                                                 }}
                                                             >
-                                                                {/* Aged texture overlay */}
-                                                                <div 
-                                                                    className="absolute inset-0 pointer-events-none opacity-40"
-                                                                    style={{
-                                                                        backgroundImage: `
-                                                                            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E")
-                                                                        `,
-                                                                        mixBlendMode: 'multiply'
-                                                                    }}
-                                                                />
-                                                                {/* Progress fill - parchment ink style */}
+                                                                {/* Progress fill - Game style */}
                                                                 <motion.div
                                                                     initial={prefersReducedMotion ? {} : { width: 0 }}
                                                                     animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
                                                                     transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
-                                                                    className="h-full relative"
+                                                                    className="h-full relative rounded-full"
                                                                     style={{
-                                                                        background: `linear-gradient(to bottom, 
-                                                                            rgba(139, 69, 19, 0.9) 0%, 
-                                                                            rgba(101, 50, 25, 0.95) 50%, 
-                                                                            rgba(139, 69, 19, 0.85) 100%)`,
-                                                                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(139, 69, 19, 0.3)',
-                                                                        borderRight: '1px solid rgba(101, 50, 25, 0.6)'
+                                                                        background: `linear-gradient(90deg, ${getSkillColor(skillName)} 0%, ${getSkillColor(skillName)}dd 100%)`,
+                                                                        boxShadow: `0 0 8px ${getSkillColor(skillName)}80`
                                                                     }}
-                                                                >
-                                                                    {/* Ink texture on fill */}
-                                                                    <div 
-                                                                        className="absolute inset-0 pointer-events-none"
-                                                                        style={{
-                                                                            backgroundImage: `
-                                                                                repeating-linear-gradient(90deg, 
-                                                                                    transparent 0px, transparent 1px,
-                                                                                    rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px
-                                                                                )
-                                                                            `,
-                                                                            opacity: 0.3
-                                                                        }}
-                                                                    />
-                                                                </motion.div>
+                                                                />
                                                             </div>
                                                         </div>
                                                     );
@@ -1310,14 +1109,16 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     {nonTechnicalSkills.length > 0 && (
                                         <div>
                                             <h3 
-                                                className="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3"
+                                                className="text-base sm:text-lg md:text-xl font-bold mb-4"
                                                 style={{
-                                                    color: '#8B4513',
-                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                                    fontFamily: 'serif'
+                                                    color: '#ffd700',
+                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                    letterSpacing: '0.5px',
+                                                    textTransform: 'uppercase'
                                                 }}
                                             >
-                                                Non-Technical Skills
+                                                NON-TECHNICAL
                                             </h3>
                                             <div className="space-y-1.5 sm:space-y-2 md:space-y-3">
                                                 {nonTechnicalSkills.map(([skillName, skill]) => {
@@ -1336,9 +1137,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                     <span 
                                                                         className="text-xs sm:text-sm md:text-base font-semibold truncate"
                                                                         style={{
-                                                                            color: '#8B4513',
-                                                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                                                            fontFamily: 'serif'
+                                                                            color: '#ffd700',
+                                                                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
                                                                         }}
                                                                     >
                                                                         {displayName}
@@ -1347,63 +1148,34 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                 <span 
                                                                     className="text-xs sm:text-sm md:text-base font-bold flex-shrink-0"
                                                                     style={{
-                                                                        color: '#8B4513',
-                                                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                                                                        fontFamily: 'serif'
+                                                                        color: '#ffd700',
+                                                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                        fontFamily: 'system-ui, -apple-system, sans-serif'
                                                                     }}
                                                                 >
                                                                     {value}/{max}
                                                                 </span>
                                                             </div>
                                                             <div 
-                                                                className="h-3 sm:h-4 md:h-5 relative overflow-hidden"
+                                                                className="h-3 sm:h-4 md:h-5 relative overflow-hidden rounded-full"
                                                                 style={{
-                                                                    background: 'linear-gradient(to bottom, #d4aa68, #c19b5d)',
-                                                                    border: '2px solid rgba(139, 69, 19, 0.5)',
-                                                                    borderRadius: '2px',
-                                                                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(139, 69, 19, 0.3)',
+                                                                    background: 'rgba(0, 0, 0, 0.5)',
+                                                                    border: '1px solid rgba(255, 215, 0, 0.3)',
+                                                                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)',
                                                                     position: 'relative'
                                                                 }}
                                                             >
-                                                                {/* Aged texture overlay */}
-                                                                <div 
-                                                                    className="absolute inset-0 pointer-events-none opacity-40"
-                                                                    style={{
-                                                                        backgroundImage: `
-                                                                            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E")
-                                                                        `,
-                                                                        mixBlendMode: 'multiply'
-                                                                    }}
-                                                                />
-                                                                {/* Progress fill - parchment ink style */}
+                                                                {/* Progress fill - Game style */}
                                                                 <motion.div
                                                                     initial={prefersReducedMotion ? {} : { width: 0 }}
                                                                     animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
                                                                     transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
-                                                                    className="h-full relative"
+                                                                    className="h-full relative rounded-full"
                                                                     style={{
-                                                                        background: `linear-gradient(to bottom, 
-                                                                            rgba(139, 69, 19, 0.9) 0%, 
-                                                                            rgba(101, 50, 25, 0.95) 50%, 
-                                                                            rgba(139, 69, 19, 0.85) 100%)`,
-                                                                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(139, 69, 19, 0.3)',
-                                                                        borderRight: '1px solid rgba(101, 50, 25, 0.6)'
+                                                                        background: `linear-gradient(90deg, ${getSkillColor(skillName)} 0%, ${getSkillColor(skillName)}dd 100%)`,
+                                                                        boxShadow: `0 0 8px ${getSkillColor(skillName)}80`
                                                                     }}
-                                                                >
-                                                                    {/* Ink texture on fill */}
-                                                                    <div 
-                                                                        className="absolute inset-0 pointer-events-none"
-                                                                        style={{
-                                                                            backgroundImage: `
-                                                                                repeating-linear-gradient(90deg, 
-                                                                                    transparent 0px, transparent 1px,
-                                                                                    rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px
-                                                                                )
-                                                                            `,
-                                                                            opacity: 0.3
-                                                                        }}
-                                                                    />
-                                                                </motion.div>
+                                                                />
                                                             </div>
                                                         </div>
                                                     );
@@ -1416,7 +1188,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         </div>
 
                             {/* Return to MacBook Button - Fixed at bottom */}
-                            <div className="flex justify-center pt-4 sm:pt-3 md:pt-4 lg:pt-6 pb-3 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'visible', zIndex: 10 }}>
+                            <div className="flex justify-center pt-4 sm:pt-3 md:pt-4 lg:pt-6 pb-3 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'hidden', zIndex: 10 }}>
                                 <motion.button
                                     ref={returnButtonRef}
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
@@ -1431,7 +1203,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         e.stopPropagation();
                                         window.location.href = '/';
                                     }}
-                                    className="px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 lg:py-4 rounded-lg font-bold text-xs sm:text-sm md:text-base lg:text-lg mx-auto block touch-manipulation relative min-h-[40px] sm:min-h-[44px] z-[100]"
+                                    className="px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 lg:py-4 rounded-lg font-bold text-xs sm:text-sm md:text-base lg:text-lg mx-auto block touch-manipulation relative min-h-[40px] sm:min-h-[44px] z-[100] overflow-hidden"
                                     style={{
                                         background: 'linear-gradient(to bottom, #e8c896, #d4aa68)',
                                         border: '2px solid #b08b4c',
@@ -1447,119 +1219,38 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         zIndex: 100
                                     }}
                                     whileHover={prefersReducedMotion ? {} : { 
-                                        scale: 1.08,
-                                        rotate: 1,
-                                        boxShadow: 'inset 0 1px 3px rgba(255, 255, 255, 0.5), 0 6px 20px rgba(139, 69, 19, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 0 2px rgba(139, 69, 19, 0.4)',
-                                        borderColor: '#8B4513',
-                                        background: 'linear-gradient(to bottom, #f0dd9c, #e8c896)'
+                                        scale: 1.05,
+                                        boxShadow: '0 0 30px rgba(255, 215, 0, 0.8)'
                                     }}
                                     transition={{
                                         opacity: { duration: 0.5, delay: 0.6 },
                                         y: { duration: 0.5, delay: 0.6 },
-                                        scale: { duration: 0 },
-                                        rotate: { duration: 0 },
-                                        boxShadow: { duration: 0 },
-                                        borderColor: { duration: 0 },
-                                        background: { duration: 0 }
+                                        scale: { duration: 0.2 }
                                     }}
                                     whileTap={prefersReducedMotion ? {} : { 
-                                        scale: 0.96,
-                                        rotate: -0.5,
-                                        transition: { duration: 0, ease: 'linear' }
+                                        scale: 0.95
                                     }}
                                 >
-                                    <motion.span 
-                                        className="relative z-10"
-                                        whileHover={prefersReducedMotion ? {} : {
-                                            x: [0, -2, 2, 0],
-                                            transition: {
-                                                duration: 0.5,
+                                    {/* Shine effect */}
+                                    {!prefersReducedMotion && (
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                                            animate={{
+                                                x: ['-100%', '200%'],
+                                            }}
+                                            transition={{
+                                                duration: 2,
                                                 repeat: Infinity,
-                                                ease: 'easeInOut'
-                                            }
-                                        }}
-                                    >
-                                        Return to MacBook
-                                    </motion.span>
-                                    {/* Shimmer effect on hover */}
-                                    <motion.div 
-                                        className="absolute inset-0 opacity-0 pointer-events-none"
-                                        style={{
-                                            background: 'linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.4) 50%, transparent 60%)',
-                                            backgroundSize: '200% 100%'
-                                        }}
-                                        whileHover={prefersReducedMotion ? {} : {
-                                            opacity: [0, 1, 0],
-                                            x: ['-100%', '100%'],
-                                            transition: {
-                                                duration: 0.8,
-                                                ease: 'easeInOut'
-                                            }
-                                        }}
-                                    />
-                                    {/* Subtle texture overlay */}
-                                    <div 
-                                        className="absolute inset-0 opacity-10 pointer-events-none"
-                                        style={{
-                                            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
-                                            mixBlendMode: 'multiply'
-                                        }}
-                                    />
+                                                repeatDelay: 1,
+                                            }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">Return to MacBook</span>
                                 </motion.button>
                             </div>
                         </div>
                     </div>
-
-                    {/* Bottom curled edge with shadow */}
-                    <div 
-                        className="absolute -bottom-6 left-0 right-0 h-12 pointer-events-none z-10"
-                        style={{
-                            backgroundImage: `
-                                radial-gradient(ellipse 60px 24px at 0% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
-                                radial-gradient(ellipse 60px 24px at 100% 50%, #8B4513 0%, #A0522D 20%, #CD853F 40%, transparent 60%),
-                                linear-gradient(to top, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
-                            `,
-                            backgroundSize: '80px 100%, 80px 100%, 100% 100%',
-                            backgroundPosition: '0% 50%, 100% 50%, center',
-                            backgroundRepeat: 'no-repeat',
-                            filter: 'drop-shadow(0 -4px 8px rgba(0, 0, 0, 0.4))',
-                            clipPath: 'polygon(0 0, 3% 100%, 7% 0, 12% 100%, 18% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 97% 0, 100% 100%)'
-                        }}
-                    />
-
-                    {/* Aged/broken bottom edge */}
-                    <div 
-                        className="absolute bottom-0 left-0 right-0 h-3 pointer-events-none z-20"
-                        style={{
-                            backgroundImage: `
-                                repeating-linear-gradient(90deg, 
-                                    transparent 0px, transparent 2px,
-                                    rgba(139, 69, 19, 0.4) 2px, rgba(139, 69, 19, 0.4) 3px,
-                                    transparent 3px, transparent 5px
-                                )
-                            `,
-                            clipPath: 'polygon(0 0, 2% 100%, 5% 0, 8% 100%, 12% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 98% 0, 100% 100%)'
-                        }}
-                    />
-
-                    {/* Left side curl detail */}
-                    <div 
-                        className="absolute left-0 top-1/4 bottom-1/4 w-8 pointer-events-none z-10"
-                        style={{
-                            background: 'radial-gradient(ellipse 32px 100% at 0% 50%, rgba(139, 69, 19, 0.3) 0%, transparent 70%)',
-                            filter: 'drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.3))'
-                        }}
-                    />
-
-                    {/* Right side curl detail */}
-                    <div 
-                        className="absolute right-0 top-1/4 bottom-1/4 w-8 pointer-events-none z-10"
-                        style={{
-                            background: 'radial-gradient(ellipse 32px 100% at 100% 50%, rgba(139, 69, 19, 0.3) 0%, transparent 70%)',
-                            filter: 'drop-shadow(2px 0 4px rgba(0, 0, 0, 0.3))'
-                        }}
-                    />
-                </motion.div>
+                </motion.section>
             </div>
         );
     }
@@ -2336,7 +2027,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         className="overflow-hidden"
                                     >
                                         <div 
-                                            className="mt-2 p-4 rounded-lg space-y-4"
+                                            className="mt-2 p-4 rounded-lg space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar"
                                             style={{
                                                 background: 'rgba(0, 0, 0, 0.7)',
                                                 backdropFilter: 'blur(10px)',
