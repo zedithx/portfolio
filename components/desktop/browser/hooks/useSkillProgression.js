@@ -77,15 +77,15 @@ export function useSkillProgression(initialSkills) {
         }
     }, [processedCards]);
 
-    // Check if SRE should be unlocked
-    const checkSREUnlock = useCallback((currentSkills) => {
-        const sreSkill = currentSkills.SRE;
-        if (!sreSkill || !sreSkill.locked) return false;
+    // Check if a locked skill should be unlocked based on its unlockThreshold
+    const checkSkillUnlock = useCallback((skillName, currentSkills) => {
+        const skill = currentSkills[skillName];
+        if (!skill || !skill.locked) return false;
 
-        const { unlockThreshold } = sreSkill;
-        return Object.entries(unlockThreshold).every(([skillName, threshold]) => {
-            const skill = currentSkills[skillName];
-            return skill && skill.value >= threshold;
+        const { unlockThreshold } = skill;
+        return Object.entries(unlockThreshold).every(([requiredSkillName, threshold]) => {
+            const requiredSkill = currentSkills[requiredSkillName];
+            return requiredSkill && requiredSkill.value >= threshold;
         });
     }, []);
 
@@ -93,8 +93,10 @@ export function useSkillProgression(initialSkills) {
     const updateSkills = useCallback((cardId, skillDeltas) => {
         // Only update if this card hasn't been processed yet
         if (processedCards.has(cardId)) {
-            return false;
+            return { updated: false, unlockedSkills: [] };
         }
+
+        const unlockedSkillNames = [];
 
         setSkills(prevSkills => {
             const newSkills = { ...prevSkills };
@@ -117,17 +119,24 @@ export function useSkillProgression(initialSkills) {
                 }
             });
 
-            // Check SRE unlock
-            if (newSkills.SRE?.locked) {
-                const shouldUnlock = checkSREUnlock(newSkills);
-                if (shouldUnlock) {
-                    newSkills.SRE = {
-                        ...newSkills.SRE,
-                        locked: false
-                    };
-                    hasUpdates = true;
+            // Check for skill unlocks (Cloud Infrastructure, DevOps, and SRE)
+            const skillsToCheck = ['Cloud Infrastructure', 'DevOps', 'SRE'];
+            skillsToCheck.forEach(skillName => {
+                if (newSkills[skillName]?.locked) {
+                    const shouldUnlock = checkSkillUnlock(skillName, newSkills);
+                    if (shouldUnlock) {
+                        newSkills[skillName] = {
+                            ...newSkills[skillName],
+                            locked: false
+                        };
+                        // Only add if not already in the array (prevent duplicates)
+                        if (!unlockedSkillNames.includes(skillName)) {
+                            unlockedSkillNames.push(skillName);
+                        }
+                        hasUpdates = true;
+                    }
                 }
-            }
+            });
 
             return hasUpdates ? newSkills : prevSkills;
         });
@@ -135,17 +144,19 @@ export function useSkillProgression(initialSkills) {
         // Mark card as processed
         setProcessedCards(prev => new Set([...prev, cardId]));
 
-        return true;
-    }, [processedCards, checkSREUnlock]);
+        // Deduplicate before returning
+        const uniqueUnlockedSkills = [...new Set(unlockedSkillNames)];
+        return { updated: true, unlockedSkills: uniqueUnlockedSkills };
+    }, [processedCards, checkSkillUnlock]);
 
-    // Check if SRE is currently unlocked
-    const isSREUnlocked = checkSREUnlock(skills);
+    // Check if SRE is currently unlocked (for backwards compatibility)
+    const isSREUnlocked = checkSkillUnlock('SRE', skills);
 
     return {
         skills,
         updateSkills,
         isSREUnlocked,
-        checkSREUnlock: () => checkSREUnlock(skills),
+        checkSREUnlock: () => checkSkillUnlock('SRE', skills),
         processedCards
     };
 }

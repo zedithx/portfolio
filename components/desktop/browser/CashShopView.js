@@ -7,6 +7,26 @@ import { contentData, aboutMeData } from '../../../data/data';
 
 export default function CashShopView({ onClose, onPermissionError, data, commits }) {
     const [selectedProject, setSelectedProject] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Search functionality - filters items by title, description, and techTags
+    const filteredItems = useMemo(() => {
+        if (!searchQuery.trim()) {
+            return null; // No search query, return null to show categorized items
+        }
+        
+        const query = searchQuery.toLowerCase().trim();
+        return data.items.filter(item => {
+            const titleMatch = item.title?.toLowerCase().includes(query);
+            const descriptionMatch = item.description?.toLowerCase().includes(query);
+            const techTagsMatch = item.techTags?.some(tag => 
+                tag.toLowerCase().includes(query)
+            );
+            const categoryMatch = item.category?.toLowerCase().includes(query);
+            
+            return titleMatch || descriptionMatch || techTagsMatch || categoryMatch;
+        });
+    }, [data.items, searchQuery]);
 
     // Memoize filtered items to prevent recalculation on every render
     const popularItems = useMemo(() => {
@@ -27,6 +47,11 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
 
     const handleBackToShop = useCallback(() => {
         setSelectedProject(null);
+        setSearchQuery(''); // Clear search when going back
+    }, []);
+
+    const handleSearchChange = useCallback((e) => {
+        setSearchQuery(e.target.value);
     }, []);
 
     return (
@@ -153,6 +178,8 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                         <input 
                                             type="text" 
                                             placeholder="Search items..." 
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
                                             className="flex-1 bg-transparent text-white/80 text-xs placeholder:text-gray-500 outline-none min-w-0"
                                         />
                                     </div>
@@ -179,6 +206,8 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     <input 
                                         type="text" 
                                         placeholder="Search items..." 
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
                                         className="bg-transparent text-white/70 text-sm outline-none w-32"
                                     />
                                 </div>
@@ -212,62 +241,94 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                     <>
                         {/* Main Content Area */}
                         <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 lg:p-6">
-                            {/* Popular Items Section */}
-                            <div className="mb-4 sm:mb-6 md:mb-8">
-                                <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
-                                    <span className="text-xl sm:text-2xl">⭐</span>
-                                    <span>Popular Items</span>
-                                    <span className="text-lg sm:text-xl">✨</span>
-                                </h2>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                                    {popularItems.map((item) => (
-                                        <ItemCard 
-                                            key={item.id}
-                                            item={item}
-                                            onClick={handleProjectClick}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Student Government Section */}
-                            {studentGovernmentItems.length > 0 && (
-                                <div className="mb-4 sm:mb-6 md:mb-8">
-                                    <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
-                                        <span className="text-xl sm:text-2xl">🎓</span>
-                                        <span>Student Government</span>
-                                        <span className="text-lg sm:text-xl">📚</span>
-                                    </h2>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                                        {studentGovernmentItems.map((item) => (
-                                            <ItemCard 
-                                                key={item.id}
-                                                item={item}
-                                                onClick={handleProjectClick}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* DevOps Projects Section */}
-                            {devOpsItems.length > 0 && (
+                            {filteredItems !== null ? (
+                                /* Search Results */
                                 <div>
                                     <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
-                                        <span className="text-xl sm:text-2xl">⚙️</span>
-                                        <span>DevOps Projects</span>
-                                        <span className="text-lg sm:text-xl">🔧</span>
+                                        <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        <span>Search Results</span>
+                                        <span className="text-sm text-yellow-300/70 font-normal">
+                                            ({filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'})
+                                        </span>
                                     </h2>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                                        {devOpsItems.map((item) => (
-                                            <ItemCard 
-                                                key={item.id}
-                                                item={item}
-                                                onClick={handleProjectClick}
-                                            />
-                                        ))}
-                                    </div>
+                                    {filteredItems.length > 0 ? (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                                            {filteredItems.map((item) => (
+                                                <ItemCard 
+                                                    key={item.id}
+                                                    item={item}
+                                                    onClick={handleProjectClick}
+                                                />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-8 sm:py-12">
+                                            <p className="text-gray-400 text-sm sm:text-base">No items found matching "{searchQuery}"</p>
+                                            <p className="text-gray-500 text-xs sm:text-sm mt-2">Try a different search term</p>
+                                        </div>
+                                    )}
                                 </div>
+                            ) : (
+                                /* Categorized Items */
+                                <>
+                                    {/* Popular Items Section */}
+                                    <div className="mb-4 sm:mb-6 md:mb-8">
+                                        <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                            <span className="text-xl sm:text-2xl">⭐</span>
+                                            <span>Popular Items</span>
+                                            <span className="text-lg sm:text-xl">✨</span>
+                                        </h2>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                                            {popularItems.map((item) => (
+                                                <ItemCard 
+                                                    key={item.id}
+                                                    item={item}
+                                                    onClick={handleProjectClick}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Student Government Section */}
+                                    {studentGovernmentItems.length > 0 && (
+                                        <div className="mb-4 sm:mb-6 md:mb-8">
+                                            <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                                <span className="text-xl sm:text-2xl">🎓</span>
+                                                <span>Student Government</span>
+                                                <span className="text-lg sm:text-xl">📚</span>
+                                            </h2>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                                                {studentGovernmentItems.map((item) => (
+                                                    <ItemCard 
+                                                        key={item.id}
+                                                        item={item}
+                                                        onClick={handleProjectClick}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* DevOps Projects Section */}
+                                    {devOpsItems.length > 0 && (
+                                        <div>
+                                            <h2 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                                <span className="text-xl sm:text-2xl">⚙️</span>
+                                                <span>DevOps Projects</span>
+                                                <span className="text-lg sm:text-xl">🔧</span>
+                                            </h2>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                                                {devOpsItems.map((item) => (
+                                                    <ItemCard 
+                                                        key={item.id}
+                                                        item={item}
+                                                        onClick={handleProjectClick}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
 

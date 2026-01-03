@@ -54,8 +54,8 @@ const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
         let gainTimeout;
         let animationFrameId;
         
-        // First show the gain indicator
-        if (showGain && gainAmount > 0) {
+        // First show the gain indicator (for both positive and negative)
+        if (showGain && gainAmount !== 0) {
             setDisplayValue(from); // Show current value
             setShowGainIndicator(true);
             
@@ -129,16 +129,20 @@ const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
     return (
         <span>
             {displayValue}/{max}
-            {showGainIndicator && gainAmount > 0 && (
+            {showGainIndicator && gainAmount !== 0 && (
                 <motion.span
                     initial={{ opacity: 0, x: -5, scale: 0.8 }}
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     exit={{ opacity: 0, x: 5, scale: 0.8 }}
                     transition={{ duration: 0.2 }}
-                    className="text-green-400 ml-1 font-bold"
-                    style={{ textShadow: '0 0 8px rgba(34, 197, 94, 0.8)' }}
+                    className={gainAmount > 0 ? "text-green-400 ml-1 font-bold" : "text-red-400 ml-1 font-bold"}
+                    style={{ 
+                        textShadow: gainAmount > 0 
+                            ? '0 0 8px rgba(34, 197, 94, 0.8)' 
+                            : '0 0 8px rgba(239, 68, 68, 0.8)' 
+                    }}
                 >
-                    +{gainAmount}
+                    {gainAmount > 0 ? '+' : ''}{gainAmount}
                 </motion.span>
             )}
         </span>
@@ -161,6 +165,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [previousSkillValues, setPreviousSkillValues] = useState({});
     const [showSummary, setShowSummary] = useState(false);
     const [activeTab, setActiveTab] = useState('summary'); // 'summary' or 'skills'
+    const [unlockedSkills, setUnlockedSkills] = useState([]); // Track newly unlocked skills (array for multiple unlocks)
+    const [recentlyUnlockedSkills, setRecentlyUnlockedSkills] = useState(new Set()); // Track skills that just unlocked for animation
 
     // Memoize prefersReducedMotion to avoid checking on every render
     const prefersReducedMotion = useMemo(() => {
@@ -171,6 +177,32 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const currentCard = journey[currentIndex];
     // Use safe dialogue access - will be validated later
     const currentDialogue = currentCard?.dialogues?.[dialogueIndex];
+
+    // Function to animate skills sequentially
+    const animateSkillsSequentially = useCallback((skillNames) => {
+        if (!skillNames || skillNames.length === 0) return;
+        
+        skillNames.forEach((skillName, index) => {
+            setTimeout(() => {
+                setRecentlyUpdatedSkills(prev => new Set([...prev, skillName]));
+                
+                // Clear the highlight after animation for this skill
+                setTimeout(() => {
+                    setRecentlyUpdatedSkills(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(skillName);
+                        return newSet;
+                    });
+                    // Clear previous value after animation completes so bar stays at correct end state
+                    setPreviousSkillValues(prev => {
+                        const newValues = { ...prev };
+                        delete newValues[skillName];
+                        return newValues;
+                    });
+                }, 2000);
+            }, index * 300); // 300ms delay between each skill animation
+        });
+    }, []);
 
     // Reset dialogue index when slide changes
     useEffect(() => {
@@ -210,16 +242,60 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 });
                 setPreviousSkillValues(prevValues);
                 
-                const updated = updateSkills(currentCard.id, currentCard.skillsGained);
-                if (updated) {
-                    // Mark skills as recently updated for animation
+                const result = updateSkills(currentCard.id, currentCard.skillsGained);
+                if (result.updated) {
                     const updatedSkillNames = Object.keys(currentCard.skillsGained);
-                    setRecentlyUpdatedSkills(new Set(updatedSkillNames));
+                    const hasUnlocks = result.unlockedSkills && result.unlockedSkills.length > 0;
+                    const uniqueUnlockedSkills = hasUnlocks ? [...new Set(result.unlockedSkills)] : [];
                     
-                    // Clear the highlight after animation
-                    setTimeout(() => {
-                        setRecentlyUpdatedSkills(new Set());
-                    }, 2000);
+                    // STEP 1: Show point notification popup first
+                    const isLastSlide = currentIndex === journey.length - 1;
+                    const popupDuration = isLastSlide ? 2000 : 3000;
+                    
+                    setDesktopPopupSkills(currentCard.skillsGained);
+                    setShowDesktopPopup(true);
+                    
+                    if (desktopPopupTimeoutRef.current) {
+                        clearTimeout(desktopPopupTimeoutRef.current);
+                    }
+                    desktopPopupTimeoutRef.current = setTimeout(() => {
+                        setShowDesktopPopup(false);
+                        setDesktopPopupSkills(null);
+                        desktopPopupTimeoutRef.current = null;
+                        
+                        // STEP 2: After popup, show unlock notification (if any)
+                        if (hasUnlocks) {
+                            setUnlockedSkills(uniqueUnlockedSkills);
+                            // Track for unlock animation
+                            setRecentlyUnlockedSkills(prev => new Set([...prev, ...uniqueUnlockedSkills]));
+                            
+                            // Clear unlock notification after 4 seconds
+                            setTimeout(() => {
+                                setUnlockedSkills([]);
+                            }, 4000);
+                            
+                            // Clear unlock animation highlight after 2 seconds
+                            setTimeout(() => {
+                                setRecentlyUnlockedSkills(prev => {
+                                    const newSet = new Set(prev);
+                                    uniqueUnlockedSkills.forEach(skill => newSet.delete(skill));
+                                    return newSet;
+                                });
+                            }, 2000);
+                            
+                            // STEP 3: After unlock notification, animate skill bars sequentially
+                            // Wait for unlock notification duration (4 seconds) + small buffer
+                            setTimeout(() => {
+                                animateSkillsSequentially(updatedSkillNames);
+                            }, 4500);
+                        } else {
+                            // No unlocks, so animate skill bars right after popup closes
+                            // Small delay to ensure popup is fully closed
+                            setTimeout(() => {
+                                animateSkillsSequentially(updatedSkillNames);
+                            }, 100);
+                        }
+                    }, popupDuration);
                     
                     if (onSkillGain) {
                         onSkillGain(currentCard.id, currentCard.skillsGained);
@@ -227,51 +303,23 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     setProcessedCards(prev => new Set([...prev, currentCard.id]));
                 }
             }
-            
-            // Check if this is the last slide - if so, go to summary automatically
-            const isLastSlide = currentIndex === journey.length - 1;
-            if (isLastSlide) {
-                // Auto-dismiss popup quickly, then show summary
-                setDesktopPopupSkills(currentCard.skillsGained);
-                setShowDesktopPopup(true);
-                
-                if (desktopPopupTimeoutRef.current) {
-                    clearTimeout(desktopPopupTimeoutRef.current);
-                }
-                desktopPopupTimeoutRef.current = setTimeout(() => {
-                    setShowDesktopPopup(false);
-                    setDesktopPopupSkills(null);
-                    desktopPopupTimeoutRef.current = null;
-                    // Navigate to summary after popup - add extra delay to ensure skills state has updated
-                    setTimeout(() => {
-                        setIsTransitioning(true);
-                        setShowDialogue(false);
-                        setTimeout(() => {
-                            setShowSummary(true);
-                            setIsTransitioning(false);
-                        }, 300);
-                    }, 800); // Increased from 500 to 800 to ensure skills state has propagated
-                }, 2000);
-            } else {
-                // Show small popup for both mobile and desktop
-                setDesktopPopupSkills(currentCard.skillsGained);
-                setShowDesktopPopup(true);
-                
-                // Auto-dismiss after 3 seconds
-                if (desktopPopupTimeoutRef.current) {
-                    clearTimeout(desktopPopupTimeoutRef.current);
-                }
-                desktopPopupTimeoutRef.current = setTimeout(() => {
-                    setShowDesktopPopup(false);
-                    setDesktopPopupSkills(null);
-                    desktopPopupTimeoutRef.current = null;
-                }, 3000);
-            }
         }
     }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, journey.length]);
 
     const goNext = useCallback(() => {
-        if (currentIndex < journey.length - 1 && !isTransitioning) {
+        if (isTransitioning) return;
+        
+        const isLastSlide = currentIndex === journey.length - 1;
+        if (isLastSlide) {
+            // Navigate to summary on last slide
+            setIsTransitioning(true);
+            setShowDialogue(false);
+            setTimeout(() => {
+                setShowSummary(true);
+                setIsTransitioning(false);
+            }, 300);
+        } else if (currentIndex < journey.length - 1) {
+            // Go to next slide
             setIsTransitioning(true);
             setTimeout(() => {
                 setCurrentIndex(prev => prev + 1);
@@ -492,55 +540,101 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
     // Render skill item component (reusable) - MUST be before any early returns
     const renderSkillItem = useCallback((skillName, skill) => {
-        if (skill.locked) return null;
-        
+        const isLocked = skill.locked;
         const value = skill.value || skill.baseline || 0;
         const max = skill.max || 100;
-        const percentage = (value / max) * 100;
+        const percentage = isLocked ? 0 : Math.max(0, Math.min(100, (value / max) * 100));
         const color = getSkillColor(skillName);
         const icon = getSkillIcon(skillName);
+        const displayName = skill.displayName || skillName;
+        const isRecentlyUnlocked = recentlyUnlockedSkills.has(skillName);
 
         return (
-            <div key={skillName} className="space-y-1.5">
+            <motion.div 
+                key={skillName} 
+                className="space-y-1.5"
+                initial={isRecentlyUnlocked && !prefersReducedMotion ? { scale: 0.8, opacity: 0 } : {}}
+                animate={isRecentlyUnlocked && !prefersReducedMotion ? { 
+                    scale: [0.8, 1.1, 1],
+                    opacity: [0, 1, 1]
+                } : {}}
+                transition={isRecentlyUnlocked && !prefersReducedMotion ? { 
+                    duration: 0.6,
+                    ease: 'easeOut'
+                } : {}}
+            >
                 <div className="flex items-center gap-2">
-                    <span className="text-lg flex-shrink-0">{icon}</span>
+                    <motion.span 
+                        className="text-lg flex-shrink-0"
+                        animate={isRecentlyUnlocked && !prefersReducedMotion ? {
+                            rotate: [0, 360],
+                            scale: [1, 1.3, 1]
+                        } : {}}
+                        transition={isRecentlyUnlocked && !prefersReducedMotion ? {
+                            duration: 0.6,
+                            ease: 'easeOut'
+                        } : {}}
+                    >
+                        {icon}
+                    </motion.span>
                     <span 
                         className="text-xs font-bold truncate flex-1"
                         style={{ 
-                            color: '#ffd700',
-                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)'
+                            color: isLocked ? '#666' : '#ffd700',
+                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                            opacity: isLocked ? 0.5 : 1
                         }}
                     >
-                        {skillName}
+                        {displayName}
                     </span>
-                    <span 
-                        className="text-[10px] text-yellow-400/70"
-                        style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
-                    >
-                        {Math.round(value)}/{max}
-                    </span>
+                    {isLocked ? (
+                        <span 
+                            className="text-[10px] text-gray-500 flex items-center gap-1"
+                            style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
+                        >
+                            🔒 LOCKED
+                        </span>
+                    ) : (
+                        <span 
+                            className="text-[10px] text-yellow-400/70"
+                            style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
+                        >
+                            {Math.round(value)}/{max}
+                        </span>
+                    )}
                 </div>
                 <div 
-                    className="w-full h-2 rounded-full overflow-hidden"
+                    className="w-full h-2 rounded-full overflow-hidden relative"
                     style={{
-                        background: 'rgba(0, 0, 0, 0.5)',
-                        border: '1px solid rgba(255, 215, 0, 0.3)'
+                        background: isLocked ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.5)',
+                        border: isLocked ? '1px solid rgba(100, 100, 100, 0.3)' : '1px solid rgba(255, 215, 0, 0.3)',
+                        opacity: isLocked ? 0.5 : 1
                     }}
                 >
-                    <motion.div
-                        initial={prefersReducedMotion ? {} : { width: 0 }}
-                        animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
-                        transition={prefersReducedMotion ? {} : { duration: 0.5, ease: 'easeOut' }}
-                        className="h-full"
-                        style={{
-                            background: `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`,
-                            boxShadow: `0 0 8px ${color}80`
-                        }}
-                    />
+                    {isLocked ? (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-[8px] text-gray-500">🔒</span>
+                        </div>
+                    ) : (
+                        <motion.div
+                            initial={prefersReducedMotion ? {} : { width: 0 }}
+                            animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
+                            transition={prefersReducedMotion ? {} : { duration: 0.5, ease: 'easeOut' }}
+                            className="h-full"
+                            style={{
+                                background: isRecentlyUnlocked && !prefersReducedMotion
+                                    ? `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`
+                                    : `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`,
+                                boxShadow: isRecentlyUnlocked && !prefersReducedMotion
+                                    ? `0 0 15px ${color}, 0 0 25px ${color}80`
+                                    : `0 0 8px ${color}80`
+                            }}
+                        />
+                    )}
                 </div>
-            </div>
+            </motion.div>
         );
-    }, [getSkillColor, getSkillIcon, prefersReducedMotion]);
+    }, [getSkillColor, getSkillIcon, prefersReducedMotion, recentlyUnlockedSkills]);
 
     // Memoize skill filtering and sorting to avoid recalculation on every render
     const technicalSkillOrder = useMemo(() => [
@@ -549,9 +643,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         'Hardware',
         'Telegram Bots',
         'Deployment',
-        'DevOps',
         'LLMs',
         'Cloud Infrastructure',
+        'DevOps',
         'SRE'
     ], []);
     
@@ -623,13 +717,13 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     // Memoize summary skills using the calculated final values
     const summarySkills = useMemo(() => {
         if (!finalSkills) return { allSkills: [], technicalSkills: [], nonTechnicalSkills: [] };
-        // Filter out locked skills and get all unlocked skills with final values
-        const allSkills = Object.entries(finalSkills).filter(([_, skill]) => !skill.locked);
+        // Get all skills (including locked ones) with final values
+        const allSkills = Object.entries(finalSkills);
         const technicalSkills = allSkills.filter(([name, _]) => 
-            ['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
+            ['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'LLMs', 'Cloud Infrastructure', 'DevOps', 'SRE'].includes(name)
         );
         const nonTechnicalSkills = allSkills.filter(([name, _]) => 
-            !['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'DevOps', 'LLMs', 'Cloud Infrastructure', 'SRE'].includes(name)
+            !['Frontend', 'Backend', 'Hardware', 'Telegram Bots', 'Deployment', 'LLMs', 'Cloud Infrastructure', 'DevOps', 'SRE'].includes(name)
         );
         return { allSkills, technicalSkills, nonTechnicalSkills };
     }, [finalSkills]);
@@ -1123,7 +1217,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                 {technicalSkills.map(([skillName, skill]) => {
                                                     const value = skill.value || skill.baseline || 0;
                                                     const max = skill.max || 100;
-                                                    const percentage = (value / max) * 100;
+                                                    const percentage = Math.max(0, Math.min(100, (value / max) * 100));
+                                                    const displayName = skill.displayName || skillName;
                                                     return (
                                                         <div
                                                             key={skillName}
@@ -1140,7 +1235,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                             fontFamily: 'serif'
                                                                         }}
                                                                     >
-                                                                        {skillName}
+                                                                        {displayName}
                                                                     </span>
                                                                 </div>
                                                                 <span 
@@ -1228,7 +1323,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                 {nonTechnicalSkills.map(([skillName, skill]) => {
                                                     const value = skill.value || skill.baseline || 0;
                                                     const max = skill.max || 100;
-                                                    const percentage = (value / max) * 100;
+                                                    const percentage = Math.max(0, Math.min(100, (value / max) * 100));
+                                                    const displayName = skill.displayName || skillName;
                                                     return (
                                                         <div
                                                             key={skillName}
@@ -1245,7 +1341,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                             fontFamily: 'serif'
                                                                         }}
                                                                     >
-                                                                        {skillName}
+                                                                        {displayName}
                                                                     </span>
                                                                 </div>
                                                                 <span 
@@ -1591,8 +1687,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             backgroundRepeat: 'no-repeat',
                             border: '3px solid #ffd700',
                             boxShadow: '0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.5)',
-                            willChange: 'background-image',
-                            imageRendering: 'crisp-edges'
+                            imageRendering: 'auto',
+                            WebkitImageRendering: 'auto'
                         }}
                     >
                         {/* Dark overlay for better text readability */}
@@ -1813,6 +1909,89 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             )}
                         </AnimatePresence>
 
+                        {/* Unlock Notification */}
+                        <AnimatePresence>
+                            {unlockedSkills.length > 0 && (
+                                <motion.div
+                                    initial={prefersReducedMotion ? {} : { scale: 0, opacity: 0, y: -50 }}
+                                    animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1, y: 0 }}
+                                    exit={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0, y: -20 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.5, type: 'spring', stiffness: 300 }}
+                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] pointer-events-none"
+                                    style={{
+                                        minWidth: '280px',
+                                        maxWidth: '90vw'
+                                    }}
+                                >
+                                    <div
+                                        className="relative p-4 md:p-6 rounded-lg text-center"
+                                        style={{
+                                            background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(30, 20, 50, 0.98) 100%)',
+                                            border: '3px solid #ffd700',
+                                            boxShadow: '0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 215, 0, 0.2)',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                    >
+                                        {/* Decorative corners */}
+                                        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-yellow-400"></div>
+                                        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-yellow-400"></div>
+                                        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-yellow-400"></div>
+                                        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-400"></div>
+                                        
+                                        <motion.div
+                                            initial={prefersReducedMotion ? {} : { scale: 0, rotate: -180 }}
+                                            animate={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
+                                            transition={prefersReducedMotion ? {} : { duration: 0.6, type: 'spring', stiffness: 200 }}
+                                            className="text-4xl md:text-5xl mb-2"
+                                        >
+                                            🔓
+                                        </motion.div>
+                                        <h3
+                                            className="text-lg md:text-xl font-bold mb-2"
+                                            style={{
+                                                color: '#ffd700',
+                                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
+                                                letterSpacing: '1px'
+                                            }}
+                                        >
+                                            {unlockedSkills.length === 1 ? 'SKILL UNLOCKED!' : 'SKILLS UNLOCKED!'}
+                                        </h3>
+                                        <div className="space-y-2">
+                                            {unlockedSkills.map((skillName, index) => (
+                                                <div key={`${skillName}-${index}`}>
+                                                    <p
+                                                        className="text-base md:text-lg font-semibold"
+                                                        style={{
+                                                            color: '#ffd700',
+                                                            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)'
+                                                        }}
+                                                    >
+                                                        {skills[skillName]?.displayName || skillName}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <p
+                                            className="text-xs md:text-sm mt-3 text-yellow-300/80"
+                                            style={{
+                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)'
+                                            }}
+                                        >
+                                            {unlockedSkills.length === 1 
+                                                ? (unlockedSkills[0] === 'SRE' 
+                                                    ? 'Unlocked by gaining DevOps experience!' 
+                                                    : unlockedSkills[0] === 'DevOps' 
+                                                    ? 'Unlocked by gaining Backend experience!' 
+                                                    : unlockedSkills[0] === 'Cloud Infrastructure'
+                                                    ? 'Unlocked by gaining Backend experience!'
+                                                    : 'New skill available!')
+                                                : 'Unlocked by gaining Backend experience!'}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         {/* Small Game-Like Popup - Both Mobile and Desktop */}
                         <AnimatePresence>
                             {showDesktopPopup && desktopPopupSkills && (
@@ -1866,7 +2045,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         
                                         {/* Skills List */}
                                         <div className="space-y-1.5 md:space-y-2">
-                                            {Object.entries(desktopPopupSkills).map(([skill, value], idx) => (
+                                            {Object.entries(desktopPopupSkills).map(([skill, value], idx) => {
+                                                const skillData = skills[skill];
+                                                const displayName = skillData?.displayName || skill;
+                                                return (
                                                 <motion.div
                                                     key={skill}
                                                     initial={prefersReducedMotion ? {} : { x: -20, opacity: 0 }}
@@ -1887,7 +2069,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                             className="text-xs md:text-sm font-semibold text-white"
                                                             style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                                                         >
-                                                            {skill}
+                                                            {displayName}
                                                         </span>
                                                     </div>
                                                     <motion.span
@@ -1900,17 +2082,18 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                         }}
                                                         className="text-sm md:text-lg font-bold px-1.5 md:px-2 py-0.5 rounded"
                                                         style={{
-                                                            color: '#ffd700',
-                                                            background: 'rgba(255, 215, 0, 0.2)',
-                                                            border: '1px solid #ffd700',
-                                                            textShadow: '0 0 10px rgba(255, 215, 0, 0.8)',
-                                                            boxShadow: '0 0 10px rgba(255, 215, 0, 0.3)'
+                                                            color: value >= 0 ? '#ffd700' : '#ff6b6b',
+                                                            background: value >= 0 ? 'rgba(255, 215, 0, 0.2)' : 'rgba(255, 107, 107, 0.2)',
+                                                            border: value >= 0 ? '1px solid #ffd700' : '1px solid #ff6b6b',
+                                                            textShadow: value >= 0 ? '0 0 10px rgba(255, 215, 0, 0.8)' : '0 0 10px rgba(255, 107, 107, 0.8)',
+                                                            boxShadow: value >= 0 ? '0 0 10px rgba(255, 215, 0, 0.3)' : '0 0 10px rgba(255, 107, 107, 0.3)'
                                                         }}
                                                     >
-                                                        +{value}
+                                                        {value >= 0 ? '+' : ''}{value}
                                                     </motion.span>
                                                 </motion.div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                         
                                         {/* Click hint */}
@@ -1981,7 +2164,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         
                                         {/* Skills List */}
                                         <div className="space-y-2">
-                                            {Object.entries(desktopPopupSkills).map(([skill, value], idx) => (
+                                            {Object.entries(desktopPopupSkills).map(([skill, value], idx) => {
+                                                const skillData = skills[skill];
+                                                const displayName = skillData?.displayName || skill;
+                                                return (
                                                 <motion.div
                                                     key={skill}
                                                     initial={prefersReducedMotion ? {} : { x: -20, opacity: 0 }}
@@ -2002,7 +2188,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                             className="text-sm font-semibold text-white"
                                                             style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                                                         >
-                                                            {skill}
+                                                            {displayName}
                                                         </span>
                                                     </div>
                                                     <motion.span
@@ -2015,17 +2201,18 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                         }}
                                                         className="text-lg font-bold px-2 py-0.5 rounded"
                                                         style={{
-                                                            color: '#ffd700',
-                                                            background: 'rgba(255, 215, 0, 0.2)',
-                                                            border: '1px solid #ffd700',
-                                                            textShadow: '0 0 10px rgba(255, 215, 0, 0.8)',
-                                                            boxShadow: '0 0 10px rgba(255, 215, 0, 0.3)'
+                                                            color: value >= 0 ? '#ffd700' : '#ff6b6b',
+                                                            background: value >= 0 ? 'rgba(255, 215, 0, 0.2)' : 'rgba(255, 107, 107, 0.2)',
+                                                            border: value >= 0 ? '1px solid #ffd700' : '1px solid #ff6b6b',
+                                                            textShadow: value >= 0 ? '0 0 10px rgba(255, 215, 0, 0.8)' : '0 0 10px rgba(255, 107, 107, 0.8)',
+                                                            boxShadow: value >= 0 ? '0 0 10px rgba(255, 215, 0, 0.3)' : '0 0 10px rgba(255, 107, 107, 0.3)'
                                                         }}
                                                     >
-                                                        +{value}
+                                                        {value >= 0 ? '+' : ''}{value}
                                                     </motion.span>
                                                 </motion.div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                         
                                         {/* Click hint */}
@@ -2065,17 +2252,18 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                                 <button
                                     onClick={goNext}
-                                    disabled={currentIndex === journey.length - 1 || isTransitioning}
-                                    className={`absolute right-4 top-1/2 -translate-y-1/2 z-50 min-h-[48px] min-w-[48px] p-3 rounded-full transition-all touch-manipulation ${
-                                        currentIndex === journey.length - 1 || isTransitioning ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:scale-110'
+                                    disabled={isTransitioning}
+                                    className={`absolute right-4 top-1/2 -translate-y-1/2 z-[60] min-h-[48px] min-w-[48px] p-3 rounded-full transition-all touch-manipulation ${
+                                        isTransitioning ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:scale-110'
                                     }`}
                                     style={{
                                         background: 'rgba(0, 0, 0, 0.7)',
                                         border: '3px solid #ffd700',
                                         color: '#ffd700',
-                                        boxShadow: '0 0 20px rgba(255, 215, 0, 0.4)'
+                                        boxShadow: '0 0 20px rgba(255, 215, 0, 0.4)',
+                                        pointerEvents: isTransitioning ? 'none' : 'auto'
                                     }}
-                                    aria-label="Next adventure"
+                                    aria-label={currentIndex === journey.length - 1 ? "Go to summary" : "Next adventure"}
                                 >
                                     <ChevronRight className="w-6 h-6" />
                                 </button>
@@ -2238,104 +2426,143 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     </h4>
                                     <div className="space-y-2">
                                         {technicalSkills.map(([skillName, skill]) => {
-                                            if (skill.locked) return null;
-                                            
+                                            const isLocked = skill.locked;
                                             const value = skill.value || skill.baseline || 0;
                                             const max = skill.max || 100;
-                                            const percentage = (value / max) * 100;
+                                            const percentage = isLocked ? 0 : Math.max(0, Math.min(100, (value / max) * 100));
                                             const color = getSkillColor(skillName);
                                             const icon = getSkillIcon(skillName);
+                                            const displayName = skill.displayName || skillName;
                                             const isRecentlyUpdated = recentlyUpdatedSkills.has(skillName);
-                                            const prevValue = previousSkillValues[skillName] || value;
+                                            const isRecentlyUnlocked = recentlyUnlockedSkills.has(skillName);
+                                            const hasPreviousValue = previousSkillValues[skillName] !== undefined;
+                                            const prevValue = hasPreviousValue ? previousSkillValues[skillName] : value;
                                             const prevPercentage = ((prevValue || 0) / max) * 100;
+                                            
+                                            // Use previous percentage until animation starts to prevent instant jump
+                                            const displayPercentage = (hasPreviousValue && !isRecentlyUpdated) ? prevPercentage : percentage;
 
                                             return (
                                                 <motion.div 
                                                     key={skillName} 
                                                     className="space-y-1.5"
-                                                    animate={isRecentlyUpdated ? {
+                                                    initial={isRecentlyUnlocked && !prefersReducedMotion ? { scale: 0.8, opacity: 0 } : {}}
+                                                    animate={isRecentlyUnlocked && !prefersReducedMotion ? { 
+                                                        scale: [0.8, 1.1, 1],
+                                                        opacity: [0, 1, 1]
+                                                    } : isRecentlyUpdated ? {
                                                         scale: [1, 1.03, 1]
                                                     } : {}}
-                                                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                                                    transition={isRecentlyUnlocked && !prefersReducedMotion ? { 
+                                                        duration: 0.6,
+                                                        ease: 'easeOut'
+                                                    } : { duration: 0.8, ease: 'easeOut' }}
                                                     style={{
-                                                        willChange: isRecentlyUpdated ? 'transform' : 'auto',
+                                                        willChange: (isRecentlyUpdated || isRecentlyUnlocked) ? 'transform' : 'auto',
                                                         padding: isRecentlyUpdated ? '4px' : '0',
                                                         borderRadius: '4px',
-                                                        background: isRecentlyUpdated ? 'rgba(255, 215, 0, 0.1)' : 'transparent'
+                                                        background: isRecentlyUpdated ? 'rgba(255, 215, 0, 0.1)' : isRecentlyUnlocked ? 'rgba(255, 215, 0, 0.2)' : 'transparent'
                                                     }}
                                                 >
                                                     <div className="flex items-center gap-2">
                                                         <motion.span 
                                                             className="text-lg flex-shrink-0"
-                                                            animate={isRecentlyUpdated ? { scale: [1, 1.2, 1] } : {}}
-                                                            transition={{ duration: 0.8, ease: 'easeOut' }}
-                                                            style={{ willChange: isRecentlyUpdated ? 'transform' : 'auto' }}
+                                                            animate={isRecentlyUnlocked && !prefersReducedMotion ? {
+                                                                rotate: [0, 360],
+                                                                scale: [1, 1.3, 1]
+                                                            } : isRecentlyUpdated ? { scale: [1, 1.2, 1] } : {}}
+                                                            transition={isRecentlyUnlocked && !prefersReducedMotion ? {
+                                                                duration: 0.6,
+                                                                ease: 'easeOut'
+                                                            } : { duration: 0.8, ease: 'easeOut' }}
+                                                            style={{ willChange: (isRecentlyUpdated || isRecentlyUnlocked) ? 'transform' : 'auto' }}
                                                         >
                                                             {icon}
                                                         </motion.span>
                                                         <span 
                                                             className="text-xs font-bold truncate flex-1"
                                                             style={{ 
-                                                                color: '#ffd700',
-                                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)'
+                                                                color: isLocked ? '#666' : '#ffd700',
+                                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                opacity: isLocked ? 0.5 : 1
                                                             }}
                                                         >
-                                                            {skillName}
+                                                            {displayName}
                                                         </span>
-                                                        <motion.span 
-                                                            className="text-[10px] text-yellow-400/70 font-bold"
-                                                            style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
-                                                            animate={isRecentlyUpdated ? {
-                                                                color: ['#fbbf24', '#ffd700', '#fbbf24'],
-                                                                scale: [1, 1.2, 1]
-                                                            } : {}}
-                                                            transition={{ duration: 1.0 }}
-                                                        >
-                                                            <AnimatedValue from={prevValue} to={value} max={max} showGain={isRecentlyUpdated} />
-                                                        </motion.span>
+                                                        {isLocked ? (
+                                                            <span 
+                                                                className="text-[10px] text-gray-500 flex items-center gap-1"
+                                                                style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
+                                                            >
+                                                                🔒 LOCKED
+                                                            </span>
+                                                        ) : (
+                                                            <motion.span 
+                                                                className="text-[10px] text-yellow-400/70 font-bold"
+                                                                style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
+                                                                animate={isRecentlyUpdated ? {
+                                                                    color: ['#fbbf24', '#ffd700', '#fbbf24'],
+                                                                    scale: [1, 1.2, 1]
+                                                                } : {}}
+                                                                transition={{ duration: 1.0 }}
+                                                            >
+                                                                <AnimatedValue from={prevValue} to={isRecentlyUpdated ? value : prevValue} max={max} showGain={isRecentlyUpdated} />
+                                                            </motion.span>
+                                                        )}
                                                     </div>
                                                     <div 
                                                         className="w-full h-2 rounded-full overflow-hidden relative"
                                                         style={{
-                                                            background: 'rgba(0, 0, 0, 0.5)',
-                                                            border: isRecentlyUpdated ? '1px solid rgba(255, 215, 0, 0.8)' : '1px solid rgba(255, 215, 0, 0.3)'
+                                                            background: isLocked ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.5)',
+                                                            border: isLocked ? '1px solid rgba(100, 100, 100, 0.3)' : (isRecentlyUpdated ? '1px solid rgba(255, 215, 0, 0.8)' : '1px solid rgba(255, 215, 0, 0.3)'),
+                                                            opacity: isLocked ? 0.5 : 1
                                                         }}
                                                     >
-                                                        <motion.div
-                                                            initial={prefersReducedMotion ? {} : { width: `${prevPercentage}%` }}
-                                                            animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
-                                                            transition={prefersReducedMotion ? {} : { 
-                                                                duration: 1.2, 
-                                                                ease: [0.16, 1, 0.3, 1],
-                                                                type: 'tween'
-                                                            }}
-                                                            className="h-full relative"
-                                                            style={{
-                                                                background: `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`,
-                                                                boxShadow: isRecentlyUpdated 
-                                                                    ? `0 0 15px ${color}, 0 0 25px rgba(255, 215, 0, 0.6)`
-                                                                    : `0 0 8px ${color}80`,
-                                                                willChange: 'width'
-                                                            }}
-                                                        >
-                                                            {isRecentlyUpdated && (
-                                                                <motion.div
-                                                                    className="absolute inset-0"
-                                                                    style={{
-                                                                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-                                                                        willChange: 'transform'
-                                                                    }}
-                                                                    animate={{
-                                                                        x: ['-100%', '100%']
-                                                                    }}
-                                                                    transition={{
-                                                                        duration: 1.5,
-                                                                        repeat: Infinity,
-                                                                        ease: 'linear'
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </motion.div>
+                                                        {isLocked ? (
+                                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                                <span className="text-[8px] text-gray-500">🔒</span>
+                                                            </div>
+                                                        ) : (
+                                                            <motion.div
+                                                                initial={prefersReducedMotion || !hasPreviousValue ? {} : { width: `${prevPercentage}%` }}
+                                                                animate={prefersReducedMotion ? {} : { width: `${displayPercentage}%` }}
+                                                                transition={prefersReducedMotion || !hasPreviousValue ? {} : { 
+                                                                    duration: isRecentlyUpdated ? 1.2 : 0,
+                                                                    ease: [0.16, 1, 0.3, 1],
+                                                                    type: 'tween'
+                                                                }}
+                                                                className="h-full relative"
+                                                                style={{
+                                                                    background: isRecentlyUnlocked && !prefersReducedMotion
+                                                                        ? `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`
+                                                                        : `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`,
+                                                                    boxShadow: isRecentlyUnlocked && !prefersReducedMotion
+                                                                        ? `0 0 20px ${color}, 0 0 30px ${color}80, 0 0 40px rgba(255, 215, 0, 0.6)`
+                                                                        : isRecentlyUpdated 
+                                                                        ? `0 0 15px ${color}, 0 0 25px rgba(255, 215, 0, 0.6)`
+                                                                        : `0 0 8px ${color}80`,
+                                                                    willChange: 'width'
+                                                                }}
+                                                            >
+                                                                {isRecentlyUpdated && (
+                                                                    <motion.div
+                                                                        className="absolute inset-0"
+                                                                        style={{
+                                                                            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+                                                                            willChange: 'transform'
+                                                                        }}
+                                                                        animate={{
+                                                                            x: ['-100%', '100%']
+                                                                        }}
+                                                                        transition={{
+                                                                            duration: 1.5,
+                                                                            repeat: Infinity,
+                                                                            ease: 'linear'
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                            </motion.div>
+                                                        )}
                                                     </div>
                                                 </motion.div>
                                             );
@@ -2359,16 +2586,21 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         {Object.entries(skills).filter(([name]) => 
                                             ['Product Management', 'Social', 'Recreational'].includes(name)
                                         ).map(([skillName, skill]) => {
-                                            if (skill.locked) return null;
-                                            
+                                            const isLocked = skill.locked;
                                             const value = skill.value || skill.baseline || 0;
                                             const max = skill.max || 100;
-                                            const percentage = (value / max) * 100;
+                                            const percentage = isLocked ? 0 : Math.max(0, Math.min(100, (value / max) * 100));
                                             const color = getSkillColor(skillName);
                                             const icon = getSkillIcon(skillName);
+                                            const displayName = skill.displayName || skillName;
                                             const isRecentlyUpdated = recentlyUpdatedSkills.has(skillName);
-                                            const prevValue = previousSkillValues[skillName] || value;
+                                            const isRecentlyUnlocked = recentlyUnlockedSkills.has(skillName);
+                                            const hasPreviousValue = previousSkillValues[skillName] !== undefined;
+                                            const prevValue = hasPreviousValue ? previousSkillValues[skillName] : value;
                                             const prevPercentage = ((prevValue || 0) / max) * 100;
+                                            
+                                            // Use previous percentage until animation starts to prevent instant jump
+                                            const displayPercentage = (hasPreviousValue && !isRecentlyUpdated) ? prevPercentage : percentage;
 
                                             return (
                                                 <motion.div 
@@ -2401,7 +2633,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                 textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)'
                                                             }}
                                                         >
-                                                            {skillName}
+                                                            {displayName}
                                                         </span>
                                                         <motion.span 
                                                             className="text-[10px] text-yellow-400/70 font-bold"
@@ -2412,7 +2644,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                             } : {}}
                                                             transition={{ duration: 1.0 }}
                                                         >
-                                                            <AnimatedValue from={prevValue} to={value} max={max} showGain={isRecentlyUpdated} />
+                                                            <AnimatedValue from={prevValue} to={isRecentlyUpdated ? value : prevValue} max={max} showGain={isRecentlyUpdated} />
                                                         </motion.span>
                                                     </div>
                                                     <div 
@@ -2423,10 +2655,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                         }}
                                                     >
                                                         <motion.div
-                                                            initial={prefersReducedMotion ? {} : { width: `${prevPercentage}%` }}
-                                                            animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
-                                                            transition={prefersReducedMotion ? {} : { 
-                                                                duration: 1.2, 
+                                                            initial={prefersReducedMotion || !hasPreviousValue ? {} : { width: `${prevPercentage}%` }}
+                                                            animate={prefersReducedMotion ? {} : { width: `${displayPercentage}%` }}
+                                                            transition={prefersReducedMotion || !hasPreviousValue ? {} : { 
+                                                                duration: isRecentlyUpdated ? 1.2 : 0,
                                                                 ease: [0.16, 1, 0.3, 1],
                                                                 type: 'tween'
                                                             }}

@@ -366,7 +366,9 @@ export const aboutMeData = {
         },
         DevOps: {
             baseline: 0,
-            max: 100
+            max: 100,
+            locked: true,
+            unlockThreshold: { Backend: 1 }
         },
         LLMs: {
             baseline: 0,
@@ -374,13 +376,16 @@ export const aboutMeData = {
         },
         'Cloud Infrastructure': {
             baseline: 0,
-            max: 100
+            max: 100,
+            locked: true,
+            unlockThreshold: { Backend: 1 }
         },
         SRE: {
             baseline: 0,
             max: 100,
             locked: true,
-            unlockThreshold: { Backend: 70, 'Cloud Infrastructure': 70, DevOps: 70 }
+            unlockThreshold: { DevOps: 1 },
+            displayName: 'Site Reliability'
         },
         // Non-Technical Skills
         'Product Management': {
@@ -388,11 +393,11 @@ export const aboutMeData = {
             max: 100
         },
         Social: {
-            baseline: 50,
+            baseline: 20,
             max: 100
         },
         Recreational: {
-            baseline: 100,
+            baseline: 20,
             max: 100
         }
     },
@@ -412,23 +417,12 @@ export const aboutMeData = {
                 {
                     speaker: "hero",
                     text: "But at the same time, whenever it came to hands-on projects and building things, I would get completely obsessed—in a good way—spending late nights working on them without even noticing the time. That contrast made me realize that I'm someone who learns and performs best when I'm creating and building, not just memorizing."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Teacher",
-                    avatar: "👨‍🏫",
-                    text: "It's clear that traditional learning wasn't your path, but your passion for building and creating is your true strength. That's what will carry you forward."
                 }
             ],
             category: "Education",
             icon: "🎓",
-            skillsGained: { Frontend: 15, Backend: 10, Social: 5 },
-            npc: {
-                name: "The Teacher",
-                avatar: "👨‍🏫",
-                position: "right"
-            },
-            scene: "/background/vjc.jpeg"
+            skillsGained: { Social: 40, Recreational: 80 },
+            scene: "/background/vjc.webp"
         },
         {
             id: 2,
@@ -445,22 +439,11 @@ export const aboutMeData = {
                 {
                     speaker: "hero",
                     text: "By the end of the internship, I realised that I really enjoyed coding and loved the feeling of making changes to products that people actually use in the real world."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Senior Developer",
-                    avatar: "👨‍💻",
-                    text: "That first week intensity is what separates those who make it from those who don't. You pushed through when it mattered most, and now you've discovered something you genuinely love. That's the foundation of a great career."
                 }
             ],
             category: "Internship",
             icon: "💼",
-            skillsGained: { Frontend: 20, Backend: 20, 'Product Management': 10 },
-            npc: {
-                name: "The Senior Developer",
-                avatar: "👨‍💻",
-                position: "right"
-            },
+            skillsGained: { Backend: 40, 'Product Management': 10, Recreational: -60 },
             scene: "/background/reluvate.gif"
         },
         {
@@ -485,23 +468,12 @@ export const aboutMeData = {
                 },
                 {
                     speaker: "hero",
-                    text: "Across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" – diving deep into projects out of genuine passion is where I produce my best work."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Professor",
-                    avatar: "👨‍🏫",
-                    text: "You've proven that passion-driven work beats perfect grades every time. Building real products that people use, leading teams, and consistently delivering top-tier results—that's the mark of someone who truly understands what matters in this field."
+                    text: "My grades didn't turn out bad actually, but they weren't first class. In contrast, across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" - diving deep into projects out of genuine passion is where I produce my best work, and also when I'm happiest."
                 }
             ],
             category: "Education",
             icon: "🏛️",
-            skillsGained: { Frontend: 25, Backend: 25, Hardware: 20, 'Telegram Bots': 20, LLMs: 20, DevOps: 15, 'Cloud Infrastructure': 20, 'Product Management': 20, Social: 15 },
-            npc: {
-                name: "The Professor",
-                avatar: "👨‍🏫",
-                position: "center"
-            },
+            skillsGained: { Frontend: 50, Backend: 20, Hardware: 30, 'Telegram Bots': 60, Deployment: 40, LLMs: 30, Devops: 20, 'Product Management': 40, Recreational: 20},
             scene: "/background/sutdcontractedwork.webp"
         },
         {
@@ -510,27 +482,16 @@ export const aboutMeData = {
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "In my 3rd year of university, SUTD had a long school break of 8 months after my exchange. I completed multiple internships at Changi Airport Group, TSMC, and even a Bytedance internship while juggling my studies, each teaching me different aspects of software engineering."
+                    text: "In my 3rd year of university, we had a long school break of 8 months. I completed multiple internships at Changi Airport Group, TSMC, and even a Bytedance internship while juggling my studies, each teaching me different aspects of software engineering."
                 },
                 {
                     speaker: "hero",
-                    text: "From automation and software engineering at Changi Airport, to DevOps infrastructure and telemetry at TSMC, to Site Reliability Engineering at Bytedance - each experience built upon the last."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Mentor",
-                    avatar: "👨‍💼",
-                    text: "Three different companies, three different domains—automation, DevOps, and SRE. You've built a well-rounded foundation that most engineers take years to develop. That diversity of experience is your competitive advantage."
+                    text: "From automation and software engineering at Changi Airport, to DevOps Infrastructure and Telemetry at TSMC, to Site Reliability Engineering at Bytedance - each experience built upon the last."
                 }
             ],
             category: "Internship",
             icon: "🌐",
-            skillsGained: { Backend: 30, DevOps: 40, 'Cloud Infrastructure': 35, SRE: 30, Deployment: 25, 'Product Management': 15 },
-            npc: {
-                name: "The Mentor",
-                avatar: "👨‍💼",
-                position: "right"
-            },
+            skillsGained: { Backend: 20, DevOps: 40,  'Cloud Infrastructure': 60,  SRE: 40, Deployment: 20, 'Product Management': 20, Recreational: -20 },
             scene: "/background/bytedance.webp"
         },
         {
@@ -544,22 +505,11 @@ export const aboutMeData = {
                 {
                     speaker: "hero",
                     text: "With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
-                },
-                {
-                    speaker: "npc",
-                    name: "The Future",
-                    avatar: "🚀",
-                    text: "From struggling in school to building production systems at top companies—you've come a long way. With all these experiences under your belt, you're not just ready for a full-time role, you're ready to make a real impact."
                 }
             ],
             category: "Future",
             icon: "🚀",
-            skillsGained: { Social: 10, 'Product Management': 10 },
-            npc: {
-                name: "The Future",
-                avatar: "🚀",
-                position: "center"
-            },
+            skillsGained: { Social: 20, Recreational: 20 },
             scene: "/background/sutdcontractedwork.webp"
         }
     ]
