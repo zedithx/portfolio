@@ -109,76 +109,52 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                 </div>
                             </div>
                             
-                            {/* Mobile: Left (Search/Commits/Cart) and Right (Avatar/Stats) */}
+                            {/* Mobile: Optimized Layout */}
                             <div className="sm:hidden w-full">
-                                <div className="flex flex-col gap-2 sm:gap-3">
+                                <div className="flex flex-col gap-2.5">
                                     {/* Title */}
-                                    <h1 className="text-sm sm:text-base font-bold text-yellow-400">Cash Shop</h1>
+                                    <h1 className="text-sm font-bold text-yellow-400 leading-tight">Cash Shop</h1>
                                     
-                                    {/* Main content: Left and Right sections */}
-                                    <div className="flex items-start gap-2 sm:gap-3">
-                                        {/* Left Side: Commits, Cart, then Search */}
-                                        <div className="flex flex-col gap-2 sm:gap-3">
-                                            {/* Commits Counter and Cart Row - Responsive size */}
-                                            <div className="flex items-center gap-1.5 sm:gap-2">
-                                                {/* Commits Counter - Responsive */}
-                                                <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 sm:py-3 bg-yellow-900/30 border border-yellow-500/30 rounded-lg min-w-0">
-                                                    <span className="text-yellow-400 text-xs sm:text-sm flex-shrink-0">💎</span>
-                                                    <span className="text-yellow-300 text-xs sm:text-sm font-semibold truncate">
-                                                        {commits.toLocaleString()}
-                                                        <span className="hidden min-[340px]:inline"> Commits</span>
-                                                    </span>
-                                                </div>
-                                                {/* Shopping Cart - Responsive */}
-                                                <button className="relative p-2.5 sm:p-3.5 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors flex-shrink-0">
-                                                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
-                                                    <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-4 h-4 sm:w-5 sm:h-5 bg-red-500 rounded-full text-[10px] sm:text-xs text-white flex items-center justify-center">0</span>
-                                                </button>
-                                            </div>
-                                            {/* Search Bar - Responsive width and size */}
-                                            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 sm:py-2.5 bg-gray-800 rounded-lg border border-gray-700 w-40 sm:w-48">
-                                                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="Search..." 
-                                                    className="flex-1 bg-transparent text-white/70 text-sm sm:text-base outline-none"
-                                                />
-                                            </div>
+                                    {/* Top Row: Commits, Cart, and Stats - Better visual balance */}
+                                    <div className="flex items-center gap-2">
+                                        {/* Commits Counter - Compact design */}
+                                        <div className="flex items-center gap-1 px-2.5 py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg flex-shrink-0">
+                                            <span className="text-yellow-400 text-xs flex-shrink-0">💎</span>
+                                            <span className="text-yellow-300 text-xs font-semibold whitespace-nowrap">
+                                                {commits.toLocaleString()}
+                                            </span>
                                         </div>
                                         
-                                        {/* Right Side: Avatar and Stats */}
-                                        <div className="flex items-start gap-1.5 sm:gap-2 ml-auto">
-                                            {/* Avatar - Responsive size, hidden on very small screens */}
-                                            <a 
-                                                href="https://github.com/zedithx" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="hidden min-[340px]:block cursor-pointer group flex-shrink-0 self-stretch"
-                                                title="Visit GitHub Profile"
-                                            >
-                                                <div className="bg-[#1a1a1a] rounded-lg p-1 sm:p-1.5 border border-gray-700 group-hover:border-yellow-400/50 transition-colors flex items-center justify-center h-[90%]">
-                                                    <div className="w-16 h-full sm:w-16 relative flex items-center justify-center overflow-hidden rounded">
-                                                        <img 
-                                                            src="/background/avatars/Tech SiJun.jpg" 
-                                                            alt="Character Avatar" 
-                                                            className="w-full h-full object-cover rounded group-hover:opacity-90 transition-opacity"
-                                                            style={{ objectPosition: 'center 25%' }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            {/* Stats - Responsive */}
-                                            <div className="flex flex-col gap-1.5 sm:gap-2">
-                                                <div className="bg-[#1a1a1a] rounded-lg p-1.5 sm:p-2 border border-gray-700 text-center min-w-[50px] sm:min-w-[60px]">
-                                                    <div className="text-white/70 text-[9px] sm:text-[10px] mb-0.5">Projects</div>
-                                                    <div className="text-yellow-400 text-xs sm:text-sm font-bold">{data.items ? data.items.length : 0}</div>
-                                                </div>
-                                                <div className="bg-[#1a1a1a] rounded-lg p-1.5 sm:p-2 border border-gray-700 text-center min-w-[50px] sm:min-w-[60px]">
-                                                    <div className="text-white/70 text-[9px] sm:text-[10px] mb-0.5">Commits</div>
-                                                    <div className="text-yellow-400 text-xs sm:text-sm font-bold">{commits.toLocaleString()}</div>
-                                                </div>
+                                        {/* Shopping Cart - Improved touch target */}
+                                        <button 
+                                            className="relative p-2 bg-gray-800 rounded-lg border border-gray-700 active:bg-gray-700/80 transition-colors flex-shrink-0 touch-manipulation min-h-[38px] min-w-[38px] flex items-center justify-center"
+                                            aria-label="Shopping cart"
+                                        >
+                                            <ShoppingCart className="w-4 h-4 text-yellow-400" />
+                                            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-semibold">0</span>
+                                        </button>
+                                        
+                                        {/* Stats - Compact with better spacing */}
+                                        <div className="flex items-center gap-1.5 flex-shrink-0 ml-auto">
+                                            <div className="bg-[#1a1a1a] rounded-lg px-1.5 py-1 border border-gray-700 text-center">
+                                                <div className="text-white/60 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Projects</div>
+                                                <div className="text-yellow-400 text-xs font-bold leading-tight">{data.items ? data.items.length : 0}</div>
+                                            </div>
+                                            <div className="bg-[#1a1a1a] rounded-lg px-1.5 py-1 border border-gray-700 text-center">
+                                                <div className="text-white/60 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Commits</div>
+                                                <div className="text-yellow-400 text-xs font-bold leading-tight">{commits.toLocaleString()}</div>
                                             </div>
                                         </div>
+                                    </div>
+                                    
+                                    {/* Search Bar - Full width with better styling */}
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg border border-gray-700 w-full active:border-gray-600 transition-colors">
+                                        <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                        <input 
+                                            type="text" 
+                                            placeholder="Search items..." 
+                                            className="flex-1 bg-transparent text-white/80 text-xs placeholder:text-gray-500 outline-none min-w-0"
+                                        />
                                     </div>
                                     
                                     {/* Go to GitHub Button - Mobile */}
@@ -186,11 +162,11 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                         href="https://github.com/zedithx" 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="block w-full mt-1"
+                                        className="block w-full mt-1.5"
                                     >
-                                        <button className="w-full bg-yellow-900/30 hover:bg-yellow-900/50 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg p-2 transition-colors flex items-center justify-center gap-2 text-yellow-400 hover:text-yellow-300 font-semibold text-xs">
-                                            <Github className="w-3.5 h-3.5" />
-                                            <span>Go to GitHub</span>
+                                        <button className="w-full bg-yellow-900/30 active:bg-yellow-900/50 border border-yellow-500/30 active:border-yellow-500/50 rounded-lg px-3 py-2.5 transition-colors flex items-center justify-center gap-2 text-yellow-400 active:text-yellow-300 font-semibold text-[11px] min-h-[40px] touch-manipulation">
+                                            <Github className="w-4 h-4 flex-shrink-0" />
+                                            <span className="truncate">Go to GitHub</span>
                                         </button>
                                     </a>
                                 </div>
