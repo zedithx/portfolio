@@ -18,7 +18,7 @@ const AboutMeView = dynamic(
         loading: () => (
             <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] p-3 sm:p-2 md:p-4 lg:p-6">
                 <div 
-                    className="w-full max-w-2xl flex flex-col items-center justify-center p-8 md:p-12 relative"
+                    className="w-full max-w-2xl flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 relative mx-auto text-center"
                     style={{
                         background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
                         border: '3px solid #ffd700',
