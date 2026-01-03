@@ -398,13 +398,23 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     try {
                         const newWindow = window.open('https://github.com/zedithx', '_blank', 'noopener,noreferrer');
                         
-                        // Fallback if popup is blocked
+                        // Only use location.href as fallback on mobile devices
+                        // On desktop, we should never redirect the current window
                         if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                            window.location.href = 'https://github.com/zedithx';
+                            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                            if (isMobile) {
+                                window.location.href = 'https://github.com/zedithx';
+                            } else {
+                                console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
+                            }
                         }
                     } catch (error) {
-                        // Final fallback - direct navigation
-                        window.location.href = 'https://github.com/zedithx';
+                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                        if (isMobile) {
+                            window.location.href = 'https://github.com/zedithx';
+                        } else {
+                            console.warn('Failed to open link. Please allow popups for this site.');
+                        }
                     }
                     
                     setIsLoading(false);
@@ -423,13 +433,23 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     try {
                         const newWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank', 'noopener,noreferrer');
                         
-                        // Fallback if popup is blocked
+                        // Only use location.href as fallback on mobile devices
+                        // On desktop, we should never redirect the current window
                         if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                            window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                            if (isMobile) {
+                                window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                            } else {
+                                console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
+                            }
                         }
                     } catch (error) {
-                        // Final fallback - direct navigation
-                        window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                        if (isMobile) {
+                            window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                        } else {
+                            console.warn('Failed to open link. Please allow popups for this site.');
+                        }
                     }
                     
                     setIsLoading(false);
@@ -511,13 +531,23 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             try {
                                 const newWindow = window.open('https://github.com/zedithx', '_blank', 'noopener,noreferrer');
                                 
-                                // Fallback if popup is blocked
+                                // Only use location.href as fallback on mobile devices
+                                // On desktop, we should never redirect the current window
                                 if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                                    window.location.href = 'https://github.com/zedithx';
+                                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                    if (isMobile) {
+                                        window.location.href = 'https://github.com/zedithx';
+                                    } else {
+                                        console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
+                                    }
                                 }
                             } catch (error) {
-                                // Final fallback - direct navigation
-                                window.location.href = 'https://github.com/zedithx';
+                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                if (isMobile) {
+                                    window.location.href = 'https://github.com/zedithx';
+                                } else {
+                                    console.warn('Failed to open link. Please allow popups for this site.');
+                                }
                             }
                             
                             setIsLoading(false);
@@ -535,13 +565,23 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             try {
                                 const newWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank', 'noopener,noreferrer');
                                 
-                                // Fallback if popup is blocked
+                                // Only use location.href as fallback on mobile devices
+                                // On desktop, we should never redirect the current window
                                 if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                                    window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                    if (isMobile) {
+                                        window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                                    } else {
+                                        console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
+                                    }
                                 }
                             } catch (error) {
-                                // Final fallback - direct navigation
-                                window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                if (isMobile) {
+                                    window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                                } else {
+                                    console.warn('Failed to open link. Please allow popups for this site.');
+                                }
                             }
                             
                             setIsLoading(false);

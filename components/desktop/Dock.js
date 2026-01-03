@@ -82,13 +82,29 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
             try {
                 const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
                 
-                // Fallback if popup is blocked - use location.href
+                // Only use location.href as fallback on mobile devices
+                // On desktop, we should never redirect the current window
                 if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                    window.location.href = url;
+                    // Check if mobile device
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    if (isMobile) {
+                        // Only redirect on mobile as fallback
+                        window.location.href = url;
+                    } else {
+                        // On desktop, just log error but don't redirect
+                        console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
+                    }
                 }
             } catch (error) {
-                // Final fallback - direct navigation
-                window.location.href = url;
+                // Check if mobile device
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if (isMobile) {
+                    // Only redirect on mobile as fallback
+                    window.location.href = url;
+                } else {
+                    // On desktop, just log error but don't redirect
+                    console.warn('Failed to open link. Please allow popups for this site.');
+                }
             }
             
             // Keep loading state for a bit longer for visual feedback

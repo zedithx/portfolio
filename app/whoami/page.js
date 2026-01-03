@@ -7,8 +7,12 @@ import { X } from 'lucide-react';
 import { aboutMeData } from '../../data/data';
 
 // Lazy load AboutMeView for better performance
+// Add minimum delay to show loading animation for longer
 const AboutMeView = dynamic(
-    () => import('../../components/desktop/browser/AboutMeView'),
+    () => Promise.all([
+        import('../../components/desktop/browser/AboutMeView'),
+        new Promise(resolve => setTimeout(resolve, 1500)) // Minimum 1.5 second delay
+    ]).then(([module]) => module),
     { 
         ssr: false,
         loading: () => (
