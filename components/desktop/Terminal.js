@@ -394,20 +394,24 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setLoadingCommand('github');
                 
                 setTimeout(() => {
-                    // Open link after loading animation completes
-                    const link = document.createElement('a');
-                    link.href = 'https://github.com/zedithx';
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    // Open link after loading animation completes - use window.open for better mobile support
+                    try {
+                        const newWindow = window.open('https://github.com/zedithx', '_blank', 'noopener,noreferrer');
+                        
+                        // Fallback if popup is blocked
+                        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                            window.location.href = 'https://github.com/zedithx';
+                        }
+                    } catch (error) {
+                        // Final fallback - direct navigation
+                        window.location.href = 'https://github.com/zedithx';
+                    }
                     
                     setIsLoading(false);
                     setLoadingCommand('');
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
                     setCursorPosition(0);
-                }, 1500);
+                }, 1200);
             } else if (cmd === 'linkedin') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setInput('');
@@ -415,20 +419,24 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setLoadingCommand('linkedin');
                 
                 setTimeout(() => {
-                    // Open link after loading animation completes
-                    const link = document.createElement('a');
-                    link.href = 'https://linkedin.com/in/yang-si-jun/';
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    // Open link after loading animation completes - use window.open for better mobile support
+                    try {
+                        const newWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank', 'noopener,noreferrer');
+                        
+                        // Fallback if popup is blocked
+                        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                            window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                        }
+                    } catch (error) {
+                        // Final fallback - direct navigation
+                        window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                    }
                     
                     setIsLoading(false);
                     setLoadingCommand('');
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
                     setCursorPosition(0);
-                }, 1500);
+                }, 1200);
             } else if (cmd === 'whoami') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
@@ -499,40 +507,48 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         setLoadingCommand('github');
                         
                         setTimeout(() => {
-                            // Open link after loading animation completes
-                            const link = document.createElement('a');
-                            link.href = 'https://github.com/zedithx';
-                            link.target = '_blank';
-                            link.rel = 'noopener noreferrer';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                            // Open link after loading animation completes - use window.open for better mobile support
+                            try {
+                                const newWindow = window.open('https://github.com/zedithx', '_blank', 'noopener,noreferrer');
+                                
+                                // Fallback if popup is blocked
+                                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                                    window.location.href = 'https://github.com/zedithx';
+                                }
+                            } catch (error) {
+                                // Final fallback - direct navigation
+                                window.location.href = 'https://github.com/zedithx';
+                            }
                             
                             setIsLoading(false);
                             setLoadingCommand('');
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
                             setCursorPosition(0);
-                        }, 1500);
+                        }, 1200);
                     } else if (cmd === 'linkedin') {
                         setInput('');
                         setIsLoading(true);
                         setLoadingCommand('linkedin');
                         
                         setTimeout(() => {
-                            // Open link after loading animation completes
-                            const link = document.createElement('a');
-                            link.href = 'https://linkedin.com/in/yang-si-jun/';
-                            link.target = '_blank';
-                            link.rel = 'noopener noreferrer';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                            // Open link after loading animation completes - use window.open for better mobile support
+                            try {
+                                const newWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank', 'noopener,noreferrer');
+                                
+                                // Fallback if popup is blocked
+                                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                                    window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                                }
+                            } catch (error) {
+                                // Final fallback - direct navigation
+                                window.location.href = 'https://linkedin.com/in/yang-si-jun/';
+                            }
                             
                             setIsLoading(false);
                             setLoadingCommand('');
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
                             setCursorPosition(0);
-                        }, 1500);
+                        }, 1200);
                     } else if (cmd === 'whoami') {
                         setIsLoading(true);
                         setLoadingCommand(cmd);

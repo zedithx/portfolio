@@ -12,8 +12,62 @@ const AboutMeView = dynamic(
     { 
         ssr: false,
         loading: () => (
-            <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]">
-                <div className="text-yellow-400 text-xl">Loading...</div>
+            <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] p-3 sm:p-2 md:p-4 lg:p-6">
+                <div 
+                    className="w-full max-w-2xl flex flex-col items-center justify-center p-8 md:p-12 relative"
+                    style={{
+                        background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
+                        border: '3px solid #ffd700',
+                        borderRadius: '16px',
+                        boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)'
+                    }}
+                >
+                    {/* Decorative corner elements */}
+                    <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-400 opacity-60" />
+                    <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-400 opacity-60" />
+                    <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
+                    <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
+
+                    {/* Loading spinner */}
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className="w-16 h-16 md:w-20 md:h-20 mb-6"
+                        style={{
+                            border: '4px solid rgba(255, 215, 0, 0.3)',
+                            borderTop: '4px solid #ffd700',
+                            borderRadius: '50%',
+                            boxShadow: '0 0 20px rgba(255, 215, 0, 0.6)'
+                        }}
+                    />
+                    
+                    {/* Loading text */}
+                    <motion.h2
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-2xl md:text-3xl font-bold mb-2"
+                        style={{
+                            color: '#ffd700',
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
+                            letterSpacing: '2px',
+                            fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif"
+                        }}
+                    >
+                        LOADING ADVENTURE...
+                    </motion.h2>
+                    
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-yellow-400/80 text-sm md:text-base text-center"
+                        style={{
+                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
+                        }}
+                    >
+                        Preparing your journey...
+                    </motion.p>
+                </div>
             </div>
         )
     }
@@ -130,4 +184,5 @@ export default function WhoAmIPage() {
         </div>
     );
 }
+
 

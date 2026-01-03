@@ -12,19 +12,28 @@ const dockApps = [
 
 function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, terminalState, spotifyModalState, onLoadingStart }) {
     const handleClick = (e) => {
-                            if (app.name === 'Terminal') {
-                                onTerminalClick();
-                            } else if (app.name === 'Gmail') {
-                                onGmailClick();
-                            } else if (app.name === 'GitHub') {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (app.name === 'Terminal') {
+            onTerminalClick();
+        } else if (app.name === 'Gmail') {
+            onGmailClick();
+        } else if (app.name === 'GitHub') {
             onLoadingStart('github', 'https://github.com/zedithx');
-                            } else if (app.name === 'LinkedIn') {
+        } else if (app.name === 'LinkedIn') {
             onLoadingStart('linkedin', 'https://linkedin.com/in/yang-si-jun/');
         } else if (app.name === 'Spotify') {
             onSpotifyClick();
-                            } else {
-                                onPermissionError();
-                            }
+        } else {
+            onPermissionError();
+        }
+    };
+    
+    const handleTouchEnd = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleClick(e);
     };
     
     return (
@@ -37,6 +46,8 @@ function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpo
                 damping: 17
             }}
             onClick={handleClick}
+            onTouchEnd={handleTouchEnd}
+            style={{ touchAction: 'manipulation' }}
                     >
                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
                             {app.name}
@@ -65,18 +76,27 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
         setIsLoading(true);
         setLoadingService(service);
         
+        // Use window.open which is more reliable on mobile
+        // Reduced delay for better mobile experience
         setTimeout(() => {
-            const link = document.createElement('a');
-            link.href = url;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            try {
+                const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+                
+                // Fallback if popup is blocked - use location.href
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    window.location.href = url;
+                }
+            } catch (error) {
+                // Final fallback - direct navigation
+                window.location.href = url;
+            }
             
-            setIsLoading(false);
-            setLoadingService(null);
-        }, 1500);
+            // Keep loading state for a bit longer for visual feedback
+            setTimeout(() => {
+                setIsLoading(false);
+                setLoadingService(null);
+            }, 300);
+        }, 1200);
     };
     
     return (
@@ -84,7 +104,7 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
             {/* Loading Overlay */}
             <AnimatePresence>
                 {isLoading && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm" style={{ pointerEvents: 'none' }}>
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}

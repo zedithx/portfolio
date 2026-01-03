@@ -775,7 +775,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             color: '#ffd700',
                             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
                             letterSpacing: '2px',
-                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                         }}
                     >
                         LOADING SUMMARY...
@@ -892,7 +892,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         border: `2px solid #ffd700`,
                                         color: '#fff',
                                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                                        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                                         letterSpacing: '1px',
                                         textTransform: 'uppercase',
                                         boxShadow: activeTab === 'summary' 
@@ -922,7 +922,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         border: `2px solid #ffd700`,
                                         color: '#fff',
                                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                                        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                                         letterSpacing: '1px',
                                         textTransform: 'uppercase',
                                         boxShadow: activeTab === 'skills' 
@@ -1068,7 +1068,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                         style={{
                                                                             color: '#ffd700',
                                                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                                                                         }}
                                                                     >
                                                                         {displayName}
@@ -1079,7 +1079,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                     style={{
                                                                         color: '#ffd700',
                                                                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                                        fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                                        fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                                                                     }}
                                                                 >
                                                                     {value}/{max}
@@ -1147,7 +1147,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                         style={{
                                                                             color: '#ffd700',
                                                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                                                                         }}
                                                                     >
                                                                         {displayName}
@@ -1158,7 +1158,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                     style={{
                                                                         color: '#ffd700',
                                                                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                                        fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                                        fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                                                                     }}
                                                                 >
                                                                     {value}/{max}
@@ -1567,7 +1567,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         style={{
                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
                                             wordWrap: 'break-word',
-                                            overflowWrap: 'break-word'
+                                            overflowWrap: 'break-word',
+                                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                                         }}
                                     >
                                         {activeDialogue.text}
@@ -1662,7 +1663,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                         className="text-base md:text-lg font-semibold"
                                                         style={{
                                                             color: '#ffd700',
-                                                            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)'
+                                                            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)',
+                                                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
                                                         }}
                                                     >
                                                         {skills[skillName]?.displayName || skillName}
