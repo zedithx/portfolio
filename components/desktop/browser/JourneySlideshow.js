@@ -445,17 +445,19 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         style.id = styleId;
         style.textContent = `
             .custom-scrollbar::-webkit-scrollbar {
-                width: 8px;
+                width: 6px;
             }
             .custom-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 3px;
             }
             .custom-scrollbar::-webkit-scrollbar-thumb {
-                background-color: #8B4513;
-                border-radius: 4px;
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.4) 0%, rgba(255, 215, 0, 0.2) 100%);
+                border-radius: 3px;
+                border: 1px solid rgba(255, 215, 0, 0.3);
             }
             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background-color: #6B3410;
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.6) 0%, rgba(255, 215, 0, 0.4) 100%);
             }
         `;
         document.head.appendChild(style);
@@ -836,7 +838,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                     {/* Content Container */}
                     <div className="relative flex-1 flex flex-col min-h-0 px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8 z-10" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-                        <div className="w-full h-full flex flex-col" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+                        <div className="w-full h-full flex flex-col p-4" style={{ overflowX: 'hidden', overflowY: 'auto', position: 'relative'}}>
                             {/* Title - Badge/Panel Style */}
                             <motion.div
                                 initial={prefersReducedMotion ? {} : { opacity: 0, y: -20 }}
@@ -865,7 +867,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-center"
                                         style={{
                                             color: '#ffd700',
-                                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                                            fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif",
                                             letterSpacing: '3px',
                                             textTransform: 'uppercase',
                                             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.6)',
@@ -878,8 +880,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 </div>
                             </motion.div>
 
-                            {/* Tabs - Game Style matching Hero Section */}
-                            <div className="flex gap-2 mb-4 shrink-0" style={{ overflow: 'hidden' }}>
+                            {/* Tabs - Ancient scroll style tabs */}
+                            <div className="flex gap-0 mb-0 shrink-0 relative" style={{ marginTop: '-4px' }}>
                                 <motion.button
                                     onClick={() => setActiveTab('summary')}
                                     className={`px-6 md:px-8 py-3 md:py-3.5 font-bold text-sm md:text-base flex-1 touch-manipulation min-h-[48px] relative overflow-visible rounded-lg`}
@@ -895,11 +897,14 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         textTransform: 'uppercase',
                                         boxShadow: activeTab === 'summary' 
                                             ? '0 0 15px rgba(102, 126, 234, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1)' 
-                                            : '0 0 5px rgba(102, 126, 234, 0.3)'
+                                            : '0 0 5px rgba(102, 126, 234, 0.3)',
+                                        zIndex: 1
                                     }}
                                     whileHover={prefersReducedMotion ? {} : {
                                         scale: 1.02,
-                                        boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)'
+                                        y: -2,
+                                        boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)',
+                                        zIndex: 10
                                     }}
                                     whileTap={prefersReducedMotion ? {} : {
                                         scale: 0.98
@@ -922,11 +927,14 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         textTransform: 'uppercase',
                                         boxShadow: activeTab === 'skills' 
                                             ? '0 0 15px rgba(102, 126, 234, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1)' 
-                                            : '0 0 5px rgba(102, 126, 234, 0.3)'
+                                            : '0 0 5px rgba(102, 126, 234, 0.3)',
+                                        zIndex: 1
                                     }}
                                     whileHover={prefersReducedMotion ? {} : {
                                         scale: 1.02,
-                                        boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)'
+                                        y: -2,
+                                        boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)',
+                                        zIndex: 10
                                     }}
                                     whileTap={prefersReducedMotion ? {} : {
                                         scale: 0.98
@@ -966,7 +974,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             style={{
                                                 color: '#ffd700',
                                                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
-                                                fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif",
                                                 letterSpacing: '1px',
                                                 textTransform: 'uppercase',
                                                 borderBottom: '2px solid rgba(255, 215, 0, 0.5)',
@@ -990,7 +998,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                             style={{
                                                                 color: '#e0e0e0',
                                                                 textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                                fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                                                                 textAlign: 'left',
                                                                 lineHeight: '1.7'
                                                             }}
@@ -1018,7 +1026,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         style={{
                                             color: '#ffd700',
                                             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
-                                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                                            fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif",
                                             letterSpacing: '1px',
                                             textTransform: 'uppercase'
                                         }}
@@ -1034,7 +1042,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                 style={{
                                                     color: '#ffd700',
                                                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                    fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif",
                                                     letterSpacing: '0.5px',
                                                     textTransform: 'uppercase'
                                                 }}
@@ -1113,7 +1121,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                 style={{
                                                     color: '#ffd700',
                                                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                    fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif",
                                                     letterSpacing: '0.5px',
                                                     textTransform: 'uppercase'
                                                 }}
@@ -1188,7 +1196,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         </div>
 
                             {/* Return to MacBook Button - Fixed at bottom */}
-                            <div className="flex justify-center pt-4 sm:pt-3 md:pt-4 lg:pt-6 pb-3 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'hidden', zIndex: 10 }}>
+                            <div className="flex justify-center pt-4 sm:pt-3 md:pt-4 lg:pt-6 pb-3 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'visible', zIndex: 10 }}>
                                 <motion.button
                                     ref={returnButtonRef}
                                     initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
