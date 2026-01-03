@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ScrollText } from 'lucide-react';
-import { journeySummaryContent } from './data';
+import { journeySummaryContent } from '../../../data/data';
 
 // Optimized preload background images with priority and error handling
 const preloadImages = (urls) => {
@@ -1155,22 +1155,54 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                 </span>
                                                             </div>
                                                             <div 
-                                                                className="h-2 md:h-3 rounded-full overflow-hidden"
+                                                                className="h-3 sm:h-4 md:h-5 relative overflow-hidden"
                                                                 style={{
-                                                                    background: 'rgba(139, 69, 19, 0.2)',
-                                                                    border: '1px solid rgba(139, 69, 19, 0.4)'
+                                                                    background: 'linear-gradient(to bottom, #d4aa68, #c19b5d)',
+                                                                    border: '2px solid rgba(139, 69, 19, 0.5)',
+                                                                    borderRadius: '2px',
+                                                                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(139, 69, 19, 0.3)',
+                                                                    position: 'relative'
                                                                 }}
                                                             >
+                                                                {/* Aged texture overlay */}
+                                                                <div 
+                                                                    className="absolute inset-0 pointer-events-none opacity-40"
+                                                                    style={{
+                                                                        backgroundImage: `
+                                                                            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E")
+                                                                        `,
+                                                                        mixBlendMode: 'multiply'
+                                                                    }}
+                                                                />
+                                                                {/* Progress fill - parchment ink style */}
                                                                 <motion.div
                                                                     initial={prefersReducedMotion ? {} : { width: 0 }}
                                                                     animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
                                                                     transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
-                                                                    className="h-full rounded-full"
+                                                                    className="h-full relative"
                                                                     style={{
-                                                                        background: `linear-gradient(90deg, ${getSkillColor(skillName)}, ${getSkillColor(skillName)}dd)`,
-                                                                        boxShadow: `0 0 8px ${getSkillColor(skillName)}80`
+                                                                        background: `linear-gradient(to bottom, 
+                                                                            rgba(139, 69, 19, 0.9) 0%, 
+                                                                            rgba(101, 50, 25, 0.95) 50%, 
+                                                                            rgba(139, 69, 19, 0.85) 100%)`,
+                                                                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(139, 69, 19, 0.3)',
+                                                                        borderRight: '1px solid rgba(101, 50, 25, 0.6)'
                                                                     }}
-                                                                />
+                                                                >
+                                                                    {/* Ink texture on fill */}
+                                                                    <div 
+                                                                        className="absolute inset-0 pointer-events-none"
+                                                                        style={{
+                                                                            backgroundImage: `
+                                                                                repeating-linear-gradient(90deg, 
+                                                                                    transparent 0px, transparent 1px,
+                                                                                    rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px
+                                                                                )
+                                                                            `,
+                                                                            opacity: 0.3
+                                                                        }}
+                                                                    />
+                                                                </motion.div>
                                                             </div>
                                                         </div>
                                                     );
@@ -1228,22 +1260,54 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                                 </span>
                                                             </div>
                                                             <div 
-                                                                className="h-1.5 sm:h-2 md:h-3 rounded-full overflow-hidden"
+                                                                className="h-3 sm:h-4 md:h-5 relative overflow-hidden"
                                                                 style={{
-                                                                    background: 'rgba(139, 69, 19, 0.2)',
-                                                                    border: '1px solid rgba(139, 69, 19, 0.4)'
+                                                                    background: 'linear-gradient(to bottom, #d4aa68, #c19b5d)',
+                                                                    border: '2px solid rgba(139, 69, 19, 0.5)',
+                                                                    borderRadius: '2px',
+                                                                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(139, 69, 19, 0.3)',
+                                                                    position: 'relative'
                                                                 }}
                                                             >
+                                                                {/* Aged texture overlay */}
+                                                                <div 
+                                                                    className="absolute inset-0 pointer-events-none opacity-40"
+                                                                    style={{
+                                                                        backgroundImage: `
+                                                                            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E")
+                                                                        `,
+                                                                        mixBlendMode: 'multiply'
+                                                                    }}
+                                                                />
+                                                                {/* Progress fill - parchment ink style */}
                                                                 <motion.div
                                                                     initial={prefersReducedMotion ? {} : { width: 0 }}
                                                                     animate={prefersReducedMotion ? {} : { width: `${percentage}%` }}
                                                                     transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
-                                                                    className="h-full rounded-full"
+                                                                    className="h-full relative"
                                                                     style={{
-                                                                        background: `linear-gradient(90deg, ${getSkillColor(skillName)}, ${getSkillColor(skillName)}dd)`,
-                                                                        boxShadow: `0 0 8px ${getSkillColor(skillName)}80`
+                                                                        background: `linear-gradient(to bottom, 
+                                                                            rgba(139, 69, 19, 0.9) 0%, 
+                                                                            rgba(101, 50, 25, 0.95) 50%, 
+                                                                            rgba(139, 69, 19, 0.85) 100%)`,
+                                                                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(139, 69, 19, 0.3)',
+                                                                        borderRight: '1px solid rgba(101, 50, 25, 0.6)'
                                                                     }}
-                                                                />
+                                                                >
+                                                                    {/* Ink texture on fill */}
+                                                                    <div 
+                                                                        className="absolute inset-0 pointer-events-none"
+                                                                        style={{
+                                                                            backgroundImage: `
+                                                                                repeating-linear-gradient(90deg, 
+                                                                                    transparent 0px, transparent 1px,
+                                                                                    rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px
+                                                                                )
+                                                                            `,
+                                                                            opacity: 0.3
+                                                                        }}
+                                                                    />
+                                                                </motion.div>
                                                             </div>
                                                         </div>
                                                     );
@@ -1601,13 +1665,14 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 <img 
                                     src={hero.avatar} 
                                     alt={hero.name}
-                                    className="w-16 h-24 md:w-24 md:h-36 lg:w-32 lg:h-48 object-contain rounded-lg"
+                                    className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-cover rounded-lg"
                                     style={{
-                                        filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5))'
+                                        filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5))',
+                                        objectPosition: 'center 25%'
                                     }}
                                 />
                             ) : (
-                                <div className="w-16 h-24 md:w-24 md:h-36 lg:w-32 lg:h-48 bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center text-3xl md:text-4xl lg:text-5xl rounded-lg">
+                                <div className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center text-3xl md:text-4xl lg:text-5xl rounded-lg">
                                     ⚔️
                                 </div>
                             )}
@@ -1620,7 +1685,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     backdropFilter: 'blur(4px)'
                                 }}
                             >
-                                ZEDITHX
+                                {(hero?.name || 'Si Jun').toUpperCase()}
                             </div>
                         </motion.div>
 
@@ -1693,8 +1758,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             }}
                                         >
                                             {activeDialogue.speaker === 'hero' 
-                                                ? 'ZEDITHX' 
-                                                : activeDialogue.name?.toUpperCase() || 'ZEDITHX'}
+                                                ? (hero?.name || 'Si Jun').toUpperCase()
+                                                : activeDialogue.name?.toUpperCase() || 'NPC'}
                                         </div>
                                     </div>
 

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { aboutMeData } from '../../components/desktop/browser/data';
+import { aboutMeData } from '../../data/data';
 
 // Lazy load AboutMeView for better performance
 const AboutMeView = dynamic(

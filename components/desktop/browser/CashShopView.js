@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, ShoppingCart, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, ShoppingCart, Search, Github } from 'lucide-react';
 import ItemCard from './ItemCard';
-import { contentData } from './data';
+import { contentData, aboutMeData } from '../../../data/data';
 
 export default function CashShopView({ onClose, onPermissionError, data, commits }) {
     const [selectedProject, setSelectedProject] = useState(null);
@@ -152,9 +152,10 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                             <div className="bg-[#1a1a1a] rounded-lg p-1.5 sm:p-2 border border-gray-700 flex-shrink-0 self-stretch flex items-center justify-center">
                                                 <div className="w-12 h-full sm:w-16 relative flex items-center justify-center">
                                                     <img 
-                                                        src="/projects/avatar/avatar.png" 
+                                                        src="/background/avatars/Tech SiJun.jpg" 
                                                         alt="Character Avatar" 
-                                                        className="w-full h-full object-contain max-h-full"
+                                                        className="w-full h-full object-cover max-h-full rounded"
+                                                        style={{ objectPosition: 'center 25%' }}
                                                     />
                                                 </div>
                                             </div>
@@ -276,16 +277,44 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                         {/* Avatar Sidebar */}
                         <div className="hidden lg:block w-72 xl:w-80 bg-[#2d2d2d] border-l border-gray-700 p-4 xl:p-6 overflow-y-auto">
                             <div className="text-center mb-4">
-                                <h3 className="text-white font-bold text-lg mb-2">zedithx</h3>
-                                <div className="bg-[#1a1a1a] rounded-lg p-4 border border-gray-700">
-                                    <div className="aspect-square relative">
-                                        <img 
-                                            src="/projects/avatar/avatar.png" 
-                                            alt="Character Avatar" 
-                                            className="w-full h-full object-contain"
-                                        />
-                                    </div>
+                                <div className="flex items-center justify-center gap-2 mb-2">
+                                    <a 
+                                        href="https://github.com/zedithx" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-yellow-400 hover:text-yellow-300 transition-colors cursor-pointer"
+                                        title="Visit GitHub Profile"
+                                    >
+                                        <h3 className="font-bold text-lg">zedithx</h3>
+                                    </a>
+                                    <a 
+                                        href="https://github.com/zedithx" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-yellow-400 hover:text-yellow-300 transition-colors"
+                                        title="Visit GitHub Profile"
+                                    >
+                                        <Github className="w-5 h-5" />
+                                    </a>
                                 </div>
+                                <a 
+                                    href="https://github.com/zedithx" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="block cursor-pointer group"
+                                    title="Visit GitHub Profile"
+                                >
+                                    <div className="bg-[#1a1a1a] rounded-lg p-4 border border-gray-700 group-hover:border-yellow-400/50 transition-colors">
+                                        <div className="aspect-square relative">
+                                            <img 
+                                                src="/background/avatars/Tech SiJun.jpg" 
+                                                alt="Character Avatar" 
+                                                className="w-full h-full object-cover rounded group-hover:opacity-90 transition-opacity"
+                                                style={{ objectPosition: 'center 25%' }}
+                                            />
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
                             <div className="space-y-3">
                                 <div className="bg-[#1a1a1a] rounded-lg p-3 border border-gray-700">
@@ -296,6 +325,17 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     <div className="text-white/70 text-xs mb-1">Total Commits</div>
                                     <div className="text-yellow-400 text-lg font-bold">{commits.toLocaleString()}</div>
                                 </div>
+                                <a 
+                                    href="https://github.com/zedithx" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="block w-full"
+                                >
+                                    <button className="w-full bg-yellow-900/30 hover:bg-yellow-900/50 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg p-3 transition-colors flex items-center justify-center gap-2 text-yellow-400 hover:text-yellow-300 font-semibold">
+                                        <Github className="w-4 h-4" />
+                                        <span>Go to GitHub</span>
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     </>

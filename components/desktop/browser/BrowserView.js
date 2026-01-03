@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, Plus } from 'lucide-react';
 import AboutMeView from './AboutMeView';
-import { aboutMeData } from './data';
+import { aboutMeData } from '../../../data/data';
 
 export default function BrowserView({ type, data, onClose }) {
     // If background type, render AboutMeView instead

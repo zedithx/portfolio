@@ -46,6 +46,7 @@ export default function HeroSection({ hero, onStartJourney }) {
                                 src={hero.avatar} 
                                 alt={hero.name}
                                 className="w-full h-full object-cover"
+                                style={{ objectPosition: 'center 30%' }}
                                 loading="eager"
                                 decoding="async"
                                 fetchPriority="high"

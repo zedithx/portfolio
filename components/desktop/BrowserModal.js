@@ -1,7 +1,7 @@
 'use client';
 import React, { useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { contentData } from './browser/data';
+import { contentData } from '../../data/data';
 import CashShopView from './browser/CashShopView';
 import BrowserView from './browser/BrowserView';
 
