@@ -148,17 +148,25 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                         
                                         {/* Right Side: Avatar and Stats */}
                                         <div className="flex items-start gap-1.5 sm:gap-2 ml-auto">
-                                            {/* Avatar - Responsive size */}
-                                            <div className="bg-[#1a1a1a] rounded-lg p-1.5 sm:p-2 border border-gray-700 flex-shrink-0 self-stretch flex items-center justify-center">
-                                                <div className="w-12 h-full sm:w-16 relative flex items-center justify-center">
-                                                    <img 
-                                                        src="/background/avatars/Tech SiJun.jpg" 
-                                                        alt="Character Avatar" 
-                                                        className="w-full h-full object-cover max-h-full rounded"
-                                                        style={{ objectPosition: 'center 25%' }}
-                                                    />
+                                            {/* Avatar - Responsive size, hidden on very small screens */}
+                                            <a 
+                                                href="https://github.com/zedithx" 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="hidden min-[340px]:block cursor-pointer group flex-shrink-0 self-stretch"
+                                                title="Visit GitHub Profile"
+                                            >
+                                                <div className="bg-[#1a1a1a] rounded-lg p-1 sm:p-1.5 border border-gray-700 group-hover:border-yellow-400/50 transition-colors flex items-center justify-center h-[90%]">
+                                                    <div className="w-16 h-full sm:w-16 relative flex items-center justify-center overflow-hidden rounded">
+                                                        <img 
+                                                            src="/background/avatars/Tech SiJun.jpg" 
+                                                            alt="Character Avatar" 
+                                                            className="w-full h-full object-cover rounded group-hover:opacity-90 transition-opacity"
+                                                            style={{ objectPosition: 'center 25%' }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </a>
                                             {/* Stats - Responsive */}
                                             <div className="flex flex-col gap-1.5 sm:gap-2">
                                                 <div className="bg-[#1a1a1a] rounded-lg p-1.5 sm:p-2 border border-gray-700 text-center min-w-[50px] sm:min-w-[60px]">
@@ -172,6 +180,19 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    {/* Go to GitHub Button - Mobile */}
+                                    <a 
+                                        href="https://github.com/zedithx" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="block w-full mt-1"
+                                    >
+                                        <button className="w-full bg-yellow-900/30 hover:bg-yellow-900/50 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg p-2 transition-colors flex items-center justify-center gap-2 text-yellow-400 hover:text-yellow-300 font-semibold text-xs">
+                                            <Github className="w-3.5 h-3.5" />
+                                            <span>Go to GitHub</span>
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                             
