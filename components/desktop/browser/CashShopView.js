@@ -1,14 +1,13 @@
 'use client';
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, RotateCw, Lock, Star, Share, ShoppingCart, Search, Github, Briefcase, ToggleLeft, ToggleRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCw, Lock, Search, Github } from 'lucide-react';
 import ItemCard from './ItemCard';
 import { contentData, aboutMeData } from '../../../data/data';
 
 export default function CashShopView({ onClose, onPermissionError, data, commits }) {
     const [selectedProject, setSelectedProject] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [isFormalMode, setIsFormalMode] = useState(true); // Default to formal/professional mode
 
     // Search functionality - filters items by title, description, and techTags
     const filteredItems = useMemo(() => {
@@ -58,40 +57,50 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
     return (
         <>
             {/* Browser Chrome */}
-            <div className="bg-[#1a1a1a] rounded-t-xl border border-gray-700 border-b-0 shrink-0">
+            <div className="bg-[#f6f6f6] rounded-t-xl border border-gray-200 border-b-0 shrink-0">
                 {/* Title Bar */}
-                <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3 border-b border-gray-700 relative">
+                <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3 border-b border-gray-200 relative">
                     <div className="flex items-center gap-1.5 sm:gap-2">
-                        <button onClick={onClose} className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all"></button>
+                        <button 
+                            onClick={onClose} 
+                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                        ></button>
                         <button 
                             onClick={() => onPermissionError && onPermissionError("You cannot minimize when on this page.")} 
-                            className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all"
+                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                            title="Minimize"
                         />
                         <button 
                             onClick={() => onPermissionError && onPermissionError("You cannot maximize when on this page.")} 
-                            className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all"
+                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                            title="Maximize"
                         />
                     </div>
-                    <div className="absolute left-1/2 -translate-x-1/2 text-xs sm:text-sm text-white/80 font-medium px-2 truncate max-w-[60%] sm:max-w-none">
-                        {selectedProject ? selectedProject.title : (isFormalMode ? 'Projects' : 'Cash Shop')}
+                    <div className="absolute left-1/2 -translate-x-1/2 text-sm md:text-base text-gray-600 font-medium px-2 truncate max-w-[60%] sm:max-w-none">
+                        {selectedProject ? selectedProject.title : 'Projects'}
                     </div>
-                    <div className="w-12 sm:w-12"></div>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-500 hover:text-gray-700 transition-colors text-xs sm:text-sm px-2 sm:px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                        Close
+                    </button>
                 </div>
 
                 {/* Navigation & URL Bar */}
-                <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1.5 sm:py-2 border-b border-gray-700">
+                <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1.5 sm:py-2">
                     <div className="flex items-center gap-0.5 sm:gap-1">
                         <button 
                             onClick={handleBackToShop}
                             disabled={!selectedProject}
-                            className={`p-1 sm:p-1.5 rounded-lg transition-colors ${!selectedProject ? 'text-gray-600/50 cursor-not-allowed' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
+                            className={`p-1 sm:p-1.5 rounded-lg transition-colors ${!selectedProject ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-200'}`}
                             title="Back"
                         >
                             <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                         <button 
                             disabled
-                            className="p-1 sm:p-1.5 rounded-lg transition-colors text-gray-600/50 cursor-not-allowed"
+                            className="p-1 sm:p-1.5 rounded-lg transition-colors text-gray-300 cursor-not-allowed"
                             title="Forward"
                         >
                             <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -102,146 +111,66 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     handleBackToShop();
                                 }
                             }}
-                            className="hidden sm:block p-1.5 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+                            className="hidden sm:block p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors"
                             title="Reload"
                         >
                             <RotateCw className="w-4 h-4" />
                         </button>
                     </div>
 
-                    <div className="flex-1 flex items-center gap-1.5 sm:gap-2 bg-[#2d2d2d] rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-600 min-w-0">
-                        <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-500 shrink-0" />
-                        <span className="text-[10px] sm:text-sm text-white/70 truncate">
-                            portfolio.dev/{isFormalMode ? 'projects' : 'cash-shop'}{selectedProject ? `/${selectedProject.title.toLowerCase().replace(/\s+/g, '-')}` : ''}
+                    <div className="flex-1 flex items-center gap-1.5 sm:gap-2 bg-white rounded-lg px-2 sm:px-3 py-1.5 sm:py-1.5 border border-gray-200 min-w-0">
+                        <Lock className="w-3 h-3 sm:w-3 sm:h-3 text-gray-400 shrink-0" />
+                        <span className="text-sm md:text-base text-gray-600 truncate">
+                            portfolio.dev/projects{selectedProject ? `/${selectedProject.title.toLowerCase().replace(/\s+/g, '-')}` : ''}
                         </span>
-                    </div>
-
-                    <div className="hidden sm:flex items-center gap-2">
-                        <Share className="w-4 h-4 text-white/50 cursor-pointer hover:text-white/70" />
-                        <Star className="w-4 h-4 text-white/50 cursor-pointer hover:text-white/70" />
                     </div>
                 </div>
 
-                {/* Projects/Cash Shop Header - Only show when no project is selected */}
+                {/* Projects Header - Only show when no project is selected */}
                 {!selectedProject && (
-                    <div className="px-3 sm:px-4 py-2 sm:py-3 bg-[#1a1a1a] border-b border-gray-700">
+                    <div className="px-3 sm:px-4 py-2 sm:py-3 bg-white border-b border-gray-200">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            {/* Desktop: Title, Stats, and Toggle */}
+                            {/* Desktop: Title and Stats */}
                             <div className="hidden sm:flex sm:items-center gap-2 sm:gap-6">
                                 <div className="flex items-center gap-3">
-                                    {isFormalMode ? (
-                                        <>
-                                            <Briefcase className="w-5 h-5 text-blue-400" />
-                                            <h1 className="text-base sm:text-lg md:text-xl font-semibold text-white">Projects</h1>
-                                        </>
-                                    ) : (
-                                        <h1 className="text-base sm:text-lg md:text-xl font-bold text-yellow-400">Cash Shop</h1>
-                                    )}
+                                    <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Projects</h1>
                                 </div>
-                                {isFormalMode ? (
-                                    <div className="flex items-center gap-3 px-3 py-1.5 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                                        <span className="text-blue-400 text-xs sm:text-sm font-medium">{commits.toLocaleString()} Commits</span>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg">
-                                        <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
-                                        <span className="text-yellow-300 text-xs sm:text-sm font-semibold">{commits.toLocaleString()} Commits</span>
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-3 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <span className="text-blue-600 text-xs sm:text-sm font-medium">{commits.toLocaleString()} Commits</span>
+                                </div>
                             </div>
                             
                             {/* Mobile: Optimized Layout */}
                             <div className="sm:hidden w-full">
                                 <div className="flex flex-col gap-2.5">
-                                    {/* Title and Toggle */}
+                                    {/* Title */}
                                     <div className="flex items-center justify-between">
-                                        {isFormalMode ? (
-                                            <div className="flex items-center gap-2">
-                                                <Briefcase className="w-4 h-4 text-blue-400" />
-                                                <h1 className="text-sm font-semibold text-white leading-tight">Projects</h1>
-                                            </div>
-                                        ) : (
-                                            <h1 className="text-sm font-bold text-yellow-400 leading-tight">Cash Shop</h1>
-                                        )}
-                                        {/* Toggle Button - Mobile */}
-                                        <button
-                                            onClick={() => setIsFormalMode(!isFormalMode)}
-                                            className="flex items-center gap-1.5 px-2 py-1 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors"
-                                            aria-label={isFormalMode ? 'Switch to casual view' : 'Switch to professional view'}
-                                        >
-                                            {isFormalMode ? (
-                                                <>
-                                                    <ToggleRight className="w-4 h-4 text-blue-400" />
-                                                    <span className="text-xs text-blue-400 font-medium">Professional</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <ToggleLeft className="w-4 h-4 text-yellow-400" />
-                                                    <span className="text-xs text-yellow-400 font-medium">Casual</span>
-                                                </>
-                                            )}
-                                        </button>
+                                        <h1 className="text-sm font-semibold text-gray-900 leading-tight">Projects</h1>
                                     </div>
                                     
-                                    {/* Top Row: Stats - Formal vs Informal */}
+                                    {/* Stats */}
                                     <div className="flex items-center gap-2">
-                                        {isFormalMode ? (
-                                            <>
-                                                {/* Formal Mode Stats */}
-                                                <div className="flex items-center gap-1.5 flex-1">
-                                                    <div className="bg-[#1a1a1a] rounded-lg px-2 py-1.5 border border-gray-700 text-center flex-1">
-                                                        <div className="text-white/60 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Projects</div>
-                                                        <div className="text-blue-400 text-xs font-semibold leading-tight">{data.items ? data.items.length : 0}</div>
-                                                    </div>
-                                                    <div className="bg-[#1a1a1a] rounded-lg px-2 py-1.5 border border-gray-700 text-center flex-1">
-                                                        <div className="text-white/60 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Commits</div>
-                                                        <div className="text-blue-400 text-xs font-semibold leading-tight">{commits.toLocaleString()}</div>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {/* Informal Mode Stats */}
-                                                <div className="flex items-center gap-1 px-2.5 py-1.5 bg-yellow-900/30 border border-yellow-500/30 rounded-lg flex-shrink-0">
-                                                    <span className="text-yellow-400 text-xs flex-shrink-0">💎</span>
-                                                    <span className="text-yellow-300 text-xs font-semibold whitespace-nowrap">
-                                                        {commits.toLocaleString()}
-                                                    </span>
-                                                </div>
-                                                
-                                                {/* Shopping Cart - Only in informal mode */}
-                                                <button 
-                                                    className="relative p-2 bg-gray-800 rounded-lg border border-gray-700 active:bg-gray-700/80 transition-colors flex-shrink-0 touch-manipulation min-h-[38px] min-w-[38px] flex items-center justify-center"
-                                                    aria-label="Shopping cart"
-                                                >
-                                                    <ShoppingCart className="w-4 h-4 text-yellow-400" />
-                                                    <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-semibold">0</span>
-                                                </button>
-                                                
-                                                {/* Stats - Compact with better spacing */}
-                                                <div className="flex items-center gap-1.5 flex-shrink-0 ml-auto">
-                                                    <div className="bg-[#1a1a1a] rounded-lg px-1.5 py-1 border border-gray-700 text-center">
-                                                        <div className="text-white/60 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Projects</div>
-                                                        <div className="text-yellow-400 text-xs font-bold leading-tight">{data.items ? data.items.length : 0}</div>
-                                                    </div>
-                                                    <div className="bg-[#1a1a1a] rounded-lg px-1.5 py-1 border border-gray-700 text-center">
-                                                        <div className="text-white/60 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Commits</div>
-                                                        <div className="text-yellow-400 text-xs font-bold leading-tight">{commits.toLocaleString()}</div>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
+                                        <div className="flex items-center gap-1.5 flex-1">
+                                            <div className="bg-gray-50 rounded-lg px-2 py-1.5 border border-gray-200 text-center flex-1">
+                                                <div className="text-gray-500 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Projects</div>
+                                                <div className="text-blue-600 text-xs font-semibold leading-tight">{data.items ? data.items.length : 0}</div>
+                                            </div>
+                                            <div className="bg-gray-50 rounded-lg px-2 py-1.5 border border-gray-200 text-center flex-1">
+                                                <div className="text-gray-500 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Commits</div>
+                                                <div className="text-blue-600 text-xs font-semibold leading-tight">{commits.toLocaleString()}</div>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     {/* Search Bar - Full width with better styling */}
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg border border-gray-700 w-full active:border-gray-600 transition-colors">
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-gray-200 w-full hover:border-gray-300 transition-colors">
                                         <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
                                         <input 
                                             type="text" 
-                                            placeholder={isFormalMode ? "Search projects..." : "Search items..."}
+                                            placeholder="Search projects..."
                                             value={searchQuery}
                                             onChange={handleSearchChange}
-                                            className="flex-1 bg-transparent text-white/80 text-xs placeholder:text-gray-500 outline-none min-w-0"
+                                            className="flex-1 bg-transparent text-gray-700 text-xs placeholder:text-gray-400 outline-none min-w-0"
                                         />
                                     </div>
                                     
@@ -252,7 +181,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                         rel="noopener noreferrer"
                                         className="block w-full mt-1.5"
                                     >
-                                        <button className="w-full bg-yellow-900/30 active:bg-yellow-900/50 border border-yellow-500/30 active:border-yellow-500/50 rounded-lg px-3 py-2.5 transition-colors flex items-center justify-center gap-2 text-yellow-400 active:text-yellow-300 font-semibold text-[11px] min-h-[40px] touch-manipulation">
+                                        <button className="w-full bg-blue-50 active:bg-blue-100 border border-blue-200 active:border-blue-300 rounded-lg px-3 py-2.5 transition-colors flex items-center justify-center gap-2 text-blue-600 active:text-blue-700 font-semibold text-[11px] min-h-[40px] touch-manipulation">
                                             <Github className="w-4 h-4 flex-shrink-0" />
                                             <span className="truncate">Go to GitHub</span>
                                         </button>
@@ -260,67 +189,35 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                 </div>
                             </div>
                             
-                            {/* Desktop: Search, Cart (informal only), and Toggle */}
+                            {/* Desktop: Search */}
                             <div className="hidden sm:flex items-center gap-2 sm:gap-4">
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700">
+                                <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-gray-200">
                                     <Search className="w-4 h-4 text-gray-400" />
                                     <input 
                                         type="text" 
-                                        placeholder={isFormalMode ? "Search projects..." : "Search items..."}
+                                        placeholder="Search projects..."
                                         value={searchQuery}
                                         onChange={handleSearchChange}
-                                        className="bg-transparent text-white/70 text-sm outline-none w-32"
+                                        className="bg-transparent text-gray-600 text-sm outline-none w-32"
                                     />
                                 </div>
-                                {!isFormalMode && (
-                                    <button className="relative p-2 bg-gray-800 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors">
-                                        <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
-                                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">0</span>
-                                    </button>
-                                )}
-                                {/* Toggle Button - Desktop */}
-                                <button
-                                    onClick={() => setIsFormalMode(!isFormalMode)}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
-                                        isFormalMode 
-                                            ? 'bg-blue-900/20 border-blue-500/30 hover:bg-blue-900/30' 
-                                            : 'bg-yellow-900/20 border-yellow-500/30 hover:bg-yellow-900/30'
-                                    }`}
-                                    aria-label={isFormalMode ? 'Switch to casual view' : 'Switch to professional view'}
-                                >
-                                    {isFormalMode ? (
-                                        <>
-                                            <ToggleRight className="w-4 h-4 text-blue-400" />
-                                            <span className="text-xs text-blue-400 font-medium">Professional</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <ToggleLeft className="w-4 h-4 text-yellow-400" />
-                                            <span className="text-xs text-yellow-400 font-medium">Casual</span>
-                                        </>
-                                    )}
-                                </button>
                             </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Cash Shop Content */}
-            <div className="flex-1 bg-[#1a1a1a] rounded-b-xl border border-gray-700 border-t-0 overflow-hidden flex">
+            {/* Projects Content */}
+            <div className="flex-1 bg-white rounded-b-xl border border-gray-200 border-t-0 overflow-hidden flex">
                 {selectedProject ? (
                     /* Project Detail View */
                     <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8">
                         <button 
                             onClick={handleBackToShop}
-                            className={`mb-3 sm:mb-4 md:mb-6 flex items-center gap-2 transition-colors text-xs sm:text-sm md:text-base ${
-                                isFormalMode 
-                                    ? 'text-blue-400 hover:text-blue-300' 
-                                    : 'text-yellow-400 hover:text-yellow-300'
-                            }`}
+                            className="mb-3 sm:mb-4 md:mb-6 flex items-center gap-2 transition-colors text-xs sm:text-sm md:text-base text-blue-600 hover:text-blue-700"
                         >
                             <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                            <span>{isFormalMode ? 'Back to Projects' : 'Back to Shop'}</span>
+                            <span>Back to Projects</span>
                         </button>
                         <div className="bg-white rounded-xl p-3 sm:p-4 md:p-6 lg:p-8">
                             {selectedProject.content}
@@ -333,11 +230,11 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                             {filteredItems !== null ? (
                                 /* Search Results */
                                 <div>
-                                    <h2 className={`text-base sm:text-lg md:text-xl font-${isFormalMode ? 'semibold' : 'bold'} ${isFormalMode ? 'text-white' : 'text-yellow-400'} mb-2 sm:mb-3 md:mb-4 flex items-center gap-2`}>
-                                        <Search className={`w-4 h-4 sm:w-5 sm:h-5 ${isFormalMode ? 'text-blue-400' : 'text-yellow-400'}`} />
+                                    <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
+                                        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                                         <span>Search Results</span>
-                                        <span className={`text-sm font-normal ${isFormalMode ? 'text-blue-300/70' : 'text-yellow-300/70'}`}>
-                                            ({filteredItems.length} {filteredItems.length === 1 ? (isFormalMode ? 'project' : 'item') : (isFormalMode ? 'projects' : 'items')})
+                                        <span className="text-sm font-normal text-gray-500">
+                                            ({filteredItems.length} {filteredItems.length === 1 ? 'project' : 'projects'})
                                         </span>
                                     </h2>
                                     {filteredItems.length > 0 ? (
@@ -352,7 +249,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                         </div>
                                     ) : (
                                         <div className="text-center py-8 sm:py-12">
-                                            <p className="text-gray-400 text-sm sm:text-base">No items found matching "{searchQuery}"</p>
+                                            <p className="text-gray-600 text-sm sm:text-base">No items found matching "{searchQuery}"</p>
                                             <p className="text-gray-500 text-xs sm:text-sm mt-2">Try a different search term</p>
                                         </div>
                                     )}
@@ -362,10 +259,8 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                 <>
                                     {/* Popular Items / Featured Projects Section */}
                                     <div className="mb-4 sm:mb-6 md:mb-8">
-                                        <h2 className={`text-base sm:text-lg md:text-xl font-${isFormalMode ? 'semibold' : 'bold'} ${isFormalMode ? 'text-white' : 'text-yellow-400'} mb-2 sm:mb-3 md:mb-4 flex items-center gap-2`}>
-                                            {!isFormalMode && <span className="text-xl sm:text-2xl">⭐</span>}
-                                            <span>{isFormalMode ? 'Featured Projects' : 'Popular Items'}</span>
-                                            {!isFormalMode && <span className="text-lg sm:text-xl">✨</span>}
+                                        <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                                            Featured Projects
                                         </h2>
                                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                             {popularItems.map((item) => (
@@ -381,10 +276,8 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     {/* Student Government Section */}
                                     {studentGovernmentItems.length > 0 && (
                                         <div className="mb-4 sm:mb-6 md:mb-8">
-                                            <h2 className={`text-base sm:text-lg md:text-xl font-${isFormalMode ? 'semibold' : 'bold'} ${isFormalMode ? 'text-white' : 'text-yellow-400'} mb-2 sm:mb-3 md:mb-4 flex items-center gap-2`}>
-                                                {!isFormalMode && <span className="text-xl sm:text-2xl">🎓</span>}
-                                                <span>Student Government</span>
-                                                {!isFormalMode && <span className="text-lg sm:text-xl">📚</span>}
+                                                <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                                                Student Government
                                             </h2>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                                 {studentGovernmentItems.map((item) => (
@@ -401,10 +294,8 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     {/* DevOps Projects Section */}
                                     {devOpsItems.length > 0 && (
                                         <div>
-                                            <h2 className={`text-base sm:text-lg md:text-xl font-${isFormalMode ? 'semibold' : 'bold'} ${isFormalMode ? 'text-white' : 'text-yellow-400'} mb-2 sm:mb-3 md:mb-4 flex items-center gap-2`}>
-                                                {!isFormalMode && <span className="text-xl sm:text-2xl">⚙️</span>}
-                                                <span>DevOps Projects</span>
-                                                {!isFormalMode && <span className="text-lg sm:text-xl">🔧</span>}
+                                            <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                                                DevOps Projects
                                             </h2>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                                 {devOpsItems.map((item) => (
@@ -422,23 +313,23 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                         </div>
 
                         {/* Avatar Sidebar */}
-                        <div className="hidden lg:block w-72 xl:w-80 bg-[#2d2d2d] border-l border-gray-700 p-4 xl:p-6 overflow-y-auto">
+                        <div className="hidden lg:block w-72 xl:w-80 bg-gray-50 border-l border-gray-200 p-4 xl:p-6 overflow-y-auto">
                             <div className="text-center mb-4">
                                 <div className="flex items-center justify-center gap-2 mb-2">
                                     <a 
                                         href="https://github.com/zedithx" 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className={`${isFormalMode ? 'text-white hover:text-blue-400' : 'text-yellow-400 hover:text-yellow-300'} transition-colors cursor-pointer`}
+                                        className="text-gray-900 hover:text-blue-600 transition-colors cursor-pointer"
                                         title="Visit GitHub Profile"
                                     >
-                                        <h3 className={`font-${isFormalMode ? 'semibold' : 'bold'} text-lg`}>zedithx</h3>
+                                        <h3 className="font-semibold text-lg">zedithx</h3>
                                     </a>
                                     <a 
                                         href="https://github.com/zedithx" 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className={`${isFormalMode ? 'text-white hover:text-blue-400' : 'text-yellow-400 hover:text-yellow-300'} transition-colors`}
+                                        className="text-gray-900 hover:text-blue-600 transition-colors"
                                         title="Visit GitHub Profile"
                                     >
                                         <Github className="w-5 h-5" />
@@ -451,11 +342,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     className="block cursor-pointer group"
                                     title="Visit GitHub Profile"
                                 >
-                                    <div className={`bg-[#1a1a1a] rounded-lg p-4 border border-gray-700 transition-colors ${
-                                        isFormalMode 
-                                            ? 'group-hover:border-blue-400/50' 
-                                            : 'group-hover:border-yellow-400/50'
-                                    }`}>
+                                    <div className="bg-white rounded-lg p-4 border border-gray-200 transition-colors group-hover:border-blue-300">
                                         <div className="aspect-square relative">
                                             <img 
                                                 src="/background/avatars/Tech SiJun.jpg" 
@@ -468,13 +355,13 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                 </a>
                             </div>
                             <div className="space-y-3">
-                                <div className="bg-[#1a1a1a] rounded-lg p-3 border border-gray-700">
-                                    <div className="text-white/70 text-xs mb-1">Projects</div>
-                                    <div className={`${isFormalMode ? 'text-blue-400' : 'text-yellow-400'} text-lg font-${isFormalMode ? 'semibold' : 'bold'}`}>{data.items ? data.items.length : 0}</div>
+                                <div className="bg-white rounded-lg p-3 border border-gray-200">
+                                    <div className="text-gray-600 text-xs mb-1">Projects</div>
+                                    <div className="text-blue-600 text-lg font-semibold">{data.items ? data.items.length : 0}</div>
                                 </div>
-                                <div className="bg-[#1a1a1a] rounded-lg p-3 border border-gray-700">
-                                    <div className="text-white/70 text-xs mb-1">Total Commits</div>
-                                    <div className={`${isFormalMode ? 'text-blue-400' : 'text-yellow-400'} text-lg font-${isFormalMode ? 'semibold' : 'bold'}`}>{commits.toLocaleString()}</div>
+                                <div className="bg-white rounded-lg p-3 border border-gray-200">
+                                    <div className="text-gray-600 text-xs mb-1">Total Commits</div>
+                                    <div className="text-blue-600 text-lg font-semibold">{commits.toLocaleString()}</div>
                                 </div>
                                 <a 
                                     href="https://github.com/zedithx" 
@@ -482,11 +369,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     rel="noopener noreferrer"
                                     className="block w-full"
                                 >
-                                    <button className={`w-full rounded-lg p-3 transition-colors flex items-center justify-center gap-2 font-semibold ${
-                                        isFormalMode
-                                            ? 'bg-blue-900/30 hover:bg-blue-900/50 border border-blue-500/30 hover:border-blue-500/50 text-blue-400 hover:text-blue-300'
-                                            : 'bg-yellow-900/30 hover:bg-yellow-900/50 border border-yellow-500/30 hover:border-yellow-500/50 text-yellow-400 hover:text-yellow-300'
-                                    }`}>
+                                    <button className="w-full rounded-lg p-3 transition-colors flex items-center justify-center gap-2 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 text-blue-600 hover:text-blue-700">
                                         <Github className="w-4 h-4" />
                                         <span>Go to GitHub</span>
                                     </button>

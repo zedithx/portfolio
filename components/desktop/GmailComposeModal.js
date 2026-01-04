@@ -127,21 +127,26 @@ export default function GmailComposeModal({ isOpen, onClose, visitorEmail, onPer
                             <div className="flex items-center gap-2">
                                 <button 
                                     onClick={onClose} 
-                                    className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all"
+                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
                                 ></button>
                                 <button 
                                     onClick={() => onPermissionError && onPermissionError("You cannot minimize when on this page.")} 
-                                    className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all"
+                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
                                 />
                                 <button 
                                     onClick={() => onPermissionError && onPermissionError("You cannot maximize when on this page.")} 
-                                    className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all"
+                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
                                 />
                             </div>
                             <div className="absolute left-1/2 -translate-x-1/2 text-sm text-gray-700 font-medium">
                                 New Message
                             </div>
-                            <div className="w-12"></div>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-500 hover:text-gray-700 transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded hover:bg-gray-100"
+                        >
+                            Close
+                        </button>
                         </div>
                         
                         {/* Subject and Message Box */}

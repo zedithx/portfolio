@@ -229,104 +229,114 @@ export const contentData = {
         title: 'Experience',
         pages: [
             {
-                title: 'Senior Developer at TechCorp',
+                title: 'Experience',
                 content: (
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-3xl shadow-lg">
-                                🏢
+                    <div className="space-y-4 sm:space-y-5 md:space-y-8">
+                        {/* ByteDance */}
+                        <div className="space-y-2 sm:space-y-3 md:space-y-4">
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/bytedance_logo.png" alt="ByteDance" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">ByteDance</h2>
+                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer (SRE) Intern</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">Data Infrastructure SRE Team</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Sep 2025 - Dec 2025</p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Senior Full Stack Developer</h2>
-                                <p className="text-gray-500">TechCorp Inc. • 2022 - Present</p>
-                            </div>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                                Worked on ByteGraph, ByteDance's distributed graph database, focusing on monitoring, on-call responsibilities, and machine operations for production clusters across Singapore and Europe.
+                            </p>
                         </div>
-                        <ul className="space-y-3 text-gray-600">
-                            <li className="flex items-start gap-3">
-                                <span className="text-blue-500 mt-1">▹</span>
-                                Led a team of 5 developers in building a new customer portal
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-blue-500 mt-1">▹</span>
-                                Reduced page load times by 60% through optimization
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-blue-500 mt-1">▹</span>
-                                Implemented CI/CD pipelines reducing deployment time by 80%
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-blue-500 mt-1">▹</span>
-                                Mentored junior developers and conducted code reviews
-                            </li>
-                        </ul>
-                    </div>
-                )
-            },
-            {
-                title: 'Developer at StartupXYZ',
-                content: (
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center text-3xl shadow-lg">
-                                🚀
+
+                        {/* Tangled Social */}
+                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/tangled_logo.jpeg" alt="Tangled Social" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Tangled Social</h2>
+                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Co-founder, Software Engineer</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">July 2025 - Current</p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Full Stack Developer</h2>
-                                <p className="text-gray-500">StartupXYZ • 2020 - 2022</p>
-                            </div>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                                Co-founded a social platform, provisioning AWS infrastructure with Terraform and developing a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. Contributed to ~80% of the codebase.
+                            </p>
                         </div>
-                        <ul className="space-y-3 text-gray-600">
-                            <li className="flex items-start gap-3">
-                                <span className="text-green-500 mt-1">▹</span>
-                                Built the entire frontend architecture from scratch
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-green-500 mt-1">▹</span>
-                                Developed RESTful APIs serving 100k+ daily requests
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-green-500 mt-1">▹</span>
-                                Integrated third-party services including payments and analytics
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-green-500 mt-1">▹</span>
-                                Helped scale the product from 0 to 10,000 users
-                            </li>
-                        </ul>
-                    </div>
-                )
-            },
-            {
-                title: 'Junior Developer at WebAgency',
-                content: (
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-violet-700 flex items-center justify-center text-3xl shadow-lg">
-                                💼
+
+                        {/* TSMC */}
+                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/TSMC.png" alt="TSMC" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Taiwan Semiconductor Manufacturing Company (TSMC)</h2>
+                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer (DevOps) Intern</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">Intelligent Eng-System Mask Team</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">June 2025 - Aug 2025</p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Junior Web Developer</h2>
-                                <p className="text-gray-500">WebAgency • 2018 - 2020</p>
-                            </div>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                                Integrated OpenTelemetry tracing with Spring Boot Starter across 10+ TSMC fabrication labs, engineered auto-generation of test scenarios with Grafana Tempo, and built auto sanity check mechanisms using Prometheus metrics.
+                            </p>
                         </div>
-                        <ul className="space-y-3 text-gray-600">
-                            <li className="flex items-start gap-3">
-                                <span className="text-purple-500 mt-1">▹</span>
-                                Developed responsive websites for 20+ clients
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-purple-500 mt-1">▹</span>
-                                Learned modern frameworks and best practices
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-purple-500 mt-1">▹</span>
-                                Collaborated with designers to implement pixel-perfect UIs
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-purple-500 mt-1">▹</span>
-                                Maintained and updated existing client websites
-                            </li>
-                        </ul>
+
+                        {/* Changi Airport Group */}
+                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/Changi_Airport_logo.png" alt="Changi Airport Group" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Changi Airport Group</h2>
+                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer Intern</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">API Gateway and Microservices Team</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Jan 2025 - May 2025</p>
+                                </div>
+                            </div>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                                Engineered a production-grade, event-driven serverless Slack bot for airport flight operations, implemented centralized CloudWatch log extraction across multiple AWS accounts, and built two production microservices secured behind Apigee API Gateway.
+                            </p>
+                        </div>
+
+                        {/* ROOTech */}
+                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/root.jpeg" alt="ROOTech" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">ROOTech - Student Government</h2>
+                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Nov 2024 - Mar 2025</p>
+                                </div>
+                            </div>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                                Developed key event webpages and Telegram Bots serving 1,600 students, led the integration of custom RFID bands for a Game Booth Carnival System, and built an AI Chatbot with event pass image generation for Open House 2025 registration, which was used by 1,800 public visitors over 2 days.
+                            </p>
+                        </div>
+
+                        {/* Reluvate Technologies */}
+                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/reluvate_logo.jpeg" alt="Reluvate Technologies" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Reluvate Technologies</h2>
+                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer Intern</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">Payment Platform Team</p>
+                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Feb 2022 – Jul 2022</p>
+                                </div>
+                            </div>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                                Engineered core backend functionalities of a Django-based merchant admin portal for a payment platform used by over 1,860 merchants in Singapore, including major brands like KOI, Watsons, and Zara.
+                            </p>
+                        </div>
                     </div>
                 )
             }
@@ -497,13 +507,13 @@ export const journeySummaryContent = {
         "title": "University Life",
         "content": "At SUTD, being surrounded by many strong software engineers, especially those from polytechnic backgrounds, pushed me to grow quickly. \
         A classmate encouraged me to join the student government's tech department, which at the time felt like a casual decision but ended up becoming \
-        one of the most defining parts of my university life. I went on to build the frontend site for SUTD's largest annual event, Night Fiesta 2024,\
+        one of the most defining parts of my university life. \n\nI went on to build the frontend site for SUTD's largest annual event, Night Fiesta 2024,\
          followed by the websites for Orientation 2024 and LCC 2024, and led the implementation of an RFID-based game carnival system end-to-end\
           (custom RFID bands from a supplier in China, RFID readers, and the supporting software). \
           I also built multiple Telegram bots to run event logistics and engagement. Through these projects, my frontend skills grew rapidly, \
-          and I deepened my deployment and backend skills by repeatedly shipping and operating production-facing tools for the school.\\n\\nI also \
-          tend to become hyper-focused when building things. \
-          \n\nAt SUTD, I often treated projects like a full-time job, pulling late nights to get them to a \
+          and I deepened my deployment and backend skills by repeatedly shipping and operating production-facing tools for the school.\
+          \n\nI also tend to become hyper-focused when building things. \
+          At SUTD, I often treated projects like a full-time job, pulling late nights to get them to a \
           level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, \
           and in my computer science modules I pushed my teams and myself to ship products that felt polished and real. Across several modules, \
           our projects consistently ranked top three in the cohort and picked up awards."

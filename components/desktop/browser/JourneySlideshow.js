@@ -149,7 +149,7 @@ const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
     );
 });
 
-export default function JourneySlideshow({ journey, updateSkills, onSkillGain, hero, skills }) {
+export default function JourneySlideshow({ journey, updateSkills, onSkillGain, hero, skills, onToggleToFormal }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [dialogueIndex, setDialogueIndex] = useState(0);
     const [showDialogue, setShowDialogue] = useState(true);
@@ -1237,7 +1237,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             )}
                         </div>
 
-                            {/* Return to MacBook Button - Fixed at bottom */}
+                            {/* Return Button - Fixed at bottom */}
                             <div className="flex justify-center pt-4 sm:pt-3 md:pt-4 lg:pt-6 pb-3 sm:pb-3 md:pb-4 shrink-0" style={{ overflow: 'visible', zIndex: 10 }}>
                                 <motion.button
                                     ref={returnButtonRef}
@@ -1246,12 +1246,20 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        window.location.href = '/';
+                                        if (onToggleToFormal) {
+                                            onToggleToFormal();
+                                        } else {
+                                            window.location.href = '/';
+                                        }
                                     }}
                                     onTouchEnd={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        window.location.href = '/';
+                                        if (onToggleToFormal) {
+                                            onToggleToFormal();
+                                        } else {
+                                            window.location.href = '/';
+                                        }
                                     }}
                                     className="px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2.5 md:py-3 lg:py-4 rounded-lg font-bold text-xs sm:text-sm md:text-base lg:text-lg mx-auto block touch-manipulation relative min-h-[40px] sm:min-h-[44px] z-[100] overflow-hidden"
                                     style={{
@@ -1295,7 +1303,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             }}
                                         />
                                     )}
-                                    <span className="relative z-10">Return to MacBook</span>
+                                    <span className="relative z-10">{onToggleToFormal ? 'Back to About Me' : 'Return to MacBook'}</span>
                                 </motion.button>
                             </div>
                         </div>
@@ -1386,50 +1394,52 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 >
                     <div className="flex items-center justify-between w-full pr-12 md:pr-16">
                         <span>ADVENTURE LOG</span>
-                        {!showSummary && (
-                            <motion.button
-                                ref={skipButtonRef}
-                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2, ease: 'easeOut' }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (!isTransitioning) {
-                                        goToSummary();
-                                    }
-                                }}
-                                onTouchEnd={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (!isTransitioning) {
-                                        goToSummary();
-                                    }
-                                }}
-                                disabled={isTransitioning}
-                                className={`px-2 py-2 md:px-3 md:py-1.5 rounded-lg flex items-center gap-1.5 md:gap-2 transition-all touch-manipulation min-h-[44px] md:min-h-0 z-[100] ${
-                                    isTransitioning ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:scale-105 active:scale-95'
-                                }`}
-                                style={{
-                                    background: 'rgba(139, 69, 19, 0.8)',
-                                    backdropFilter: 'blur(10px)',
-                                    border: '2px solid #8B4513',
-                                    color: '#ffd700',
-                                    boxShadow: '0 0 15px rgba(139, 69, 19, 0.5)',
-                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                    pointerEvents: isTransitioning ? 'none' : 'auto',
-                                    position: 'relative',
-                                    zIndex: 100,
-                                    willChange: 'opacity'
-                                }}
-                                whileHover={prefersReducedMotion || isTransitioning ? {} : { scale: 1.05 }}
-                                whileTap={prefersReducedMotion || isTransitioning ? {} : { scale: 0.95 }}
-                                aria-label="Skip to summary"
-                            >
-                                <ScrollText className="w-6 h-6 md:w-4 md:h-4" />
-                                <span className="text-xs md:text-sm font-bold hidden sm:inline">Skip to Summary</span>
-                            </motion.button>
-                        )}
+                        <div className="flex items-center gap-2">
+                            {!showSummary && (
+                                <motion.button
+                                    ref={skipButtonRef}
+                                    initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2, ease: 'easeOut' }}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (!isTransitioning) {
+                                            goToSummary();
+                                        }
+                                    }}
+                                    onTouchEnd={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (!isTransitioning) {
+                                            goToSummary();
+                                        }
+                                    }}
+                                    disabled={isTransitioning}
+                                    className={`px-2 py-2 md:px-3 md:py-1.5 rounded-lg flex items-center gap-1.5 md:gap-2 transition-all touch-manipulation min-h-[44px] md:min-h-0 z-[100] ${
+                                        isTransitioning ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:scale-105 active:scale-95'
+                                    }`}
+                                    style={{
+                                        background: 'rgba(139, 69, 19, 0.8)',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '2px solid #8B4513',
+                                        color: '#ffd700',
+                                        boxShadow: '0 0 15px rgba(139, 69, 19, 0.5)',
+                                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                        pointerEvents: isTransitioning ? 'none' : 'auto',
+                                        position: 'relative',
+                                        zIndex: 100,
+                                        willChange: 'opacity'
+                                    }}
+                                    whileHover={prefersReducedMotion || isTransitioning ? {} : { scale: 1.05 }}
+                                    whileTap={prefersReducedMotion || isTransitioning ? {} : { scale: 0.95 }}
+                                    aria-label="Skip to summary"
+                                >
+                                    <ScrollText className="w-6 h-6 md:w-4 md:h-4" />
+                                    <span className="text-xs md:text-sm font-bold hidden sm:inline">Skip to Summary</span>
+                                </motion.button>
+                            )}
+                        </div>
                     </div>
                 </motion.h2>
 

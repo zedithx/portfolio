@@ -15,19 +15,19 @@ function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpo
         e.preventDefault();
         e.stopPropagation();
         
-        if (app.name === 'Terminal') {
-            onTerminalClick();
-        } else if (app.name === 'Gmail') {
-            onGmailClick();
-        } else if (app.name === 'GitHub') {
+                            if (app.name === 'Terminal') {
+                                onTerminalClick();
+                            } else if (app.name === 'Gmail') {
+                                onGmailClick();
+                            } else if (app.name === 'GitHub') {
             onLoadingStart('github', 'https://github.com/zedithx');
-        } else if (app.name === 'LinkedIn') {
+                            } else if (app.name === 'LinkedIn') {
             onLoadingStart('linkedin', 'https://linkedin.com/in/yang-si-jun/');
         } else if (app.name === 'Spotify') {
             onSpotifyClick();
-        } else {
-            onPermissionError();
-        }
+                            } else {
+                                onPermissionError();
+                            }
     };
     
     const handleTouchEnd = (e) => {

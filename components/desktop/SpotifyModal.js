@@ -90,13 +90,13 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
         const handleCanPlay = () => {
             // Only play if we should auto-play (check ref which is updated when user pauses)
             if (shouldAutoPlayRef.current) {
-                audio.play().catch(err => {
-                    // Ignore play() interruption errors
-                    if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
-                        console.error('Playback error:', err);
-                    }
-                });
-            }
+            audio.play().catch(err => {
+                // Ignore play() interruption errors
+                if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
+                    console.error('Playback error:', err);
+                }
+            });
+        }
             // Remove listener after first play attempt
             audio.removeEventListener('canplay', handleCanPlay);
         };
@@ -246,33 +246,33 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
             
             {/* Modal UI */}
             <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                        animate={{ 
-                            scale: isMinimized ? 0 : 1,
-                            opacity: isMinimized ? 0 : 1,
+            {isOpen && (
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    animate={{ 
+                        scale: isMinimized ? 0 : 1,
+                        opacity: isMinimized ? 0 : 1,
                             width: isMaximized ? '100vw' : (isMobile ? '95vw' : '90vw'),
                             height: isMaximized ? '100vh' : (isMobile ? '85vh' : '90vh'),
                             top: isMaximized ? 0 : '50%',
-                            left: isMaximized ? 0 : '50%',
-                            x: isMaximized ? 0 : '-50%',
+                        left: isMaximized ? 0 : '50%',
+                        x: isMaximized ? 0 : '-50%',
                             y: isMinimized ? '100vh' : (isMaximized ? 0 : '-50%'),
-                        }}
+                    }}
                         exit={{ scale: 0, opacity: 0, y: '100vh' }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                         className={`fixed flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'z-[60] rounded-none' : 'z-[100] rounded-lg'} ${isMaximized ? '' : 'max-w-[80rem]'}`}
-                        style={{ 
+                    style={{ 
                             transformOrigin: 'center',
-                            pointerEvents: isMinimized ? 'none' : 'auto',
+                        pointerEvents: isMinimized ? 'none' : 'auto',
                         }}
                         onClick={(e) => {
                             // Click outside to close (only if not minimized and clicking the backdrop)
                             if (!isMinimized && e.target === e.currentTarget) {
                                 onClose();
                             }
-                        }}
-                    >
+                    }}
+                >
                     {/* Title Bar */}
                         <div className="flex items-center justify-between px-4 py-3 sm:px-4 sm:py-3 bg-[#1a1a1a] border-b border-white/10">
                             <div className="flex items-center gap-2 sm:gap-2">
@@ -323,6 +323,18 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                             <div className="absolute left-1/2 -translate-x-1/2 text-sm sm:text-sm text-white font-medium">
                                 Spotify
                             </div>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (onClose) {
+                                        onClose();
+                                    }
+                                }}
+                                className="text-white/50 hover:text-white/80 transition-colors text-xs sm:text-sm px-2 sm:px-3 py-1 rounded hover:bg-white/10"
+                            >
+                                Close
+                            </button>
                             <div className="w-12 sm:w-12"></div>
                         </div>
 
@@ -342,7 +354,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                 ) : (
                                     <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded-lg shadow-2xl mb-4 sm:mb-6 flex items-center justify-center">
                                         <span className="text-5xl sm:text-6xl md:text-8xl">♪</span>
-                                    </div>
+                                </div>
                                 )}
                                 
                                 {/* Track Info */}
@@ -382,8 +394,8 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                                 </div>
                                             ) : (
                                                 <div className="w-12 h-12 sm:w-12 sm:h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
-                                                    <span className="text-xl">♪</span>
-                                                </div>
+                                                <span className="text-xl">♪</span>
+                                            </div>
                                             )}
                                             <div className="flex-1 min-w-0">
                                                 <p className={`text-sm sm:text-base font-medium truncate ${
@@ -438,9 +450,9 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                             />
                                         </div>
                                     ) : (
-                                        <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
-                                            <span className="text-lg">♪</span>
-                                        </div>
+                                    <div className="w-12 h-12 bg-gradient-to-br from-[#1db954] to-[#1ed760] rounded flex items-center justify-center flex-shrink-0">
+                                        <span className="text-lg">♪</span>
+                                    </div>
                                     )}
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm font-medium text-white truncate">
@@ -510,7 +522,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                             </div>
                         </div>
                     </motion.div>
-                )}
+            )}
             </AnimatePresence>
         </>
     );

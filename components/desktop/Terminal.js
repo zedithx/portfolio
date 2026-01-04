@@ -428,9 +428,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setIsLoading(true);
                 setLoadingCommand(cmd);
                 setTimeout(() => {
-                    // Navigate to /whoami route instead of opening modal
-                    window.location.href = '/whoami';
-                }, 1500);
+                    onCommand('about-me');
+                    setIsLoading(false);
+                    setLoadingCommand('');
+                    setHistory(prev => [...prev, { type: 'success', content: '✓ Opened About Me' }]);
+                    setCursorPosition(0);
+                }, 1200);
             } else if (cmd.startsWith('cat resume')) {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
@@ -505,9 +508,12 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         setLoadingCommand(cmd);
                         
                         setTimeout(() => {
-                            // Navigate to /whoami route instead of opening modal
-                            window.location.href = '/whoami';
-                        }, 1500);
+                            onCommand('about-me');
+                            setIsLoading(false);
+                            setLoadingCommand('');
+                            setHistory(prev => [...prev, { type: 'success', content: '✓ Opened About Me' }]);
+                            setCursorPosition(0);
+                        }, 1200);
                     } else if (cmd.startsWith('cat resume')) {
                         setIsLoading(true);
                         setLoadingCommand('cat resume');
@@ -598,23 +604,31 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 {/* Title Bar */}
                 <div className="bg-[#2d2d2d] px-4 py-3 flex items-center gap-2 title-bar-drag cursor-grab active:cursor-grabbing shrink-0">
                     <div className="flex gap-2">
-                        <div 
+                        <button
                             onClick={(e) => { e.stopPropagation(); onClose(); }} 
-                            className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer" 
+                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer touch-manipulation" 
                         />
-                        <div 
+                        <button
                             onClick={(e) => { e.stopPropagation(); onMinimize(); }} 
-                            className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer" 
+                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer touch-manipulation" 
                         />
-                        <div 
+                        <button
                             onClick={(e) => { e.stopPropagation(); onMaximize(); }} 
-                            className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer" 
+                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer touch-manipulation" 
                         />
                     </div>
                     <div className="flex-1 text-center select-none">
                         <span className="text-white/60 text-sm font-medium">Terminal — zsh</span>
                     </div>
-                    <div className="w-14" />
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onClose();
+                        }}
+                        className="text-white/50 hover:text-white/80 transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded hover:bg-white/10"
+                    >
+                        Close
+                    </button>
                 </div>
 
                 <div 

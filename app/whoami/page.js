@@ -22,6 +22,7 @@ export default function WhoAmIPage() {
     const router = useRouter();
     const exitButtonRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFormalMode, setIsFormalMode] = useState(true); // Track if we're in formal mode
 
     // Reset sessionStorage on page load to start fresh each time
     useEffect(() => {
@@ -33,11 +34,30 @@ export default function WhoAmIPage() {
 
     // Handle smooth transition from loading to content
     useEffect(() => {
-        // Wait for minimum load time, then fade out loading
+        // If in formal mode, hide loading immediately (clean professional view)
+        if (isFormalMode) {
+            setIsLoading(false);
+            return;
+        }
+        
+        // For informal mode, wait for minimum load time, then fade out loading
         const timer = setTimeout(() => {
             setIsLoading(false);
         }, 1500);
 
+        return () => clearTimeout(timer);
+    }, [isFormalMode]);
+    
+    // Initial load - wait for component to mount and determine mode
+    useEffect(() => {
+        // Small delay to allow AboutMeView to mount and set initial mode
+        const timer = setTimeout(() => {
+            // If still in formal mode after mount, hide loading
+            if (isFormalMode) {
+                setIsLoading(false);
+            }
+        }, 100);
+        
         return () => clearTimeout(timer);
     }, []);
 
@@ -88,7 +108,7 @@ export default function WhoAmIPage() {
         : false;
 
     return (
-        <div className="fixed inset-0 w-full h-full overflow-hidden">
+        <div className="fixed inset-0 w-full h-full overflow-hidden bg-[#f6f6f6]">
             {/* Exit Button - High z-index to ensure it's always on top and clickable */}
             <motion.button
                 ref={exitButtonRef}
@@ -140,9 +160,9 @@ export default function WhoAmIPage() {
                 <X className="w-4 h-4" />
             </motion.button>
 
-            {/* Loading Screen */}
+            {/* Loading Screen - Only show for informal mode */}
             <AnimatePresence>
-                {isLoading && (
+                {isLoading && !isFormalMode && (
                     <motion.div
                         key="loading"
                         initial={{ opacity: 1 }}
@@ -209,9 +229,12 @@ export default function WhoAmIPage() {
                 )}
             </AnimatePresence>
 
-            {/* Content - Always rendered, just hidden behind loading screen */}
-            <div className="fixed inset-0 w-full h-full">
-                <AboutMeView data={aboutMeData} />
+            {/* Content - Always rendered, just hidden behind loading screen for informal mode */}
+            <div className="fixed inset-0 w-full h-full flex flex-col">
+                <AboutMeView 
+                    data={aboutMeData} 
+                    onModeChange={(isFormal) => setIsFormalMode(isFormal)}
+                />
             </div>
         </div>
     );
