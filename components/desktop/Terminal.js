@@ -9,8 +9,7 @@ const commands = [
     { name: 'history', description: 'View my professional experience' },
     { name: 'cat resume', description: 'View my resume (PDF)' },
     { name: 'clear', description: 'Clear the terminal screen' },
-    { name: 'cd dark', description: 'Switch to dark mode' },
-    { name: 'cd light', description: 'Switch to light mode' },
+    { name: 'cd', description: 'Toggle between dark and light mode' },
 ];
 
 const Typewriter = ({ text, delay = 0, onComplete, speed = 20 }) => {
@@ -428,16 +427,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             
             if (cmd === 'clear') {
                 handleClear(false);
-            } else if (cmd === 'cd light') {
+            } else if (cmd === 'cd') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
-                toggleTheme('light');
-                setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to light mode' }]);
-                setInput('');
-                setCursorPosition(0);
-            } else if (cmd === 'cd dark') {
-                setHistory(prev => [...prev, { type: 'input', content: input }]);
-                toggleTheme('dark');
-                setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to dark mode' }]);
+                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                toggleTheme(newTheme);
+                setHistory(prev => [...prev, { type: 'success', content: `✓ Switched to ${newTheme} mode` }]);
                 setInput('');
                 setCursorPosition(0);
             } else if (cmd === 'whoami') {
@@ -520,14 +514,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     // Process the command
                     if (cmd === 'clear') {
                         handleClear(false);
-                    } else if (cmd === 'cd light') {
-                        toggleTheme('light');
-                        setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to light mode' }]);
-                        setInput('');
-                        setCursorPosition(0);
-                    } else if (cmd === 'cd dark') {
-                        toggleTheme('dark');
-                        setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to dark mode' }]);
+                    } else if (cmd === 'cd') {
+                        const newTheme = theme === 'dark' ? 'light' : 'dark';
+                        toggleTheme(newTheme);
+                        setHistory(prev => [...prev, { type: 'success', content: `✓ Switched to ${newTheme} mode` }]);
                         setInput('');
                         setCursorPosition(0);
                     } else if (cmd === 'whoami') {
@@ -582,7 +572,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 }, 200); // Brief pause after typing completes
             }
         }, 30); // Type each character every 30ms
-    }, [handleClear, onCommand, onOpenPDF]);
+    }, [handleClear, onCommand, onOpenPDF, theme, toggleTheme]);
 
     // Calculate safe left position for mobile to prevent horizontal shifting
     const safeLeft = useMemo(() => {
