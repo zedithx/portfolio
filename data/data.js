@@ -230,7 +230,7 @@ export const contentData = {
         pages: [
             {
                 title: 'Experience',
-                content: (
+                content: (isDark = false) => (
                     <div className="space-y-4 sm:space-y-5 md:space-y-8">
                         {/* ByteDance */}
                         <div className="space-y-2 sm:space-y-3 md:space-y-4">
@@ -239,101 +239,101 @@ export const contentData = {
                                     <img src="/experience/bytedance_logo.png" alt="ByteDance" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">ByteDance</h2>
-                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer (SRE) Intern</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">Data Infrastructure SRE Team</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Sep 2025 - Dec 2025</p>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>ByteDance</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer (SRE) Intern</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Data Infrastructure SRE Team</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Sep 2025 - Dec 2025</p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Worked on ByteGraph, ByteDance's distributed graph database, focusing on monitoring, on-call responsibilities, and machine operations for production clusters across Singapore and Europe.
                             </p>
                         </div>
 
                         {/* Tangled Social */}
-                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/tangled_logo.jpeg" alt="Tangled Social" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Tangled Social</h2>
-                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Co-founder, Software Engineer</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">July 2025 - Current</p>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Tangled Social</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Co-founder, Software Engineer</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>July 2025 - Current</p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Co-founded a social platform, provisioning AWS infrastructure with Terraform and developing a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. Contributed to ~80% of the codebase.
                             </p>
                         </div>
 
                         {/* TSMC */}
-                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/TSMC.png" alt="TSMC" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Taiwan Semiconductor Manufacturing Company (TSMC)</h2>
-                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer (DevOps) Intern</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">Intelligent Eng-System Mask Team</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">June 2025 - Aug 2025</p>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Taiwan Semiconductor Manufacturing Company (TSMC)</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer (DevOps) Intern</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Intelligent Eng-System Mask Team</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>June 2025 - Aug 2025</p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Integrated OpenTelemetry tracing with Spring Boot Starter across 10+ TSMC fabrication labs, engineered auto-generation of test scenarios with Grafana Tempo, and built auto sanity check mechanisms using Prometheus metrics.
                             </p>
                         </div>
 
                         {/* Changi Airport Group */}
-                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/Changi_Airport_logo.png" alt="Changi Airport Group" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Changi Airport Group</h2>
-                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer Intern</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">API Gateway and Microservices Team</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Jan 2025 - May 2025</p>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Changi Airport Group</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer Intern</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>API Gateway and Microservices Team</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Jan 2025 - May 2025</p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Engineered a production-grade, event-driven serverless Slack bot for airport flight operations, implemented centralized CloudWatch log extraction across multiple AWS accounts, and built two production microservices secured behind Apigee API Gateway.
                             </p>
                         </div>
 
                         {/* ROOTech */}
-                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/root.jpeg" alt="ROOTech" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">ROOTech - Student Government</h2>
-                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Nov 2024 - Mar 2025</p>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>ROOTech - Student Government</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Nov 2024 - Mar 2025</p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Developed key event webpages and Telegram Bots serving 1,600 students, led the integration of custom RFID bands for a Game Booth Carnival System, and built an AI Chatbot with event pass image generation for Open House 2025 registration, which was used by 1,800 public visitors over 2 days.
                             </p>
                         </div>
 
                         {/* Reluvate Technologies */}
-                        <div className="space-y-2 sm:space-y-3 md:space-y-4 border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/reluvate_logo.jpeg" alt="Reluvate Technologies" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Reluvate Technologies</h2>
-                                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mt-0.5 sm:mt-1 font-medium leading-snug">Software Engineer Intern</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 sm:mt-1 leading-tight">Payment Platform Team</p>
-                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-0.5 leading-tight">Feb 2022 – Jul 2022</p>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Reluvate Technologies</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer Intern</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Payment Platform Team</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Feb 2022 – Jul 2022</p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed mt-2 sm:mt-0">
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Engineered core backend functionalities of a Django-based merchant admin portal for a payment platform used by over 1,860 merchants in Singapore, including major brands like KOI, Watsons, and Zara.
                             </p>
                         </div>

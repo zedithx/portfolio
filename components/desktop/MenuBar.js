@@ -2,8 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Wifi, Battery, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function MenuBar({ onPermissionError }) {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [time, setTime] = useState(new Date());
     const [isMounted, setIsMounted] = useState(false);
     const [isAppleMenuOpen, setIsAppleMenuOpen] = useState(false);

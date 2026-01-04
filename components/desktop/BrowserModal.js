@@ -47,8 +47,8 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
 
     // About Me Layout (formal view or interactive journey)
     if (isAboutMe) {
-        return (
-            <motion.div
+    return (
+        <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -61,7 +61,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                 }}
             >
                 <AnimatePresence mode="wait">
-                    <motion.div
+                <motion.div
                         key={showInteractiveJourney ? 'interactive' : 'formal'}
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -70,59 +70,58 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                         className="w-full max-w-7xl h-full max-h-[90vh] md:max-h-[85vh] flex flex-col relative"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Yellow X Button - Only in interactive journey */}
-                        {showInteractiveJourney && (
-                            <motion.button
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onClose();
-                                }}
-                                onTouchEnd={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    onClose();
-                                }}
-                                className="absolute top-4 right-4 z-[10001] min-h-[44px] min-w-[44px] md:min-h-[36px] md:min-w-[36px] p-2 rounded-lg flex items-center justify-center touch-manipulation"
-                                style={{
-                                    background: 'rgba(0, 0, 0, 0.8)',
-                                    backdropFilter: 'blur(10px)',
-                                    border: '2px solid #ffd700',
-                                    color: '#ffd700',
-                                    boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
-                                    pointerEvents: 'auto',
-                                    WebkitTapHighlightColor: 'transparent'
-                                }}
-                                whileHover={{ 
-                                    scale: 1.1, 
-                                    boxShadow: '0 0 30px rgba(255, 215, 0, 0.8)',
-                                    background: 'rgba(0, 0, 0, 0.95)',
-                                    transition: { duration: 0, ease: 'linear' }
-                                }}
-                                transition={{ 
-                                    opacity: { duration: 0.3, delay: 0.5 },
-                                    scale: { duration: 0 },
-                                    boxShadow: { duration: 0 },
-                                    background: { duration: 0 }
-                                }}
-                                whileTap={{ 
-                                    scale: 0.95,
-                                    transition: { duration: 0, ease: 'linear' }
-                                }}
-                                aria-label="Exit to main page"
-                            >
-                                <X className="w-4 h-4" />
-                            </motion.button>
-                        )}
-
                         {showInteractiveJourney ? (
-                            <AboutMeView 
-                                data={aboutMeData}
-                                onModeChange={() => {}}
-                                onToggleToFormal={() => setShowInteractiveJourney(false)}
-                            />
+                            <>
+                                {/* Yellow X Button - Top Right within modal - Only for interactive journey */}
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onClose();
+                                    }}
+                                    onTouchEnd={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onClose();
+                                    }}
+                                    className="absolute top-4 right-4 z-[10001] min-h-[44px] min-w-[44px] md:min-h-[36px] md:min-w-[36px] p-2 rounded-lg flex items-center justify-center touch-manipulation"
+                                    style={{
+                                        background: 'rgba(0, 0, 0, 0.8)',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '2px solid #ffd700',
+                                        color: '#ffd700',
+                                        boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+                                        pointerEvents: 'auto',
+                                        WebkitTapHighlightColor: 'transparent'
+                                    }}
+                                    whileHover={{ 
+                                        scale: 1.1, 
+                                        boxShadow: '0 0 30px rgba(255, 215, 0, 0.8)',
+                                        background: 'rgba(0, 0, 0, 0.95)',
+                                        transition: { duration: 0, ease: 'linear' }
+                                    }}
+                                    transition={{ 
+                                        opacity: { duration: 0.3, delay: 0.5 },
+                                        scale: { duration: 0 },
+                                        boxShadow: { duration: 0 },
+                                        background: { duration: 0 }
+                                    }}
+                                    whileTap={{ 
+                                        scale: 0.95,
+                                        transition: { duration: 0, ease: 'linear' }
+                                    }}
+                                    aria-label="Exit to main page"
+                                >
+                                    <X className="w-4 h-4" />
+                                </motion.button>
+                                <AboutMeView 
+                                    data={aboutMeData}
+                                    onModeChange={() => {}}
+                                    onToggleToFormal={() => setShowInteractiveJourney(false)}
+                                />
+                            </>
                         ) : (
                             <FormalAboutMeView 
                                 onToggleToInformal={handleToggleToInteractive}
@@ -131,8 +130,8 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                         )}
                     </motion.div>
                 </AnimatePresence>
-            </motion.div>
-        );
+        </motion.div>
+    );
     }
 
     // Cash Shop Layout

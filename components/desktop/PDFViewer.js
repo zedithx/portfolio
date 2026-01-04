@@ -1,8 +1,11 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' }) {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState(250);
     const isResizing = useRef(false);
@@ -91,11 +94,11 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.95, opacity: 0, y: 20 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                        className="w-full max-w-6xl h-full max-h-[90vh] md:max-h-[85vh] flex flex-col bg-[#1a1a1a] rounded-lg shadow-2xl overflow-hidden"
+                        className={`w-full max-w-6xl h-full max-h-[90vh] md:max-h-[85vh] flex flex-col rounded-lg shadow-2xl overflow-hidden ${isDark ? 'bg-[#1a1a1a]' : 'bg-white'}`}
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Title Bar */}
-                        <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between shrink-0 border-b border-white/10">
+                        <div className={`px-4 py-3 flex items-center justify-between shrink-0 border-b ${isDark ? 'bg-[#2d2d2d] border-white/10' : 'bg-gray-100 border-gray-200'}`}>
                             <div className="flex items-center gap-3">
                                 <div className="flex gap-2">
                                     <div 
@@ -109,18 +112,18 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                                         className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer transition-all" 
                                     />
                                 </div>
-                                <span className="text-white/70 text-sm font-medium ml-2">PDF Viewer</span>
+                                <span className={`text-sm font-medium ml-2 ${isDark ? 'text-white/70' : 'text-gray-600'}`}>PDF Viewer</span>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="text-white/50 hover:text-white/80 transition-colors text-sm px-3 py-1 rounded hover:bg-white/10"
+                                className={`transition-colors text-sm px-3 py-1 rounded ${isDark ? 'text-white/50 hover:text-white/80 hover:bg-white/10' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'}`}
                             >
                                 Close
                             </button>
                         </div>
 
                         {/* PDF Viewer Container */}
-                        <div className="flex-1 overflow-hidden bg-[#0a0a0a] relative flex">
+                        <div className={`flex-1 overflow-hidden relative flex ${isDark ? 'bg-[#0a0a0a]' : 'bg-gray-100'}`}>
                             {/* Sidebar */}
                             <AnimatePresence>
                                 {sidebarVisible && (
@@ -129,7 +132,7 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                                         animate={{ width: sidebarWidth, opacity: 1 }}
                                         exit={{ width: 0, opacity: 0 }}
                                         transition={{ duration: 0.2 }}
-                                        className="bg-[#1a1a1a] border-r border-white/10 relative shrink-0 overflow-hidden"
+                                        className={`border-r relative shrink-0 overflow-hidden ${isDark ? 'bg-[#1a1a1a] border-white/10' : 'bg-white border-gray-200'}`}
                                         style={{ width: sidebarWidth }}
                                     >
                                         {/* Resize Handle */}
@@ -143,15 +146,15 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                                         
                                         {/* Sidebar Content */}
                                         <div className="h-full overflow-y-auto p-4">
-                                            <p className="text-white/50 text-xs mb-4">Navigation</p>
+                                            <p className={`text-xs mb-4 ${isDark ? 'text-white/50' : 'text-gray-500'}`}>Navigation</p>
                                             <div className="space-y-2">
-                                                <div className="text-white/70 text-sm p-2 rounded hover:bg-white/5 cursor-pointer">
+                                                <div className={`text-sm p-2 rounded cursor-pointer ${isDark ? 'text-white/70 hover:bg-white/5' : 'text-gray-700 hover:bg-gray-100'}`}>
                                                     Outline
                                                 </div>
-                                                <div className="text-white/70 text-sm p-2 rounded hover:bg-white/5 cursor-pointer">
+                                                <div className={`text-sm p-2 rounded cursor-pointer ${isDark ? 'text-white/70 hover:bg-white/5' : 'text-gray-700 hover:bg-gray-100'}`}>
                                                     Thumbnails
                                                 </div>
-                                                <div className="text-white/70 text-sm p-2 rounded hover:bg-white/5 cursor-pointer">
+                                                <div className={`text-sm p-2 rounded cursor-pointer ${isDark ? 'text-white/70 hover:bg-white/5' : 'text-gray-700 hover:bg-gray-100'}`}>
                                                     Attachments
                                                 </div>
                                             </div>
@@ -161,7 +164,7 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                             </AnimatePresence>
 
                             {/* PDF Viewer */}
-                            <div className="flex-1 overflow-hidden bg-[#0a0a0a] relative">
+                            <div className={`flex-1 overflow-hidden relative ${isDark ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
                                 <iframe
                                     src={`${pdfUrl}#toolbar=1&navpanes=${sidebarVisible ? 1 : 0}&scrollbar=1`}
                                     className="w-full h-full border-0"
@@ -171,14 +174,14 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                                     }}
                                 />
                                 {/* Fallback message for browsers that don't support PDF viewing */}
-                                <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a] pointer-events-none opacity-0">
-                                    <div className="text-white/50 text-center p-6">
+                                <div className={`absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 ${isDark ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
+                                    <div className={`text-center p-6 ${isDark ? 'text-white/50' : 'text-gray-600'}`}>
                                         <p className="mb-2">PDF viewer not supported in this browser.</p>
                                         <a 
                                             href={pdfUrl} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="text-blue-400 hover:text-blue-300 underline"
+                                            className={`underline ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             Open PDF in new tab
@@ -189,14 +192,14 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                         </div>
 
                         {/* Footer with download option */}
-                        <div className="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between shrink-0 border-t border-white/10">
-                            <div className="text-white/50 text-xs">
+                        <div className={`px-4 py-2 flex items-center justify-between shrink-0 border-t ${isDark ? 'bg-[#2d2d2d] border-white/10' : 'bg-gray-100 border-gray-200'}`}>
+                            <div className={`text-xs ${isDark ? 'text-white/50' : 'text-gray-500'}`}>
                                 Press ESC to close
                             </div>
                             <a
                                 href={pdfUrl}
                                 download
-                                className="text-blue-400 hover:text-blue-300 text-sm px-3 py-1 rounded hover:bg-white/10 transition-colors"
+                                className={`text-sm px-3 py-1 rounded transition-colors ${isDark ? 'text-blue-400 hover:text-blue-300 hover:bg-white/10' : 'text-blue-600 hover:text-blue-700 hover:bg-gray-200'}`}
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 Download PDF

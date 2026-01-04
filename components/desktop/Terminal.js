@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const commands = [
     { name: 'whoami', description: 'Learn about who I am and my journey' },
@@ -84,6 +85,8 @@ const SequentialTypewriter = ({ messages, onComplete }) => {
 };
 
 export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState, onOpenPDF }) {
+    const { theme, toggleTheme } = useTheme();
+    const isDark = theme === 'dark';
     const [history, setHistory] = useState([]);
     const [input, setInput] = useState('');
     const [showWelcome, setShowWelcome] = useState(true);
@@ -423,6 +426,18 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             
             if (cmd === 'clear') {
                 handleClear(false);
+            } else if (cmd === 'cd light') {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                toggleTheme('light');
+                setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to light mode' }]);
+                setInput('');
+                setCursorPosition(0);
+            } else if (cmd === 'cd dark') {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                toggleTheme('dark');
+                setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to dark mode' }]);
+                setInput('');
+                setCursorPosition(0);
             } else if (cmd === 'whoami') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
@@ -503,6 +518,16 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     // Process the command
                     if (cmd === 'clear') {
                         handleClear(false);
+                    } else if (cmd === 'cd light') {
+                        toggleTheme('light');
+                        setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to light mode' }]);
+                        setInput('');
+                        setCursorPosition(0);
+                    } else if (cmd === 'cd dark') {
+                        toggleTheme('dark');
+                        setHistory(prev => [...prev, { type: 'success', content: '✓ Switched to dark mode' }]);
+                        setInput('');
+                        setCursorPosition(0);
                     } else if (cmd === 'whoami') {
                         setIsLoading(true);
                         setLoadingCommand(cmd);
@@ -602,7 +627,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
 
             <div className="h-full flex flex-col">
                 {/* Title Bar */}
-                <div className="bg-[#2d2d2d] px-4 py-3 flex items-center gap-2 title-bar-drag cursor-grab active:cursor-grabbing shrink-0">
+                <div className={`px-4 py-3 flex items-center gap-2 title-bar-drag cursor-grab active:cursor-grabbing shrink-0 ${isDark ? 'bg-[#2d2d2d]' : 'bg-gray-100'}`}>
                     <div className="flex gap-2">
                         <button
                             onClick={(e) => { e.stopPropagation(); onClose(); }} 
@@ -618,14 +643,14 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         />
                     </div>
                     <div className="flex-1 text-center select-none">
-                        <span className="text-white/60 text-sm font-medium">Terminal — zsh</span>
+                        <span className={`text-sm font-medium ${isDark ? 'text-white/60' : 'text-gray-600'}`}>Terminal — zsh</span>
                     </div>
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             onClose();
                         }}
-                        className="text-white/50 hover:text-white/80 transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded hover:bg-white/10"
+                        className={`transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded ${isDark ? 'text-white/50 hover:text-white/80 hover:bg-white/10' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'}`}
                     >
                         Close
                     </button>
@@ -634,7 +659,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 <div 
                     ref={terminalRef}
                     onClick={handleTerminalClick}
-                    className="flex-1 bg-[#1e1e1e]/95 backdrop-blur-xl p-4 overflow-y-auto overflow-x-hidden font-mono text-sm cursor-text scrollbar-hide relative"
+                    className={`flex-1 backdrop-blur-xl p-4 overflow-y-auto overflow-x-hidden font-mono text-sm cursor-text scrollbar-hide relative ${isDark ? 'bg-[#1e1e1e]/95' : 'bg-gray-50'}`}
                     style={{ 
                         maxWidth: '100%',
                         width: '100%'
@@ -649,7 +674,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         >
                             <motion.pre 
                                 variants={itemVariants}
-                                className="text-green-400 text-sm sm:text-xs leading-tight mb-4 overflow-x-hidden"
+                                className={`text-sm sm:text-xs leading-tight mb-4 overflow-x-hidden ${isDark ? 'text-green-400' : 'text-blue-700'}`}
                             >
 {`┌───────────────────────────────────────┐
 │  ${sessionText.padEnd(37)}│
@@ -662,7 +687,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     variants={itemVariants} 
-                                    className="text-white/70 mb-4 text-sm sm:text-sm"
+                                    className={`mb-4 text-sm sm:text-sm ${isDark ? 'text-white/70' : 'text-gray-700'}`}
                                 >
                                     <SequentialTypewriter 
                                         messages={[
@@ -678,19 +703,19 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 <motion.div 
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="border border-white/10 rounded-lg overflow-hidden"
+                                    className={`border rounded-lg overflow-hidden ${isDark ? 'border-white/10' : 'border-gray-300'}`}
                                 >
-                                    <div className="bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 border-b border-white/10">
-                                        <span className="text-white/50 text-xs sm:text-xs uppercase tracking-wider">Available Commands</span>
+                                    <div className={`px-2 sm:px-3 py-1.5 sm:py-2 border-b ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-100 border-gray-300'}`}>
+                                        <span className={`text-xs sm:text-xs uppercase tracking-wider ${isDark ? 'text-white/50' : 'text-gray-600'}`}>Available Commands</span>
                                     </div>
                                     {commands.map((cmd) => (
                                         <div 
                                             key={cmd.name} 
                                             onClick={() => handleCommandClick(cmd.name)}
-                                            className="px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b border-white/5 last:border-0 hover:bg-white/10 active:bg-white/15 transition-colors cursor-pointer"
+                                            className={`px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b last:border-0 transition-colors cursor-pointer ${isDark ? 'border-white/5 hover:bg-white/10 active:bg-white/15' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-150'}`}
                                         >
-                                            <span className="text-green-400 font-semibold w-20 sm:w-24 text-xs sm:text-sm shrink-0">{cmd.name}</span>
-                                            <span className="text-white/50 text-xs sm:text-xs leading-relaxed min-w-0 flex-1 truncate">{cmd.description}</span>
+                                            <span className={`font-semibold w-20 sm:w-24 text-xs sm:text-sm shrink-0 ${isDark ? 'text-green-400' : 'text-blue-700'}`}>{cmd.name}</span>
+                                            <span className={`text-xs sm:text-xs leading-relaxed min-w-0 flex-1 truncate ${isDark ? 'text-white/50' : 'text-gray-600'}`}>{cmd.description}</span>
                                         </div>
                                     ))}
                                 </motion.div>
@@ -703,18 +728,18 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         <div key={index} className="mb-2">
                             {item.type === 'input' && (
                                 <div className="flex items-start gap-2 mb-1">
-                                    <span className="text-white/70 font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0">
+                                    <span className={`font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0 ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
                                         <span className="hidden sm:inline">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
                                         <span className="sm:hidden">(base) zedithx@Macbook ~ %</span>
                                     </span>
-                                    <span className="text-white text-[14px] sm:text-sm break-all leading-5">{item.content}</span>
+                                    <span className={`text-[14px] sm:text-sm break-all leading-5 ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.content}</span>
                                 </div>
                             )}
                             {item.type === 'error' && (
-                                <p className="text-red-400 ml-0 leading-5">{item.content}</p>
+                                <p className={`ml-0 leading-5 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{item.content}</p>
                             )}
                             {item.type === 'success' && (
-                                <p className="text-green-400 ml-0 leading-5">{item.content}</p>
+                                <p className={`ml-0 leading-5 ${isDark ? 'text-green-400' : 'text-blue-700'}`}>{item.content}</p>
                             )}
                         </div>
                     ))}
@@ -726,7 +751,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="w-80 space-y-6 flex flex-col items-center"
                             >
-                                <div className="text-green-400 text-sm font-bold animate-pulse text-center">
+                                <div className={`text-sm font-bold animate-pulse text-center ${isDark ? 'text-green-400' : 'text-blue-700'}`}>
                                     {(() => {
                                         const loadingMessages = {
                                             'whoami': 'Loading about me...',
@@ -738,16 +763,16 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     })()}
                                 </div>
                                 
-                                <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/10">
+                                <div className={`w-full h-1.5 rounded-full overflow-hidden border ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-200 border-gray-300'}`}>
                                     <motion.div 
                                         initial={{ width: 0 }}
                                         animate={{ width: '100%' }}
                                         transition={{ duration: 1.2, ease: "easeInOut" }}
-                                        className="h-full bg-green-500"
+                                        className={`h-full ${isDark ? 'bg-green-500' : 'bg-blue-600'}`}
                                     />
                                 </div>
                                 
-                                <div className="flex justify-between text-[9px] text-white/30 font-mono w-full">
+                                <div className={`flex justify-between text-[9px] font-mono w-full ${isDark ? 'text-white/30' : 'text-gray-500'}`}>
                                     <span>
                                         {(() => {
                                             const statusMessages = {
@@ -768,7 +793,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     {/* Input Line */}
                     {!isLoading && (
                         <div className="flex items-center gap-2">
-                            <span className="text-white/70 font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0">
+                            <span className={`font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0 ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
                                 <span className="hidden sm:inline">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
                                 <span className="sm:hidden">(base) zedithx@Macbook ~ %</span>
                             </span>
@@ -791,7 +816,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                         }
                                     }
                                 }}
-                                className="flex-1 bg-transparent text-white outline-none text-[14px] sm:text-sm leading-5 h-5 font-mono"
+                                className={`flex-1 bg-transparent outline-none text-[14px] sm:text-sm leading-5 h-5 font-mono ${isDark ? 'text-white' : 'text-gray-900'}`}
                                 style={{ caretColor: 'transparent', maxWidth: '100%' }}
                                 spellCheck={false}
                                 autoComplete="off"
@@ -806,7 +831,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             <motion.span
                                 animate={{ opacity: [1, 0] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
-                                className="absolute w-1.5 h-4 sm:w-2 sm:h-5 bg-white/80"
+                                className={`absolute w-1.5 h-4 sm:w-2 sm:h-5 ${isDark ? 'bg-white/80' : 'bg-gray-900/80'}`}
                                 style={{ 
                                     left: `${cursorPosition}px`,
                                     marginLeft: '2px'

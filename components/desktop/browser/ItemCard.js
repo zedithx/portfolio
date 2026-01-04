@@ -1,9 +1,12 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 // Item Card Component with enhanced animations - Memoized for performance
 const ItemCard = React.memo(({ item, onClick }) => {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [isHovered, setIsHovered] = useState(false);
     
     const handleClick = useCallback(() => {
@@ -29,13 +32,13 @@ const ItemCard = React.memo(({ item, onClick }) => {
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleClick}
-            className="relative bg-white rounded-lg overflow-hidden cursor-pointer transition-all shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300"
+            className={`relative rounded-lg overflow-hidden cursor-pointer transition-all ${isDark ? 'bg-[#1a1a1a] shadow-md hover:shadow-lg border border-gray-700 hover:border-gray-600' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300'}`}
         >
             
             {/* Glow effect on hover (desktop only) */}
             {isHovered && (
                 <div
-                    className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 pointer-events-none"
+                    className={`absolute inset-0 pointer-events-none ${isDark ? 'bg-gradient-to-br from-blue-900/20 to-purple-900/20' : 'bg-gradient-to-br from-blue-50/50 to-purple-50/50'}`}
                     style={{ willChange: 'opacity' }}
                 />
             )}
@@ -110,7 +113,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
                                         y: { type: "tween", duration: 0.15, ease: "easeOut" }
                                     }}
-                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-md border border-gray-200"
+                                    className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg flex items-center justify-center overflow-hidden shadow-md border ${isDark ? 'bg-[#2d2d2d] border-gray-600' : 'bg-white border-gray-200'}`}
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {isImagePath ? (
@@ -144,15 +147,15 @@ const ItemCard = React.memo(({ item, onClick }) => {
             </div>
             
             {/* Bottom info section */}
-            <div className="p-2 sm:p-3 md:p-4 bg-white border-t border-gray-200">
-                <h3 className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base mb-1.5 sm:mb-2 truncate">{item.title}</h3>
+            <div className={`p-2 sm:p-3 md:p-4 border-t ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>
+                <h3 className={`font-semibold text-xs sm:text-sm md:text-base mb-1.5 sm:mb-2 truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.title}</h3>
                 
                 <div className="flex items-center justify-between">
                     <motion.div
                         whileHover={{ scale: 1.15, x: 2 }}
-                        className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 border border-gray-300 rounded-lg"
+                        className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg ${isDark ? 'bg-[#2d2d2d] border border-gray-600' : 'bg-gray-100 border border-gray-300'}`}
                     >
-                        <span className="text-gray-700 text-[10px] sm:text-xs md:text-sm font-semibold whitespace-nowrap">
+                        <span className={`text-[10px] sm:text-xs md:text-sm font-semibold whitespace-nowrap ${isDark ? 'text-white/70' : 'text-gray-700'}`}>
                             {item.commits.toLocaleString()} Commits
                         </span>
                     </motion.div>
@@ -169,7 +172,3 @@ const ItemCard = React.memo(({ item, onClick }) => {
 ItemCard.displayName = 'ItemCard';
 
 export default ItemCard;
-
-
-
-

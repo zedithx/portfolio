@@ -1,4 +1,5 @@
 import './globals.css';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 export const metadata = {
   title: 'zedithx',
@@ -81,7 +82,9 @@ export default function RootLayout({ children }) {
               background: rgba(99, 102, 241, 0.3);
           }
         `}} />
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
