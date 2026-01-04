@@ -9,6 +9,7 @@ import PermissionModal from '../components/desktop/PermissionModal';
 import GmailConfirmModal from '../components/desktop/GmailConfirmModal';
 import GmailComposeModal from '../components/desktop/GmailComposeModal';
 import SpotifyModal from '../components/desktop/SpotifyModal';
+import PDFViewer from '../components/desktop/PDFViewer';
 
 export default function Home() {
     const [activeModal, setActiveModal] = useState(null);
@@ -21,6 +22,7 @@ export default function Home() {
     const [visitorEmail, setVisitorEmail] = useState('');
     const [isSpotifyOpen, setIsSpotifyOpen] = useState(false);
     const [spotifyModalState, setSpotifyModalState] = useState('closed'); // 'closed', 'minimized', 'normal', 'maximized'
+    const [isPDFViewerOpen, setIsPDFViewerOpen] = useState(false);
 
     const handleCommand = useCallback((command) => {
         setActiveModal(command);
@@ -114,6 +116,16 @@ export default function Home() {
         setSpotifyModalState(prevState => prevState === 'maximized' ? 'normal' : 'maximized');
     }, []);
 
+    const handleOpenPDF = useCallback(() => {
+        setIsPDFViewerOpen(true);
+    }, []);
+
+    const handleClosePDF = useCallback(() => {
+        setIsPDFViewerOpen(false);
+        // Dispatch a custom event to restore the welcome screen
+        window.dispatchEvent(new CustomEvent('restore-terminal'));
+    }, []);
+
     return (
         <div className="min-h-screen w-full relative overflow-hidden bg-black">
             {/* Desktop Wallpaper */}
@@ -132,6 +144,7 @@ export default function Home() {
                     onMinimize={handleTerminalMinimize}
                     onMaximize={handleTerminalMaximize}
                     terminalState={terminalState}
+                    onOpenPDF={handleOpenPDF}
                 />
             )}
             <Dock 
@@ -211,6 +224,14 @@ export default function Home() {
                 onMinimize={handleSpotifyMinimize}
                 onMaximize={handleSpotifyMaximize}
                 modalState={spotifyModalState}
+            />
+
+            {/* PDF Viewer */}
+            <PDFViewer
+                isOpen={isPDFViewerOpen}
+                onClose={handleClosePDF}
+                pdfUrl="/resume/Yang Si Jun's Resume.pdf"
+                title="Yang Si Jun's Resume"
             />
         </div>
     );

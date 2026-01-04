@@ -9,9 +9,9 @@ export default function HeroSection({ hero, onStartJourney }) {
 
     return (
         <motion.section
-            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9, y: 20 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1, y: 0 }}
-            transition={prefersReducedMotion ? {} : { duration: 0.6, delay: 0.2 }}
+            initial={prefersReducedMotion ? {} : { opacity: 0 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1 }}
+            transition={prefersReducedMotion ? {} : { duration: 0.5, ease: 'easeOut' }}
             className="w-full px-6 md:px-8 py-12 md:py-16 relative overflow-hidden"
             style={{
                 background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
@@ -29,9 +29,9 @@ export default function HeroSection({ hero, onStartJourney }) {
             <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 relative z-10">
                 {/* Character Portrait - Game Style */}
                 <motion.div
-                    initial={prefersReducedMotion ? {} : { scale: 0.8, rotate: -5 }}
-                    animate={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
-                    transition={prefersReducedMotion ? {} : { duration: 0.4, delay: 0.1, type: 'spring' }}
+                    initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
+                    animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.1, ease: 'easeOut' }}
                     className="relative"
                 >
                     <div 
@@ -65,9 +65,9 @@ export default function HeroSection({ hero, onStartJourney }) {
                 <div className="flex-1 text-center md:text-left space-y-4">
                     {/* Name with game-style text */}
                     <motion.h1 
-                        initial={prefersReducedMotion ? {} : { x: -20, opacity: 0 }}
-                        animate={prefersReducedMotion ? {} : { x: 0, opacity: 1 }}
-                        transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
+                        initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
+                        animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                        transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2, ease: 'easeOut' }}
                         className="text-4xl md:text-5xl font-bold"
                         style={{
                             textShadow: '3px 3px 0px #000, 0 0 20px rgba(255, 215, 0, 0.8)',
@@ -81,9 +81,9 @@ export default function HeroSection({ hero, onStartJourney }) {
 
                     {/* Class/Trait Badge - Game Style */}
                     <motion.div
-                        initial={prefersReducedMotion ? {} : { scale: 0 }}
-                        animate={prefersReducedMotion ? {} : { scale: 1 }}
-                        transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.3, type: 'spring' }}
+                        initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
+                        animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                        transition={prefersReducedMotion ? {} : { duration: 0.4, delay: 0.3, ease: 'easeOut' }}
                         className="inline-block px-4 py-2 rounded"
                         style={{
                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -98,14 +98,19 @@ export default function HeroSection({ hero, onStartJourney }) {
                     </motion.div>
 
                     {/* Stats Bar Preview */}
-                    <div className="space-y-2 mt-4">
+                    <motion.div 
+                        initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                        animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                        transition={prefersReducedMotion ? {} : { duration: 0.4, delay: 0.4, ease: 'easeOut' }}
+                        className="space-y-2 mt-4"
+                    >
                         <div className="flex items-center gap-2">
                             <span className="text-yellow-400 text-xs md:text-sm font-semibold">HP</span>
                             <div className="flex-1 h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
                                 <motion.div
                                     initial={prefersReducedMotion ? {} : { width: 0 }}
                                     animate={prefersReducedMotion ? {} : { width: '100%' }}
-                                    transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.5 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.8, delay: 0.5, ease: 'easeOut' }}
                                     className="h-full bg-gradient-to-r from-red-600 to-red-400"
                                     style={{ boxShadow: '0 0 10px rgba(239, 68, 68, 0.8)' }}
                                 />
@@ -118,18 +123,21 @@ export default function HeroSection({ hero, onStartJourney }) {
                                 <motion.div
                                     initial={prefersReducedMotion ? {} : { width: 0 }}
                                     animate={prefersReducedMotion ? {} : { width: '100%' }}
-                                    transition={prefersReducedMotion ? {} : { duration: 1, delay: 0.7 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.8, delay: 0.6, ease: 'easeOut' }}
                                     className="h-full bg-gradient-to-r from-blue-600 to-blue-400"
                                     style={{ boxShadow: '0 0 10px rgba(59, 130, 246, 0.8)' }}
                                 />
                             </div>
                             <span className="text-yellow-400 text-xs font-bold">100%</span>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Start Button - Game Style */}
                 <motion.button
+                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
+                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4, ease: 'easeOut' }}
                     whileHover={prefersReducedMotion ? {} : { scale: 1.05, boxShadow: '0 0 30px rgba(255, 215, 0, 0.8)' }}
                     whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                     onClick={onStartJourney}

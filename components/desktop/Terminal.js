@@ -4,14 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const commands = [
     { name: 'whoami', description: 'Learn about who I am and my journey' },
-    { name: 'projects', description: 'Browse through my portfolio of work' },
-    { name: 'experience', description: 'View my professional experience' },
-    { name: 'github', description: 'Visit my GitHub profile' },
-    { name: 'linkedin', description: 'Connect with me on LinkedIn' },
+    { name: 'ls', description: 'Browse through my portfolio of work' },
+    { name: 'history', description: 'View my professional experience' },
+    { name: 'cat resume', description: 'View my resume (PDF)' },
     { name: 'clear', description: 'Clear the terminal screen' },
 ];
 
-const Typewriter = ({ text, delay = 0, onComplete }) => {
+const Typewriter = ({ text, delay = 0, onComplete, speed = 20 }) => {
     const [displayedText, setDisplayedText] = useState('');
     
     useEffect(() => {
@@ -26,7 +25,7 @@ const Typewriter = ({ text, delay = 0, onComplete }) => {
                         clearInterval(interval);
                         if (onComplete) onComplete();
                     }
-                }, 20);
+                }, speed);
             }, delay);
         } else {
             let i = 0;
@@ -37,17 +36,54 @@ const Typewriter = ({ text, delay = 0, onComplete }) => {
                     clearInterval(interval);
                     if (onComplete) onComplete();
                 }
-            }, 20);
+            }, speed);
         }
         return () => {
             clearTimeout(timeout);
+            if (timeout) clearTimeout(timeout);
         };
-    }, [text, delay]);
+    }, [text, delay, speed, onComplete]);
 
     return <span>{displayedText}</span>;
 };
 
-export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState }) {
+const SequentialTypewriter = ({ messages, onComplete }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [displayedText, setDisplayedText] = useState('');
+    const [isComplete, setIsComplete] = useState(false);
+
+    useEffect(() => {
+        if (currentIndex >= messages.length) {
+            if (onComplete && !isComplete) {
+                setIsComplete(true);
+                onComplete();
+            }
+            return;
+        }
+
+        const currentMessage = messages[currentIndex];
+        const previousText = messages.slice(0, currentIndex).reduce((acc, msg) => acc + msg.text, '');
+        let i = 0;
+        
+        const interval = setInterval(() => {
+            setDisplayedText(previousText + currentMessage.text.slice(0, i + 1));
+            i++;
+            if (i >= currentMessage.text.length) {
+                clearInterval(interval);
+                // Small pause before next message
+                setTimeout(() => {
+                    setCurrentIndex(prev => prev + 1);
+                }, 200);
+            }
+        }, currentMessage.speed);
+
+        return () => clearInterval(interval);
+    }, [currentIndex, messages, onComplete, isComplete]);
+
+    return <span>{displayedText}</span>;
+};
+
+export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState, onOpenPDF }) {
     const [history, setHistory] = useState([]);
     const [input, setInput] = useState('');
     const [showWelcome, setShowWelcome] = useState(true);
@@ -387,76 +423,6 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             
             if (cmd === 'clear') {
                 handleClear(false);
-            } else if (cmd === 'github') {
-                setHistory(prev => [...prev, { type: 'input', content: input }]);
-                setInput('');
-                setIsLoading(true);
-                setLoadingCommand('github');
-                
-                setTimeout(() => {
-                    // Open link after loading animation completes - use window.open for better mobile support
-                    try {
-                        const newWindow = window.open('https://github.com/zedithx', '_blank', 'noopener,noreferrer');
-                        
-                        // Only use location.href as fallback on mobile devices
-                        // On desktop, we should never redirect the current window
-                        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                            if (isMobile) {
-                                window.location.href = 'https://github.com/zedithx';
-                            } else {
-                                console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
-                            }
-                        }
-                    } catch (error) {
-                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                        if (isMobile) {
-                            window.location.href = 'https://github.com/zedithx';
-                        } else {
-                            console.warn('Failed to open link. Please allow popups for this site.');
-                        }
-                    }
-                    
-                    setIsLoading(false);
-                    setLoadingCommand('');
-                    setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
-                    setCursorPosition(0);
-                }, 1200);
-            } else if (cmd === 'linkedin') {
-                setHistory(prev => [...prev, { type: 'input', content: input }]);
-                setInput('');
-                setIsLoading(true);
-                setLoadingCommand('linkedin');
-                
-                setTimeout(() => {
-                    // Open link after loading animation completes - use window.open for better mobile support
-                    try {
-                        const newWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank', 'noopener,noreferrer');
-                        
-                        // Only use location.href as fallback on mobile devices
-                        // On desktop, we should never redirect the current window
-                        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                            if (isMobile) {
-                                window.location.href = 'https://linkedin.com/in/yang-si-jun/';
-                            } else {
-                                console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
-                            }
-                        }
-                    } catch (error) {
-                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                        if (isMobile) {
-                            window.location.href = 'https://linkedin.com/in/yang-si-jun/';
-                        } else {
-                            console.warn('Failed to open link. Please allow popups for this site.');
-                        }
-                    }
-                    
-                    setIsLoading(false);
-                    setLoadingCommand('');
-                    setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
-                    setCursorPosition(0);
-                }, 1200);
             } else if (cmd === 'whoami') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
@@ -465,12 +431,27 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     // Navigate to /whoami route instead of opening modal
                     window.location.href = '/whoami';
                 }, 1500);
-            } else if (['projects', 'experience'].includes(cmd)) {
+            } else if (cmd.startsWith('cat resume')) {
+                setHistory(prev => [...prev, { type: 'input', content: input }]);
+                setIsLoading(true);
+                setLoadingCommand('cat resume');
+                setTimeout(() => {
+                    // Open PDF viewer modal
+                    if (onOpenPDF) {
+                        onOpenPDF();
+                    }
+                    
+                    setIsLoading(false);
+                    setLoadingCommand('');
+                    setHistory(prev => [...prev, { type: 'success', content: '✓ Opened resume' }]);
+                }, 1200);
+            } else if (['ls', 'history'].includes(cmd)) {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand(cmd);
                 setTimeout(() => {
-                    onCommand(cmd);
+                    // Map 'ls' to 'projects' and 'history' to 'experience' for the modal
+                    onCommand(cmd === 'ls' ? 'projects' : cmd === 'history' ? 'experience' : cmd);
                     // Reset loading state for when user returns
                     setIsLoading(false);
                     setLoadingCommand('');
@@ -479,9 +460,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'error', content: `Command not found: ${cmd}.` }]);
             }
             
-            if (!['github', 'linkedin'].includes(cmd)) {
-                setInput('');
-            }
+            setInput('');
         }
     };
 
@@ -521,74 +500,6 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     // Process the command
                     if (cmd === 'clear') {
                         handleClear(false);
-                    } else if (cmd === 'github') {
-                        setInput('');
-                        setIsLoading(true);
-                        setLoadingCommand('github');
-                        
-                        setTimeout(() => {
-                            // Open link after loading animation completes - use window.open for better mobile support
-                            try {
-                                const newWindow = window.open('https://github.com/zedithx', '_blank', 'noopener,noreferrer');
-                                
-                                // Only use location.href as fallback on mobile devices
-                                // On desktop, we should never redirect the current window
-                                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                                    if (isMobile) {
-                                        window.location.href = 'https://github.com/zedithx';
-                                    } else {
-                                        console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
-                                    }
-                                }
-                            } catch (error) {
-                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                                if (isMobile) {
-                                    window.location.href = 'https://github.com/zedithx';
-                                } else {
-                                    console.warn('Failed to open link. Please allow popups for this site.');
-                                }
-                            }
-                            
-                            setIsLoading(false);
-                            setLoadingCommand('');
-                            setHistory(prev => [...prev, { type: 'success', content: '✓ Opened GitHub profile in new tab' }]);
-                            setCursorPosition(0);
-                        }, 1200);
-                    } else if (cmd === 'linkedin') {
-                        setInput('');
-                        setIsLoading(true);
-                        setLoadingCommand('linkedin');
-                        
-                        setTimeout(() => {
-                            // Open link after loading animation completes - use window.open for better mobile support
-                            try {
-                                const newWindow = window.open('https://linkedin.com/in/yang-si-jun/', '_blank', 'noopener,noreferrer');
-                                
-                                // Only use location.href as fallback on mobile devices
-                                // On desktop, we should never redirect the current window
-                                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                                    if (isMobile) {
-                                        window.location.href = 'https://linkedin.com/in/yang-si-jun/';
-                                    } else {
-                                        console.warn('Popup blocked. Please allow popups for this site to open links in new tabs.');
-                                    }
-                                }
-                            } catch (error) {
-                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                                if (isMobile) {
-                                    window.location.href = 'https://linkedin.com/in/yang-si-jun/';
-                                } else {
-                                    console.warn('Failed to open link. Please allow popups for this site.');
-                                }
-                            }
-                            
-                            setIsLoading(false);
-                            setLoadingCommand('');
-                            setHistory(prev => [...prev, { type: 'success', content: '✓ Opened LinkedIn profile in new tab' }]);
-                            setCursorPosition(0);
-                        }, 1200);
                     } else if (cmd === 'whoami') {
                         setIsLoading(true);
                         setLoadingCommand(cmd);
@@ -597,12 +508,29 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             // Navigate to /whoami route instead of opening modal
                             window.location.href = '/whoami';
                         }, 1500);
-                    } else if (['projects', 'experience'].includes(cmd)) {
+                    } else if (cmd.startsWith('cat resume')) {
+                        setIsLoading(true);
+                        setLoadingCommand('cat resume');
+                        
+                        setTimeout(() => {
+                            // Open PDF viewer modal
+                            if (onOpenPDF) {
+                                onOpenPDF();
+                            }
+                            
+                            setIsLoading(false);
+                            setLoadingCommand('');
+                            setHistory(prev => [...prev, { type: 'success', content: '✓ Opened resume' }]);
+                            setInput('');
+                            setCursorPosition(0);
+                        }, 1200);
+                    } else if (['ls', 'history'].includes(cmd)) {
                         setIsLoading(true);
                         setLoadingCommand(cmd);
                         
                         setTimeout(() => {
-                            onCommand(cmd);
+                            // Map 'ls' to 'projects' and 'history' to 'experience' for the modal
+                            onCommand(cmd === 'ls' ? 'projects' : cmd === 'history' ? 'experience' : cmd);
                             setIsLoading(false);
                             setLoadingCommand('');
                             setInput('');
@@ -621,7 +549,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 }, 200); // Brief pause after typing completes
             }
         }, 30); // Type each character every 30ms
-    }, [handleClear, onCommand]);
+    }, [handleClear, onCommand, onOpenPDF]);
 
     // Calculate safe left position for mobile to prevent horizontal shifting
     const safeLeft = useMemo(() => {
@@ -722,8 +650,11 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     variants={itemVariants} 
                                     className="text-white/70 mb-4 text-sm sm:text-sm"
                                 >
-                                    <Typewriter 
-                                        text="Welcome to my interactive portfolio. Type a command to explore." 
+                                    <SequentialTypewriter 
+                                        messages={[
+                                            { text: "Hi, I'm Si Jun. ", speed: 10 },
+                                            { text: "Welcome to my interactive portfolio. Type or click on a command to explore.", speed: 10 }
+                                        ]}
                                         onComplete={() => setIsAnimating(false)}
                                     />
                                 </motion.p>
@@ -781,30 +712,16 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="w-80 space-y-6 flex flex-col items-center"
                             >
-                                {(loadingCommand === 'github' || loadingCommand === 'linkedin') && (
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1, rotate: [0, 360] }}
-                                        transition={{ 
-                                            scale: { type: 'spring', stiffness: 200 },
-                                            rotate: { duration: 1.5, ease: 'easeInOut' }
-                                        }}
-                                        className="w-24 h-24 flex items-center justify-center"
-                                    >
-                                        <img 
-                                            src={loadingCommand === 'github' ? '/platform-icons/github.webp' : '/platform-icons/linkedin.webp'}
-                                            alt={loadingCommand}
-                                            className={`w-full h-full object-contain ${loadingCommand === 'linkedin' ? 'scale-85' : ''}`}
-                                        />
-                                    </motion.div>
-                                )}
-                                
                                 <div className="text-green-400 text-sm font-bold animate-pulse text-center">
-                                    {loadingCommand === 'github' && '🔗 Connecting to GitHub...'}
-                                    {loadingCommand === 'linkedin' && '🔗 Connecting to LinkedIn...'}
-                                    {!['github', 'linkedin'].includes(loadingCommand) && (
-                                        <>{`>`} INITIALIZING {loadingCommand.toUpperCase()}...</>
-                                    )}
+                                    {(() => {
+                                        const loadingMessages = {
+                                            'whoami': 'Loading about me...',
+                                            'ls': 'Initializing projects...',
+                                            'history': 'Initializing work experience...',
+                                            'cat resume': 'Opening resume...'
+                                        };
+                                        return <>{`>`} {loadingMessages[loadingCommand] || `Initializing ${loadingCommand}...`}</>;
+                                    })()}
                                 </div>
                                 
                                 <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/10">
@@ -817,7 +734,17 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 </div>
                                 
                                 <div className="flex justify-between text-[9px] text-white/30 font-mono w-full">
-                                    <span>{loadingCommand === 'github' || loadingCommand === 'linkedin' ? 'REDIRECTING' : 'LOADING MODULES'}</span>
+                                    <span>
+                                        {(() => {
+                                            const statusMessages = {
+                                                'whoami': 'LOADING DETAILS',
+                                                'ls': 'LOADING PROJECTS',
+                                                'history': 'LOADING EXPERIENCE',
+                                                'cat resume': 'OPENING PDF'
+                                            };
+                                            return statusMessages[loadingCommand] || 'LOADING MODULES';
+                                        })()}
+                                    </span>
                                     <span>DONE</span>
                                 </div>
                             </motion.div>

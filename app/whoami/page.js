@@ -1,8 +1,8 @@
 'use client';
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { aboutMeData } from '../../data/data';
 
@@ -14,72 +14,14 @@ const AboutMeView = dynamic(
         new Promise(resolve => setTimeout(resolve, 1500)) // Minimum 1.5 second delay
     ]).then(([module]) => module),
     { 
-        ssr: false,
-        loading: () => (
-            <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] p-3 sm:p-2 md:p-4 lg:p-6">
-                <div 
-                    className="w-full max-w-2xl flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 relative mx-auto text-center"
-                    style={{
-                        background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
-                        border: '3px solid #ffd700',
-                        borderRadius: '16px',
-                        boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)'
-                    }}
-                >
-                    {/* Decorative corner elements */}
-                    <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-400 opacity-60" />
-                    <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-400 opacity-60" />
-                    <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
-                    <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
-
-                    {/* Loading spinner */}
-                    <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        className="w-16 h-16 md:w-20 md:h-20 mb-6"
-                        style={{
-                            border: '4px solid rgba(255, 215, 0, 0.3)',
-                            borderTop: '4px solid #ffd700',
-                            borderRadius: '50%',
-                            boxShadow: '0 0 20px rgba(255, 215, 0, 0.6)'
-                        }}
-                    />
-                    
-                    {/* Loading text */}
-                    <motion.h2
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-2xl md:text-3xl font-bold mb-2"
-                        style={{
-                            color: '#ffd700',
-                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
-                            letterSpacing: '2px',
-                            fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif"
-                        }}
-                    >
-                        LOADING ADVENTURE...
-                    </motion.h2>
-                    
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-yellow-400/80 text-sm md:text-base text-center"
-                        style={{
-                            fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
-                        }}
-                    >
-                        Preparing your journey...
-                    </motion.p>
-                </div>
-            </div>
-        )
+        ssr: false
     }
 );
 
 export default function WhoAmIPage() {
     const router = useRouter();
     const exitButtonRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Reset sessionStorage on page load to start fresh each time
     useEffect(() => {
@@ -87,6 +29,16 @@ export default function WhoAmIPage() {
             sessionStorage.removeItem('aboutMe_skillProgression');
             sessionStorage.removeItem('aboutMe_processedCards');
         }
+    }, []);
+
+    // Handle smooth transition from loading to content
+    useEffect(() => {
+        // Wait for minimum load time, then fade out loading
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
     }, []);
 
     const handleExit = useCallback((e) => {
@@ -130,6 +82,10 @@ export default function WhoAmIPage() {
             }
         };
     }, [handleExit]);
+
+    const prefersReducedMotion = typeof window !== 'undefined' 
+        ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+        : false;
 
     return (
         <div className="fixed inset-0 w-full h-full overflow-hidden">
@@ -184,7 +140,79 @@ export default function WhoAmIPage() {
                 <X className="w-4 h-4" />
             </motion.button>
 
-            <AboutMeView data={aboutMeData} />
+            {/* Loading Screen */}
+            <AnimatePresence>
+                {isLoading && (
+                    <motion.div
+                        key="loading"
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] p-3 sm:p-2 md:p-4 lg:p-6 z-50"
+                    >
+                        <motion.div 
+                            className="w-full max-w-2xl flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 relative mx-auto text-center"
+                            style={{
+                                background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
+                                border: '3px solid #ffd700',
+                                borderRadius: '16px',
+                                boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)'
+                            }}
+                        >
+                            {/* Decorative corner elements */}
+                            <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-400 opacity-60" />
+                            <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-400 opacity-60" />
+                            <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-400 opacity-60" />
+                            <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-400 opacity-60" />
+
+                            {/* Loading spinner */}
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                                className="w-16 h-16 md:w-20 md:h-20 mb-6"
+                                style={{
+                                    border: '4px solid rgba(255, 215, 0, 0.3)',
+                                    borderTop: '4px solid #ffd700',
+                                    borderRadius: '50%',
+                                    boxShadow: '0 0 20px rgba(255, 215, 0, 0.6)'
+                                }}
+                            />
+                            
+                            {/* Loading text */}
+                            <motion.h2
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-2xl md:text-3xl font-bold mb-2"
+                                style={{
+                                    color: '#ffd700',
+                                    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6)',
+                                    letterSpacing: '2px',
+                                    fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif"
+                                }}
+                            >
+                                LOADING ADVENTURE...
+                            </motion.h2>
+                            
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-yellow-400/80 text-sm md:text-base text-center"
+                                style={{
+                                    fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
+                                }}
+                            >
+                                Preparing your journey...
+                            </motion.p>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Content - Always rendered, just hidden behind loading screen */}
+            <div className="fixed inset-0 w-full h-full">
+                <AboutMeView data={aboutMeData} />
+            </div>
         </div>
     );
 }

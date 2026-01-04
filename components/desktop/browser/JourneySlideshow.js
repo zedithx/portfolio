@@ -157,6 +157,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [desktopPopupSkills, setDesktopPopupSkills] = useState(null);
     const [processedCards, setProcessedCards] = useState(new Set());
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
     const desktopPopupTimeoutRef = useRef(null);
     const skipButtonRef = useRef(null);
     const returnButtonRef = useRef(null);
@@ -174,6 +175,17 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const prefersReducedMotion = useMemo(() => {
         if (typeof window === 'undefined') return false;
         return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }, []);
+
+    // Track screen size for responsive background positioning
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsLargeScreen(window.innerWidth >= 1024);
+        };
+        
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+        return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
     const currentCard = journey[currentIndex];
@@ -222,6 +234,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
             setShowDesktopPopup(false);
             setDesktopPopupSkills(null);
             setIsTransitioning(false);
+            // Reset animation state when slide changes (especially when going back to processed cards)
+            setIsAnimating(false);
             // Clear any pending timeouts
             if (desktopPopupTimeoutRef.current) {
                 clearTimeout(desktopPopupTimeoutRef.current);
@@ -349,6 +363,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const goPrev = useCallback(() => {
         if (currentIndex > 0 && !isTransitioning && !isAnimating) {
             setIsTransitioning(true);
+            setIsAnimating(false); // Reset animation state when navigating
             setTimeout(() => {
                 setCurrentIndex(prev => prev - 1);
             }, 300);
@@ -379,7 +394,12 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
     // Memoize all unique background images from journey and preload them
     const bgImages = useMemo(() => {
-        const uniqueBgs = [...new Set(journey.map(card => card.scene).filter(Boolean))];
+        // Collect scenes from cards and dialogues
+        const cardScenes = journey.map(card => card.scene).filter(Boolean);
+        const dialogueScenes = journey.flatMap(card => 
+            (card.dialogues || []).map(dialogue => dialogue.scene).filter(Boolean)
+        );
+        const uniqueBgs = [...new Set([...cardScenes, ...dialogueScenes])];
         return uniqueBgs;
     }, [journey]);
 
@@ -835,9 +855,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
             <div className="relative w-full h-full flex items-center justify-center p-3 sm:p-2 md:p-4 lg:p-6" style={{ overflowX: 'hidden', overflowY: 'hidden' }}>
                 {/* Game-style Container matching Hero Section */}
                 <motion.section
-                    initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9, y: 20 }}
-                    animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1, y: 0 }}
-                    transition={prefersReducedMotion ? {} : { duration: 0.6 }}
+                    initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                    animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.4, ease: 'easeOut' }}
                     className="w-full max-w-6xl h-full max-h-[95vh] flex flex-col relative"
                     style={{
                         background: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%)',
@@ -845,7 +865,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         borderRadius: '16px',
                         boxShadow: '0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)',
                         overflowX: 'hidden',
-                        overflowY: 'hidden'
+                        overflowY: 'hidden',
+                        willChange: 'opacity'
                     }}
                 >
                     {/* Decorative corner elements */}
@@ -859,10 +880,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         <div className="w-full h-full flex flex-col p-4" style={{ overflowX: 'hidden', overflowY: 'auto', position: 'relative'}}>
                             {/* Title - Badge/Panel Style */}
                             <motion.div
-                                initial={prefersReducedMotion ? {} : { opacity: 0, y: -20 }}
-                                animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
+                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1, ease: 'easeOut' }}
                                 className="flex justify-center mb-4 sm:mb-4 md:mb-6 shrink-0"
+                                style={{ willChange: 'opacity' }}
                             >
                                 <div
                                     className="relative px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4"
@@ -978,13 +1000,14 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 {Object.entries(journeySummaryContent).map(([key, section], index) => (
                                     <motion.div
                                         key={key}
-                                        initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-                                        animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                        transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (index * 0.1) }}
+                                        initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                        animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                        transition={prefersReducedMotion ? {} : { duration: 0.2, delay: 0.05 + (index * 0.05), ease: 'easeOut' }}
                                         className="relative space-y-1.5 sm:space-y-2 md:space-y-3 lg:space-y-4"
                                         style={{
                                             marginTop: index === 0 ? '0.25rem' : '1rem',
-                                            paddingTop: '1.25rem'
+                                            paddingTop: '1.25rem',
+                                            willChange: 'opacity'
                                         }}
                                     >
                                         <h2 
@@ -1034,10 +1057,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             {/* Skills Tab */}
                             {activeTab === 'skills' && skills && (
                                 <motion.div
-                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4 }}
+                                    initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2, ease: 'easeOut' }}
                                     className="pt-3 sm:pt-3 md:pt-4 lg:pt-6 px-1 sm:px-0"
+                                    style={{ willChange: 'opacity' }}
                                 >
                                     <h2 
                                         className="text-xl sm:text-2xl md:text-3xl font-bold mb-6"
@@ -1319,20 +1343,45 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
     // Use the active dialogue for rendering
     const isLastDialogue = validDialogueIndex === (currentCard.dialogues?.length || 0) - 1;
+    
+    // Get scene from active dialogue if available, otherwise use card's scene
+    const currentScene = activeDialogue.scene || currentCard.scene;
+    
+    // Determine background position based on scene and screen size
+    const getBackgroundPosition = (scene) => {
+        if (!scene) return 'center center';
+        
+        // For SchoolProjectAwards on mobile, shift right to center better
+        if (scene.includes('SchoolProjectAwards') && !isLargeScreen) {
+            return '30% center';
+        }
+        
+        // Default positioning
+        return 'center center';
+    };
+    
+    // Check if this card should show multiple backgrounds together (for internships segment)
+    const showMultiBackground = currentCard.id === 4;
+    const multiBackgrounds = showMultiBackground ? [
+        { url: "/background/changiairport.webp", position: "right center", positionLg: "60% 70%" },
+        { url: "/background/tsmc.webp", position: "center center", positionLg: "center center" },
+        { url: "/background/bytedance.webp", position: "left center", positionLg: "left center" }
+    ] : null;
 
     return (
         <>
             <section className="w-full h-full flex flex-col relative lg:overflow-hidden">
                 {/* Section Header - Better margins */}
                 <motion.h2 
-                    initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-                    animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-                    transition={prefersReducedMotion ? {} : { duration: 0.5 }}
+                    initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                    animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.3, ease: 'easeOut' }}
                     className="text-lg md:text-xl lg:text-2xl font-bold px-4 md:px-6 py-3 md:py-4 shrink-0"
                     style={{
                         textShadow: '2px 2px 0px #000, 0 0 20px rgba(255, 215, 0, 0.6)',
                         color: '#ffd700',
-                        letterSpacing: '1px'
+                        letterSpacing: '1px',
+                        willChange: 'opacity'
                     }}
                 >
                     <div className="flex items-center justify-between w-full pr-12 md:pr-16">
@@ -1340,9 +1389,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         {!showSummary && (
                             <motion.button
                                 ref={skipButtonRef}
-                                initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
-                                animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
-                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.5 }}
+                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2, ease: 'easeOut' }}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -1370,7 +1419,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
                                     pointerEvents: isTransitioning ? 'none' : 'auto',
                                     position: 'relative',
-                                    zIndex: 100
+                                    zIndex: 100,
+                                    willChange: 'opacity'
                                 }}
                                 whileHover={prefersReducedMotion || isTransitioning ? {} : { scale: 1.05 }}
                                 whileTap={prefersReducedMotion || isTransitioning ? {} : { scale: 0.95 }}
@@ -1391,32 +1441,78 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 {/* Stage Background with Character Scene */}
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={currentCard.id}
-                        initial={prefersReducedMotion ? {} : { opacity: 0, x: 50 }}
-                        animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-                        exit={prefersReducedMotion ? {} : { opacity: 0, x: -50 }}
-                        transition={prefersReducedMotion ? {} : { duration: 0.5 }}
+                        key={showMultiBackground ? `${currentCard.id}-multi` : `${currentCard.id}-${currentScene || 'default'}`}
+                        initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                        animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                        exit={prefersReducedMotion ? {} : { opacity: 0 }}
+                        transition={prefersReducedMotion ? {} : { duration: 0.3, ease: 'easeOut' }}
                         className="w-full h-full rounded-lg relative overflow-hidden"
                         style={{
-                            backgroundImage: `url(${getSceneBackground(currentCard.scene)})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat',
                             border: '3px solid #ffd700',
                             boxShadow: '0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.5)',
-                            imageRendering: 'auto',
-                            WebkitImageRendering: 'auto'
+                            willChange: 'opacity'
                         }}
                     >
+                        {/* Multi-background split view for internships */}
+                        {showMultiBackground && multiBackgrounds ? (
+                            <div className="absolute inset-0 flex flex-col lg:flex-row" style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                {multiBackgrounds.map((bg, index) => (
+                                    <motion.div
+                                        key={`${bg.url}-${index}`}
+                                        initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
+                                        animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                                        transition={prefersReducedMotion ? {} : { duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+                                        className="relative overflow-hidden w-full lg:w-auto flex-shrink-0"
+                                        style={{
+                                            flex: !isLargeScreen ? `0 0 ${100 / multiBackgrounds.length}%` : '1 1 0',
+                                            minWidth: 0,
+                                            minHeight: 0,
+                                            maxHeight: !isLargeScreen ? `${100 / multiBackgrounds.length}%` : 'none',
+                                            backgroundImage: `url(${getSceneBackground(bg.url)})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: isLargeScreen ? (bg.positionLg || bg.position) : bg.position,
+                                            backgroundRepeat: 'no-repeat',
+                                            imageRendering: 'auto',
+                                            WebkitImageRendering: 'auto',
+                                            willChange: 'opacity, transform'
+                                        }}
+                                    >
+                                        {/* Divider between backgrounds */}
+                                        {index < multiBackgrounds.length - 1 && (
+                                            <>
+                                                {/* Horizontal divider for mobile (vertical layout) */}
+                                                <div className="lg:hidden absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-b from-transparent via-yellow-400/50 to-transparent z-10" />
+                                                {/* Vertical divider for desktop (horizontal layout) */}
+                                                <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent z-10" />
+                                            </>
+                                        )}
+                                    </motion.div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div
+                                className="absolute inset-0"
+                                style={{
+                                    backgroundImage: `url(${getSceneBackground(currentScene)})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: getBackgroundPosition(currentScene),
+                                    backgroundRepeat: 'no-repeat',
+                                    imageRendering: 'auto',
+                                    WebkitImageRendering: 'auto'
+                                }}
+                            />
+                        )}
+                        
                         {/* Dark overlay for better text readability */}
                         <div className="absolute inset-0 bg-black/50 pointer-events-none z-0" />
                         
                         {/* Segment Header - Top Left */}
                         <motion.div
-                            initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-                            animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-                            transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
+                            initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                            animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                            transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1, ease: 'easeOut' }}
                             className="absolute top-4 left-4 md:top-6 md:left-6 z-30 max-w-[80%] md:max-w-none"
+                            style={{ willChange: 'opacity' }}
                         >
                             <div 
                                 className="px-4 py-2 md:px-5 md:py-2.5 rounded text-sm md:text-base font-bold"
@@ -1448,6 +1544,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                                     left: `${particle.left}%`,
                                                     top: '-10px',
                                                     height: '20px',
+                                                    willChange: 'transform, opacity',
+                                                    transform: 'translateZ(0)'
                                                 }}
                                                 animate={{
                                                     y: [0, 700],
@@ -1473,6 +1571,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             style={{
                                                 left: `${particle.left}%`,
                                                 top: `${particle.top}%`,
+                                                willChange: 'transform, opacity',
+                                                transform: 'translateZ(0)'
                                             }}
                                             animate={{
                                                 y: [0, -30, 0],
@@ -1494,9 +1594,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                         {/* Hero Character (Left Side) - No border, directly on background */}
                         <motion.div
-                            initial={prefersReducedMotion ? {} : { x: -100, opacity: 0 }}
-                            animate={prefersReducedMotion ? {} : { x: 0, opacity: 1 }}
-                            transition={prefersReducedMotion ? {} : { duration: 0.6, delay: 0.1, type: 'spring' }}
+                            initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                            animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                            transition={prefersReducedMotion ? {} : { duration: 0.4, delay: 0.05, ease: 'easeOut' }}
+                            style={{ willChange: 'opacity' }}
                             className="absolute left-12 md:left-16 lg:left-20 bottom-[40%] md:bottom-[35%] lg:bottom-[30%] z-20 flex flex-col items-center"
                         >
                             {hero.avatar ? (
@@ -1530,10 +1631,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                         {/* Stage Icon (Top Right) - Hidden on mobile */}
                         <motion.div
-                            initial={prefersReducedMotion ? {} : { scale: 0, rotate: 180 }}
-                            animate={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
-                            transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4, type: 'spring' }}
+                            initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                            animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                            transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2, ease: 'easeOut' }}
                             className="absolute right-8 top-8 z-20 hidden md:block"
+                            style={{ willChange: 'opacity' }}
                         >
                             <div 
                                 className="text-6xl md:text-8xl"
@@ -1551,17 +1653,20 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             {showDialogue && activeDialogue && (
                                 <motion.div
                                     key={validDialogueIndex}
-                                    initial={prefersReducedMotion ? {} : { y: 100, opacity: 0 }}
-                                    animate={prefersReducedMotion ? {} : { y: 0, opacity: 1 }}
-                                    exit={prefersReducedMotion ? {} : { y: 100, opacity: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.3, type: 'spring' }}
+                                    initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                    animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                    exit={prefersReducedMotion ? {} : { opacity: 0 }}
+                                    transition={prefersReducedMotion ? {} : { duration: 0.2, ease: 'easeOut' }}
                                     onClick={handleDialogueClick}
-                                    className="absolute bottom-0 left-0 right-0 p-3 md:p-4 z-30 cursor-pointer touch-manipulation max-h-[40%] flex flex-col"
+                                    className={`absolute bottom-0 left-0 right-0 p-3 md:p-4 z-30 cursor-pointer touch-manipulation flex flex-col ${
+                                        showMultiBackground ? 'max-h-[30%] lg:max-h-[40%]' : 'max-h-[40%]'
+                                    }`}
                                     style={{
                                         background: 'rgba(20, 20, 30, 0.9)',
                                         backdropFilter: 'blur(15px)',
                                         borderTop: '4px solid #ffd700',
-                                        boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(255, 215, 0, 0.1)'
+                                        boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(255, 215, 0, 0.1)',
+                                        willChange: 'opacity'
                                     }}
                                     role="button"
                                     tabIndex={0}
@@ -1725,7 +1830,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             )}
                         </AnimatePresence>
 
-                        {/* Small Game-Like Popup - Both Mobile and Desktop */}
+                        {/* Small Game-Like Popup - Mobile and Tablet */}
                         <AnimatePresence>
                             {showDesktopPopup && desktopPopupSkills && (
                                 <motion.div
@@ -1741,7 +1846,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                             desktopPopupTimeoutRef.current = null;
                                         }
                                     }}
-                                    className="absolute top-4 right-4 z-50 cursor-pointer"
+                                    className="lg:hidden absolute top-4 right-4 z-50 cursor-pointer"
                                     style={{
                                         minWidth: '240px',
                                         maxWidth: '300px'

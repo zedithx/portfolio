@@ -8,12 +8,12 @@ export const projectData = {
             badge: 'Hot',
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/bulkify/bulkify.png',
+                src: '/projects/bulkify/bulkify.png',
                 gradient: 'from-blue-400 to-purple-500'
             },
             techIcons: [
-                '/projects/project-icons/tech-icons/java.webp',
-                '/projects/project-icons/tech-icons/firebase.png'
+                '/projects/tech-icons/java.webp',
+                '/projects/tech-icons/firebase.png'
             ],
             description: 'A powerful e-commerce bulk operations platform built with modern web technologies. Features include real-time inventory management, bulk product updates, order processing, and a beautiful responsive design.',
             techTags: ['React', 'Node.js', 'MongoDB', 'TypeScript']
@@ -25,12 +25,12 @@ export const projectData = {
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/enableid/ocr.png',
+                src: '/projects/enableid/ocr.png',
                 gradient: 'from-pink-500 to-rose-600'
             },
             techIcons: [
-                '/projects/project-icons/tech-icons/next.webp',
-                '/projects/project-icons/tech-icons/rubyonrails.png'
+                '/projects/tech-icons/next.webp',
+                '/projects/tech-icons/rubyonrails.png'
             ],
             description: 'A comprehensive platform for refugee identification and support services. Features include secure identity management, document verification, and streamlined access to essential services.',
             techTags: ['Next.js', 'Ruby on Rails']
@@ -44,12 +44,12 @@ export const projectData = {
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/nightfiesta/rfid.png',
+                src: '/projects/nightfiesta/rfid.png',
                 gradient: 'from-indigo-500 to-purple-600'
             },
             techIcons: [
-                '/projects/project-icons/tech-icons/python.webp',
-                '/projects/project-icons/tech-icons/django.png'
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/django.png'
             ],
             description: 'An RFID-based access control and event management system for student government events. Features include contactless check-in, real-time attendance tracking, and secure event access management.',
             techTags: ['Python', 'Django']
@@ -63,13 +63,13 @@ export const projectData = {
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/monitoring-suite/cicd.png',
+                src: '/projects/monitoring-suite/cicd.png',
                 gradient: 'from-blue-500 to-indigo-600'
             },
             techIcons: [
-                '/projects/project-icons/tech-icons/go.png',
-                '/projects/project-icons/tech-icons/grafana.png',
-                '/projects/project-icons/tech-icons/prometheus.png'
+                '/projects/tech-icons/go.png',
+                '/projects/tech-icons/grafana.png',
+                '/projects/tech-icons/prometheus.png'
             ],
             description: 'A comprehensive DevOps monitoring and CI/CD pipeline management system. Features include real-time infrastructure monitoring, automated deployment pipelines, performance metrics visualization, and alerting systems.',
             techTags: ['Go', 'Grafana', 'Prometheus']
@@ -81,13 +81,13 @@ export const projectData = {
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/project-icons/container-networking/container.png',
+                src: '/projects/container-networking/container.png',
                 gradient: 'from-slate-500 to-slate-700'
             },
             techIcons: [
-                '/projects/project-icons/tech-icons/docker.png',
-                '/projects/project-icons/tech-icons/python.webp',
-                '/projects/project-icons/tech-icons/rubyonrails.png'
+                '/projects/tech-icons/docker.png',
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/rubyonrails.png'
             ],
             description: 'A Docker Compose-based networking solution for managing multi-container applications. Features include service orchestration, network configuration, volume management, and seamless container communication.',
             techTags: ['Docker Compose', 'Python', 'Ruby on Rails']
@@ -464,17 +464,19 @@ export const aboutMeData = {
                 },
                 {
                     speaker: "hero",
-                    text: "I also tend to become hyper-focused when building things. At SUTD, I often treated projects like a full-time job, pulling late nights to get them to a level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, and in my computer science modules I pushed my teams and myself to ship products that felt polished and real."
+                    text: "I also tend to become hyper-focused when building things. At SUTD, I often treated projects like a full-time job, pulling late nights to get them to a level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, and in my computer science modules I pushed my teams and myself to ship products that felt polished and real.",
+                    scene: "/background/SchoolProjectAwards.JPG"
                 },
                 {
                     speaker: "hero",
-                    text: "My grades didn't turn out bad actually, but they weren't first class. In contrast, across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" - diving deep into projects out of genuine passion is where I produce my best work, and also when I'm happiest."
+                    text: "My grades didn't turn out bad actually, but they weren't first class. In contrast, across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" - diving deep into projects out of genuine passion is where I produce my best work, and also when I'm happiest.",
+                    scene: "/background/SchoolProjectAwards.JPG"
                 }
             ],
             category: "Education",
             icon: "🏛️",
             skillsGained: { Frontend: 50, Backend: 20, Hardware: 30, 'Telegram Bots': 60, Deployment: 40, LLMs: 30, Devops: 20, 'Product Management': 40, Recreational: 20},
-            scene: "/background/sutdcontractedwork.webp"
+            scene: "/background/DesignThinking.JPG"
         },
         {
             id: 4,
@@ -510,7 +512,7 @@ export const aboutMeData = {
             category: "Future",
             icon: "⭐",
             skillsGained: { Social: 20, Recreational: 20 },
-            scene: "/background/sutdcontractedwork.webp"
+            scene: "/background/sutd.webp"
         }
     ]
 };
@@ -523,7 +525,7 @@ export const journeySummaryContent = {
         and spent most of my time doing anything except my actual work. I kept wondering if there was something like ADHD going on, \
         because no matter how hard I tried, I just couldn't stay focused on subjects like physics, chemistry, math, and science. \
         I came close to retaining in secondary school and even hit around the bottom 23rd percentile in my college exams at one point. \
-        But at the same time, whenever it came to hands‑on projects and building things, I would get completely obsessed—in a good way—spending \
+        But at the same time, whenever it came to hands-on projects and building things, I would get completely obsessed—in a good way—spending \
         late nights working on them without even noticing the time. That contrast made me realize that I'm someone who learns and performs best when\
         I'm creating and building, not just memorising."
     },
