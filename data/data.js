@@ -117,16 +117,17 @@ export const colorClassesMap = {
 };
 
 // Helper function to generate project content JSX
-export const generateProjectContent = (project) => {
+export const generateProjectContent = (project, isDark = false) => {
     return (
         <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
-            <p className="text-gray-600 leading-relaxed">
+            <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
+            <p className={`leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                 {project.description}
             </p>
             <div className="flex flex-wrap gap-2">
                 {project.techTags.map((tag, idx) => {
-                    const className = colorClassesMap[tag] || 'bg-gray-100 text-gray-700';
+                    const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700';
+                    const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80` : colorClassesMap[tag]) : defaultClasses;
                     return (
                         <span key={idx} className={`px-3 py-1 ${className} rounded-full text-sm`}>
                             {tag}
@@ -146,7 +147,7 @@ export const transformProjectsToItems = () => {
             items.push({
                 ...project,
                 category,
-                content: generateProjectContent(project)
+                content: (isDark = false) => generateProjectContent(project, isDark)
             });
         });
     });

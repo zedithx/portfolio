@@ -207,7 +207,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                             <span>Back to Projects</span>
                         </button>
                         <div className={`rounded-lg border p-4 sm:p-6 md:p-8 ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>
-                            {selectedProject.content}
+                            {typeof selectedProject.content === 'function' ? selectedProject.content(isDark) : selectedProject.content}
                         </div>
                     </div>
                 ) : (
