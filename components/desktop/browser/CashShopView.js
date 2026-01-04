@@ -128,42 +128,36 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
 
                 {/* Projects Header - Only show when no project is selected */}
                 {!selectedProject && (
-                    <div className="px-3 sm:px-4 py-2 sm:py-3 bg-white border-b border-gray-200">
+                    <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-50 border-b border-gray-200">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             {/* Desktop: Title and Stats */}
-                            <div className="hidden sm:flex sm:items-center gap-2 sm:gap-6">
-                                <div className="flex items-center gap-3">
-                                    <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Projects</h1>
-                                </div>
-                                <div className="flex items-center gap-3 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <span className="text-blue-600 text-xs sm:text-sm font-medium">{commits.toLocaleString()} Commits</span>
+                            <div className="hidden sm:flex sm:items-center gap-4">
+                                <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Projects</h1>
+                                <div className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg">
+                                    <span className="text-gray-600 text-xs sm:text-sm font-medium">{commits.toLocaleString()} Commits</span>
                                 </div>
                             </div>
                             
                             {/* Mobile: Optimized Layout */}
                             <div className="sm:hidden w-full">
-                                <div className="flex flex-col gap-2.5">
+                                <div className="flex flex-col gap-3">
                                     {/* Title */}
-                                    <div className="flex items-center justify-between">
-                                        <h1 className="text-sm font-semibold text-gray-900 leading-tight">Projects</h1>
-                                    </div>
+                                    <h1 className="text-sm font-semibold text-gray-900">Projects</h1>
                                     
                                     {/* Stats */}
                                     <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-1.5 flex-1">
-                                            <div className="bg-gray-50 rounded-lg px-2 py-1.5 border border-gray-200 text-center flex-1">
-                                                <div className="text-gray-500 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Projects</div>
-                                                <div className="text-blue-600 text-xs font-semibold leading-tight">{data.items ? data.items.length : 0}</div>
-                                            </div>
-                                            <div className="bg-gray-50 rounded-lg px-2 py-1.5 border border-gray-200 text-center flex-1">
-                                                <div className="text-gray-500 text-[8px] mb-0.5 leading-tight whitespace-nowrap">Commits</div>
-                                                <div className="text-blue-600 text-xs font-semibold leading-tight">{commits.toLocaleString()}</div>
-                                            </div>
+                                        <div className="flex-1 bg-white rounded-lg px-3 py-2 border border-gray-200">
+                                            <div className="text-gray-500 text-[10px] mb-0.5">Projects</div>
+                                            <div className="text-gray-900 text-sm font-semibold">{data.items ? data.items.length : 0}</div>
+                                        </div>
+                                        <div className="flex-1 bg-white rounded-lg px-3 py-2 border border-gray-200">
+                                            <div className="text-gray-500 text-[10px] mb-0.5">Commits</div>
+                                            <div className="text-gray-900 text-sm font-semibold">{commits.toLocaleString()}</div>
                                         </div>
                                     </div>
                                     
-                                    {/* Search Bar - Full width with better styling */}
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-gray-200 w-full hover:border-gray-300 transition-colors">
+                                    {/* Search Bar */}
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-gray-200 w-full">
                                         <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
                                         <input 
                                             type="text" 
@@ -173,24 +167,11 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                             className="flex-1 bg-transparent text-gray-700 text-xs placeholder:text-gray-400 outline-none min-w-0"
                                         />
                                     </div>
-                                    
-                                    {/* Go to GitHub Button - Mobile */}
-                                    <a 
-                                        href="https://github.com/zedithx" 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="block w-full mt-1.5"
-                                    >
-                                        <button className="w-full bg-blue-50 active:bg-blue-100 border border-blue-200 active:border-blue-300 rounded-lg px-3 py-2.5 transition-colors flex items-center justify-center gap-2 text-blue-600 active:text-blue-700 font-semibold text-[11px] min-h-[40px] touch-manipulation">
-                                            <Github className="w-4 h-4 flex-shrink-0" />
-                                            <span className="truncate">Go to GitHub</span>
-                                        </button>
-                                    </a>
                                 </div>
                             </div>
                             
                             {/* Desktop: Search */}
-                            <div className="hidden sm:flex items-center gap-2 sm:gap-4">
+                            <div className="hidden sm:flex items-center gap-2">
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-gray-200">
                                     <Search className="w-4 h-4 text-gray-400" />
                                     <input 
@@ -211,27 +192,27 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
             <div className="flex-1 bg-white rounded-b-xl border border-gray-200 border-t-0 overflow-hidden flex">
                 {selectedProject ? (
                     /* Project Detail View */
-                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8">
+                    <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
                         <button 
                             onClick={handleBackToShop}
-                            className="mb-3 sm:mb-4 md:mb-6 flex items-center gap-2 transition-colors text-xs sm:text-sm md:text-base text-blue-600 hover:text-blue-700"
+                            className="mb-4 sm:mb-6 flex items-center gap-2 transition-colors text-sm sm:text-base text-gray-600 hover:text-gray-900"
                         >
-                            <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                             <span>Back to Projects</span>
                         </button>
-                        <div className="bg-white rounded-xl p-3 sm:p-4 md:p-6 lg:p-8">
+                        <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 md:p-8">
                             {selectedProject.content}
                         </div>
                     </div>
                 ) : (
                     <>
                         {/* Main Content Area */}
-                        <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 lg:p-6">
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6 lg:p-8">
                             {filteredItems !== null ? (
                                 /* Search Results */
                                 <div>
-                                    <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
-                                        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-4 sm:mb-5 md:mb-6 flex items-center gap-2">
+                                        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
                                         <span>Search Results</span>
                                         <span className="text-sm font-normal text-gray-500">
                                             ({filteredItems.length} {filteredItems.length === 1 ? 'project' : 'projects'})
@@ -259,7 +240,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                 <>
                                     {/* Popular Items / Featured Projects Section */}
                                     <div className="mb-4 sm:mb-6 md:mb-8">
-                                        <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                                        <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-4 sm:mb-5 md:mb-6">
                                             Featured Projects
                                         </h2>
                                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
@@ -276,7 +257,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     {/* Student Government Section */}
                                     {studentGovernmentItems.length > 0 && (
                                         <div className="mb-4 sm:mb-6 md:mb-8">
-                                                <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                                                <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-4 sm:mb-5 md:mb-6">
                                                 Student Government
                                             </h2>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
@@ -294,7 +275,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                     {/* DevOps Projects Section */}
                                     {devOpsItems.length > 0 && (
                                         <div>
-                                            <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                                            <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-4 sm:mb-5 md:mb-6">
                                                 DevOps Projects
                                             </h2>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
@@ -313,67 +294,56 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                         </div>
 
                         {/* Avatar Sidebar */}
-                        <div className="hidden lg:block w-72 xl:w-80 bg-gray-50 border-l border-gray-200 p-4 xl:p-6 overflow-y-auto">
-                            <div className="text-center mb-4">
-                                <div className="flex items-center justify-center gap-2 mb-2">
+                        <div className="hidden lg:block w-72 xl:w-80 bg-gray-50 border-l border-gray-200 p-6 overflow-y-auto">
+                            <div className="space-y-4">
+                                {/* Avatar */}
+                                <div className="text-center">
                                     <a 
                                         href="https://github.com/zedithx" 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="text-gray-900 hover:text-blue-600 transition-colors cursor-pointer"
+                                        className="block cursor-pointer group"
                                         title="Visit GitHub Profile"
                                     >
-                                        <h3 className="font-semibold text-lg">zedithx</h3>
-                                    </a>
-                                    <a 
-                                        href="https://github.com/zedithx" 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="text-gray-900 hover:text-blue-600 transition-colors"
-                                        title="Visit GitHub Profile"
-                                    >
-                                        <Github className="w-5 h-5" />
-                                    </a>
-                                </div>
-                                <a 
-                                    href="https://github.com/zedithx" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="block cursor-pointer group"
-                                    title="Visit GitHub Profile"
-                                >
-                                    <div className="bg-white rounded-lg p-4 border border-gray-200 transition-colors group-hover:border-blue-300">
-                                        <div className="aspect-square relative">
-                                            <img 
-                                                src="/background/avatars/Tech SiJun.jpg" 
-                                                alt="Character Avatar" 
-                                                className="w-full h-full object-cover rounded group-hover:opacity-90 transition-opacity"
-                                                style={{ objectPosition: 'center 25%' }}
-                                            />
+                                        <div className="bg-white rounded-lg p-2 border border-gray-200 transition-colors group-hover:border-gray-300 mb-3">
+                                            <div className="aspect-square relative">
+                                                <img 
+                                                    src="/background/avatars/Tech SiJun.jpg" 
+                                                    alt="Character Avatar" 
+                                                    className="w-full h-full object-cover rounded"
+                                                    style={{ objectPosition: 'center 25%' }}
+                                                />
+                                            </div>
                                         </div>
+                                        <div className="flex items-center justify-center gap-2">
+                                            <h3 className="font-semibold text-base text-gray-900">zedithx</h3>
+                                            <Github className="w-4 h-4 text-gray-600" />
+                                        </div>
+                                    </a>
+                                </div>
+
+                                {/* Stats */}
+                                <div className="space-y-3">
+                                    <div className="bg-white rounded-lg p-4 border border-gray-200">
+                                        <div className="text-gray-500 text-xs mb-1.5">Projects</div>
+                                        <div className="text-gray-900 text-xl font-semibold">{data.items ? data.items.length : 0}</div>
                                     </div>
-                                </a>
-                            </div>
-                            <div className="space-y-3">
-                                <div className="bg-white rounded-lg p-3 border border-gray-200">
-                                    <div className="text-gray-600 text-xs mb-1">Projects</div>
-                                    <div className="text-blue-600 text-lg font-semibold">{data.items ? data.items.length : 0}</div>
+                                    <div className="bg-white rounded-lg p-4 border border-gray-200">
+                                        <div className="text-gray-500 text-xs mb-1.5">Total Commits</div>
+                                        <div className="text-gray-900 text-xl font-semibold">{commits.toLocaleString()}</div>
+                                    </div>
+                                    <a 
+                                        href="https://github.com/zedithx" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="block w-full"
+                                    >
+                                        <button className="w-full rounded-lg py-2.5 px-4 transition-colors flex items-center justify-center gap-2 font-medium bg-gray-900 hover:bg-gray-800 text-white text-sm">
+                                            <Github className="w-4 h-4" />
+                                            <span>Go to GitHub</span>
+                                        </button>
+                                    </a>
                                 </div>
-                                <div className="bg-white rounded-lg p-3 border border-gray-200">
-                                    <div className="text-gray-600 text-xs mb-1">Total Commits</div>
-                                    <div className="text-blue-600 text-lg font-semibold">{commits.toLocaleString()}</div>
-                                </div>
-                                <a 
-                                    href="https://github.com/zedithx" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="block w-full"
-                                >
-                                    <button className="w-full rounded-lg p-3 transition-colors flex items-center justify-center gap-2 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 text-blue-600 hover:text-blue-700">
-                                        <Github className="w-4 h-4" />
-                                        <span>Go to GitHub</span>
-                                    </button>
-                                </a>
                             </div>
                         </div>
                     </>

@@ -29,16 +29,13 @@ const ItemCard = React.memo(({ item, onClick }) => {
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleClick}
-            className="relative bg-[#1a1a1a] rounded-lg overflow-hidden cursor-pointer transition-all shadow-lg hover:shadow-xl hover:shadow-yellow-500/30"
-            style={{
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-            }}
+            className="relative bg-white rounded-lg overflow-hidden cursor-pointer transition-all shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300"
         >
             
             {/* Glow effect on hover (desktop only) */}
             {isHovered && (
                 <div
-                    className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-purple-500/10 pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 pointer-events-none"
                     style={{ willChange: 'opacity' }}
                 />
             )}
@@ -113,7 +110,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
                                         y: { type: "tween", duration: 0.15, ease: "easeOut" }
                                     }}
-                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/95 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/50"
+                                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-md border border-gray-200"
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {isImagePath ? (
@@ -146,18 +143,17 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 )}
             </div>
             
-            {/* Bottom info section with darker MapleStory-style background */}
-            <div className="p-2 sm:p-3 md:p-4 bg-[#1a1a1a] border-t border-gray-700/50">
-                <h3 className="text-white font-bold text-xs sm:text-sm md:text-base mb-1.5 sm:mb-2 truncate">{item.title}</h3>
+            {/* Bottom info section */}
+            <div className="p-2 sm:p-3 md:p-4 bg-white border-t border-gray-200">
+                <h3 className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base mb-1.5 sm:mb-2 truncate">{item.title}</h3>
                 
                 <div className="flex items-center justify-between">
                     <motion.div
                         whileHover={{ scale: 1.15, x: 2 }}
-                        className="px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-900/50 border-2 border-yellow-400/60 rounded-lg"
+                        className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 border border-gray-300 rounded-lg"
                     >
-                        <span className="text-yellow-300 text-[10px] sm:text-xs md:text-sm font-bold flex items-center gap-1 sm:gap-1.5">
-                            <span className="text-yellow-400 text-xs sm:text-sm">💎</span>
-                            <span className="whitespace-nowrap">{item.commits.toLocaleString()} Commits</span>
+                        <span className="text-gray-700 text-[10px] sm:text-xs md:text-sm font-semibold whitespace-nowrap">
+                            {item.commits.toLocaleString()} Commits
                         </span>
                     </motion.div>
                 </div>
