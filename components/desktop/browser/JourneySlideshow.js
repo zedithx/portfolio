@@ -168,6 +168,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [activeTab, setActiveTab] = useState('summary'); // 'summary' or 'skills'
     const [unlockedSkills, setUnlockedSkills] = useState([]); // Track newly unlocked skills (array for multiple unlocks)
     const [recentlyUnlockedSkills, setRecentlyUnlockedSkills] = useState(new Set()); // Track skills that just unlocked for animation
+    const [isAnimating, setIsAnimating] = useState(false); // Track if any animations are in progress
 
     // Memoize prefersReducedMotion to avoid checking on every render
     const prefersReducedMotion = useMemo(() => {
@@ -180,8 +181,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const currentDialogue = currentCard?.dialogues?.[dialogueIndex];
 
     // Function to animate skills sequentially
-    const animateSkillsSequentially = useCallback((skillNames) => {
-        if (!skillNames || skillNames.length === 0) return;
+    const animateSkillsSequentially = useCallback((skillNames, onComplete) => {
+        if (!skillNames || skillNames.length === 0) {
+            if (onComplete) onComplete();
+            return;
+        }
         
         skillNames.forEach((skillName, index) => {
             setTimeout(() => {
@@ -200,6 +204,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         delete newValues[skillName];
                         return newValues;
                     });
+                    
+                    // Call onComplete when last skill animation finishes (after 2000ms animation)
+                    if (index === skillNames.length - 1 && onComplete) {
+                        onComplete();
+                    }
                 }, 2000);
             }, index * 300); // 300ms delay between each skill animation
         });
@@ -253,6 +262,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     const isLastSlide = currentIndex === journey.length - 1;
                     const popupDuration = isLastSlide ? 2000 : 3000;
                     
+                    // Start animation tracking
+                    setIsAnimating(true);
+                    
                     setDesktopPopupSkills(currentCard.skillsGained);
                     setShowDesktopPopup(true);
                     
@@ -287,13 +299,19 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             // STEP 3: After unlock notification, animate skill bars sequentially
                             // Wait for unlock notification duration (4 seconds) + small buffer
                             setTimeout(() => {
-                                animateSkillsSequentially(updatedSkillNames);
+                                animateSkillsSequentially(updatedSkillNames, () => {
+                                    // All animations complete
+                                    setIsAnimating(false);
+                                });
                             }, 4500);
                         } else {
                             // No unlocks, so animate skill bars right after popup closes
                             // Small delay to ensure popup is fully closed
                             setTimeout(() => {
-                                animateSkillsSequentially(updatedSkillNames);
+                                animateSkillsSequentially(updatedSkillNames, () => {
+                                    // All animations complete
+                                    setIsAnimating(false);
+                                });
                             }, 100);
                         }
                     }, popupDuration);
@@ -308,7 +326,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, journey.length]);
 
     const goNext = useCallback(() => {
-        if (isTransitioning) return;
+        if (isTransitioning || isAnimating) return;
         
         const isLastSlide = currentIndex === journey.length - 1;
         if (isLastSlide) {
@@ -326,16 +344,16 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 setCurrentIndex(prev => prev + 1);
             }, 300);
         }
-    }, [currentIndex, journey.length, isTransitioning]);
+    }, [currentIndex, journey.length, isTransitioning, isAnimating]);
 
     const goPrev = useCallback(() => {
-        if (currentIndex > 0 && !isTransitioning) {
+        if (currentIndex > 0 && !isTransitioning && !isAnimating) {
             setIsTransitioning(true);
             setTimeout(() => {
                 setCurrentIndex(prev => prev - 1);
             }, 300);
         }
-    }, [currentIndex, isTransitioning]);
+    }, [currentIndex, isTransitioning, isAnimating]);
 
     const goToSlide = useCallback((index) => {
         if (!isTransitioning && index !== currentIndex) {
@@ -1393,33 +1411,58 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         {/* Dark overlay for better text readability */}
                         <div className="absolute inset-0 bg-black/50 pointer-events-none z-0" />
                         
+                        {/* Segment Header - Top Left */}
+                        <motion.div
+                            initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
+                            animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
+                            transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
+                            className="absolute top-4 left-4 md:top-6 md:left-6 z-30 max-w-[80%] md:max-w-none"
+                        >
+                            <div 
+                                className="px-4 py-2 md:px-5 md:py-2.5 rounded text-sm md:text-base font-bold"
+                                style={{
+                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    border: '2px solid #ffd700',
+                                    color: '#fff',
+                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                    boxShadow: '0 0 15px rgba(102, 126, 234, 0.6), 0 0 10px rgba(255, 215, 0, 0.4)',
+                                    fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif",
+                                    letterSpacing: '1px'
+                                }}
+                            >
+                                {currentCard.title}
+                            </div>
+                        </motion.div>
+                        
                         {/* Optimized Atmospheric Effects - Reduced particle count */}
                         {!prefersReducedMotion && (
                             <>
-                                {/* Rain/Water Effect - Reduced to 8 particles for better performance */}
-                                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                                    {rainParticles.map((particle) => (
-                                        <motion.div
-                                            key={`rain-${particle.id}`}
-                                            className="absolute w-0.5 bg-white/20"
-                                            style={{
-                                                left: `${particle.left}%`,
-                                                top: '-10px',
-                                                height: '20px',
-                                            }}
-                                            animate={{
-                                                y: [0, 700],
-                                                opacity: [0, 0.5, 0],
-                                            }}
-                                            transition={{
-                                                duration: particle.duration,
-                                                repeat: Infinity,
-                                                delay: particle.delay,
-                                                ease: 'linear'
-                                            }}
-                                        />
-                                    ))}
-                                </div>
+                                {/* Rain/Water Effect - Only show in first segment (Life before university) */}
+                                {currentCard.id === 1 && (
+                                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                        {rainParticles.map((particle) => (
+                                            <motion.div
+                                                key={`rain-${particle.id}`}
+                                                className="absolute w-0.5 bg-white/20"
+                                                style={{
+                                                    left: `${particle.left}%`,
+                                                    top: '-10px',
+                                                    height: '20px',
+                                                }}
+                                                animate={{
+                                                    y: [0, 700],
+                                                    opacity: [0, 0.5, 0],
+                                                }}
+                                                transition={{
+                                                    duration: particle.duration,
+                                                    repeat: Infinity,
+                                                    delay: particle.delay,
+                                                    ease: 'linear'
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
 
                                 {/* Floating particles - Reduced to 5 for better performance */}
                                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -1485,12 +1528,12 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         </motion.div>
 
 
-                        {/* Stage Icon (Top Right) */}
+                        {/* Stage Icon (Top Right) - Hidden on mobile */}
                         <motion.div
                             initial={prefersReducedMotion ? {} : { scale: 0, rotate: 180 }}
                             animate={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
                             transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.4, type: 'spring' }}
-                            className="absolute right-8 top-8 z-20"
+                            className="absolute right-8 top-8 z-20 hidden md:block"
                         >
                             <div 
                                 className="text-6xl md:text-8xl"
@@ -1530,26 +1573,15 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     }}
                                     aria-label="Click to continue dialogue"
                                 >
-                                    {/* Character Name and Category */}
+                                    {/* Character Name */}
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div 
-                                            className="px-4 py-2 rounded text-sm font-bold"
-                                            style={{
-                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                border: '2px solid #ffd700',
-                                                color: '#fff',
-                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                boxShadow: '0 0 15px rgba(102, 126, 234, 0.6)'
-                                            }}
-                                        >
-                                            {currentCard.category.toUpperCase()}
-                                        </div>
                                         <div 
                                             className="text-lg md:text-xl font-bold"
                                             style={{
                                                 color: '#ffd700',
                                                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
-                                                letterSpacing: '1px'
+                                                letterSpacing: '1px',
+                                                fontFamily: "'Orbitron', system-ui, -apple-system, sans-serif"
                                             }}
                                         >
                                             {activeDialogue.speaker === 'hero' 
@@ -1936,9 +1968,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             <>
                                 <button
                                     onClick={goPrev}
-                                    disabled={currentIndex === 0 || isTransitioning}
+                                    disabled={currentIndex === 0 || isTransitioning || isAnimating}
                                     className={`absolute left-4 top-1/2 -translate-y-1/2 z-50 min-h-[48px] min-w-[48px] p-3 rounded-full transition-all touch-manipulation ${
-                                        currentIndex === 0 || isTransitioning ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:scale-110'
+                                        currentIndex === 0 || isTransitioning || isAnimating ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:scale-110'
                                     }`}
                                     style={{
                                         background: 'rgba(0, 0, 0, 0.7)',
@@ -1953,16 +1985,16 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                                 <button
                                     onClick={goNext}
-                                    disabled={isTransitioning}
+                                    disabled={isTransitioning || isAnimating}
                                     className={`absolute right-4 top-1/2 -translate-y-1/2 z-[60] min-h-[48px] min-w-[48px] p-3 rounded-full transition-all touch-manipulation ${
-                                        isTransitioning ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:scale-110'
+                                        isTransitioning || isAnimating ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:scale-110'
                                     }`}
                                     style={{
                                         background: 'rgba(0, 0, 0, 0.7)',
                                         border: '3px solid #ffd700',
                                         color: '#ffd700',
                                         boxShadow: '0 0 20px rgba(255, 215, 0, 0.4)',
-                                        pointerEvents: isTransitioning ? 'none' : 'auto'
+                                        pointerEvents: isTransitioning || isAnimating ? 'none' : 'auto'
                                     }}
                                     aria-label={currentIndex === journey.length - 1 ? "Go to summary" : "Next adventure"}
                                 >

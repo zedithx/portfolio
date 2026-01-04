@@ -404,7 +404,7 @@ export const aboutMeData = {
     journey: [
         {
             id: 1,
-            title: "Before Uni - Victoria School and Victoria Junior College",
+            title: "Life before university",
             dialogues: [
                 {
                     speaker: "hero",
@@ -426,7 +426,7 @@ export const aboutMeData = {
         },
         {
             id: 2,
-            title: "Internship before University - Reluvate Technologies",
+            title: "Internship before University",
             dialogues: [
                 {
                     speaker: "hero",
@@ -448,7 +448,7 @@ export const aboutMeData = {
         },
         {
             id: 3,
-            title: "University - SUTD",
+            title: "University",
             dialogues: [
                 {
                     speaker: "hero",
@@ -478,7 +478,7 @@ export const aboutMeData = {
         },
         {
             id: 4,
-            title: "Internships - Changi Airport Group, TSMC, and Bytedance",
+            title: "Internships in university",
             dialogues: [
                 {
                     speaker: "hero",
@@ -490,13 +490,13 @@ export const aboutMeData = {
                 }
             ],
             category: "Internship",
-            icon: "🌐",
+            icon: "💼",
             skillsGained: { Backend: 20, DevOps: 40,  'Cloud Infrastructure': 60,  SRE: 40, Deployment: 20, 'Product Management': 20, Recreational: -20 },
             scene: "/background/bytedance.webp"
         },
         {
             id: 5,
-            title: "Back to SUTD - Waiting for Full Time Job",
+            title: "What's next?",
             dialogues: [
                 {
                     speaker: "hero",
@@ -508,7 +508,7 @@ export const aboutMeData = {
                 }
             ],
             category: "Future",
-            icon: "🚀",
+            icon: "⭐",
             skillsGained: { Social: 20, Recreational: 20 },
             scene: "/background/sutdcontractedwork.webp"
         }
@@ -532,7 +532,7 @@ export const journeySummaryContent = {
         "content": "During my army days, I decided to try learning coding and quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework, which later helped me land an internship at Reluvate Technologies, where Django was used for client projects. I went in as a complete noob and spent about 13 hours a day in the first week just trying to keep up and not get overwhelmed. It was intense enough that I almost quit because of the stress and how useless I felt, but I pushed through, and after about a month I finally started to feel like I was genuinely contributing. By the end of the internship, I realised that I really enjoyed coding and loved the feeling of making changes to products that people actually use in the real world."
     },
     "university": {
-        "title": "University",
+        "title": "University Life",
         "content": "At SUTD, being surrounded by many strong software engineers, especially those from polytechnic backgrounds, pushed me to grow quickly. A classmate encouraged me to join the student government's tech department, which at the time felt like a casual decision but ended up becoming one of the most defining parts of my university life. I went on to build the frontend site for SUTD's largest annual event, Night Fiesta 2024, followed by the websites for Orientation 2024 and LCC 2024, and led the implementation of an RFID-based game carnival system end-to-end (custom RFID bands from a supplier in China, RFID readers, and the supporting software). I also built multiple Telegram bots to run event logistics and engagement. Through these projects, my frontend skills grew rapidly, and I deepened my deployment and backend skills by repeatedly shipping and operating production-facing tools for the school.\\n\\nI also tend to become hyper-focused when building things. At SUTD, I often treated projects like a full-time job, pulling late nights to get them to a level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, and in my computer science modules I pushed my teams and myself to ship products that felt polished and real. Across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" - diving deep into projects out of genuine passion is where I produce my best work."
     },
     "internshipsInUniversity": {
