@@ -10,8 +10,11 @@ import GmailConfirmModal from '../components/desktop/GmailConfirmModal';
 import GmailComposeModal from '../components/desktop/GmailComposeModal';
 import SpotifyModal from '../components/desktop/SpotifyModal';
 import PDFViewer from '../components/desktop/PDFViewer';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function Home() {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [activeModal, setActiveModal] = useState(null);
     const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
     const [permissionMessage, setPermissionMessage] = useState(null);
@@ -132,7 +135,10 @@ export default function Home() {
             <div 
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat w-full h-full"
                 style={{
-                    backgroundImage: 'url("/wallpaper/desktop_wallpaper.jpg")'
+                    backgroundImage: isDark ? 'url("/wallpaper/desktop_wallpaper.jpg")' : 'url("/wallpaper/desktop_wallpaper_light.webp")',
+                    imageRendering: 'auto',
+                    WebkitImageRendering: 'auto',
+                    backgroundAttachment: 'fixed'
                 }}
             />
 

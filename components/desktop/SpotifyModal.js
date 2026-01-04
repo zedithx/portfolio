@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 
 // Your music tracks
 const defaultTracks = [
@@ -33,6 +34,8 @@ const formatTime = (seconds) => {
 };
 
 export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMinimize, onMaximize, modalState = 'normal' }) {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -261,7 +264,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                     }}
                         exit={{ scale: 0, opacity: 0, y: '100vh' }}
                     transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                        className={`fixed flex flex-col bg-[#121212] shadow-2xl overflow-hidden ${isMaximized ? 'z-[60] rounded-none' : 'z-[100] rounded-lg'} ${isMaximized ? '' : 'max-w-[80rem]'}`}
+                        className={`fixed flex flex-col shadow-2xl overflow-hidden ${isMaximized ? 'z-[60] rounded-none' : 'z-[100] rounded-lg'} ${isMaximized ? '' : 'max-w-[80rem]'} ${isDark ? 'bg-[#121212]' : 'bg-white'}`}
                     style={{ 
                             transformOrigin: 'center',
                         pointerEvents: isMinimized ? 'none' : 'auto',
@@ -274,7 +277,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                     }}
                 >
                     {/* Title Bar */}
-                        <div className="flex items-center justify-between px-4 py-3 sm:px-4 sm:py-3 bg-[#1a1a1a] border-b border-white/10">
+                        <div className={`flex items-center justify-between px-4 py-3 sm:px-4 sm:py-3 border-b ${isDark ? 'bg-[#1a1a1a] border-white/10' : 'bg-gray-100 border-gray-200'}`}>
                             <div className="flex items-center gap-2 sm:gap-2">
                                 <button 
                                     onClick={(e) => {
@@ -320,7 +323,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                     aria-label="Maximize"
                                 />
                             </div>
-                            <div className="absolute left-1/2 -translate-x-1/2 text-sm sm:text-sm text-white font-medium">
+                            <div className={`absolute left-1/2 -translate-x-1/2 text-sm sm:text-sm font-medium ${isDark ? 'text-white' : 'text-gray-700'}`}>
                                 Spotify
                             </div>
                             <button
@@ -331,7 +334,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                         onClose();
                                     }
                                 }}
-                                className="text-white/50 hover:text-white/80 transition-colors text-xs sm:text-sm px-2 sm:px-3 py-1 rounded hover:bg-white/10"
+                                className={`transition-colors text-xs sm:text-sm px-2 sm:px-3 py-1 rounded ${isDark ? 'text-white/50 hover:text-white/80 hover:bg-white/10' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'}`}
                             >
                                 Close
                             </button>
@@ -339,7 +342,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                         </div>
 
                         {/* Main Content Area */}
-                        <div className="flex-1 overflow-auto bg-[#121212] p-4 sm:p-6 md:p-8">
+                        <div className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isDark ? 'bg-[#121212]' : 'bg-white'}`}>
                             {/* Current Track Info */}
                             <div className="flex flex-col items-center justify-center mb-6 sm:mb-8">
                                 {/* Album Art */}
@@ -358,17 +361,17 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                 )}
                                 
                                 {/* Track Info */}
-                                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 text-center px-2">
+                                <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-center px-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                     {currentTrack.title}
                                 </h2>
-                                <p className="text-base sm:text-lg md:text-xl text-gray-400 text-center px-2">
+                                <p className={`text-base sm:text-lg md:text-xl text-center px-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                     {currentTrack.artist}
                                 </p>
                             </div>
 
                             {/* Track List */}
                             <div className="mt-6 sm:mt-8">
-                                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Songs</h3>
+                                <h3 className={`text-lg sm:text-xl font-semibold mb-3 sm:mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Songs</h3>
                                 <div className="space-y-2">
                                     {defaultTracks.map((track, index) => (
                                         <div
@@ -381,7 +384,9 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                             className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-3 rounded-lg cursor-pointer transition-colors touch-manipulation ${
                                                 index === currentTrackIndex
                                                     ? 'bg-[#1db954]/20 border border-[#1db954]/50'
-                                                    : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] active:bg-[#2a2a2a]'
+                                                    : isDark 
+                                                        ? 'bg-[#1a1a1a] hover:bg-[#2a2a2a] active:bg-[#2a2a2a]'
+                                                        : 'bg-gray-50 hover:bg-gray-100 active:bg-gray-200 border border-transparent'
                                             }`}
                                         >
                                             {track.albumArt ? (
@@ -399,11 +404,11 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                             )}
                                             <div className="flex-1 min-w-0">
                                                 <p className={`text-sm sm:text-base font-medium truncate ${
-                                                    index === currentTrackIndex ? 'text-[#1db954]' : 'text-white'
+                                                    index === currentTrackIndex ? 'text-[#1db954]' : (isDark ? 'text-white' : 'text-gray-900')
                                                 }`}>
                                                     {track.title}
                                                 </p>
-                                                <p className="text-xs sm:text-sm text-gray-400 truncate">
+                                                <p className={`text-xs sm:text-sm truncate ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                                     {track.artist}
                                                 </p>
                                             </div>
@@ -417,7 +422,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                         </div>
 
                         {/* Player Controls Bar */}
-                        <div className="bg-[#181818] border-t border-white/10 p-3 sm:p-4 md:p-6">
+                        <div className={`border-t p-3 sm:p-4 md:p-6 ${isDark ? 'bg-[#181818] border-white/10' : 'bg-gray-50 border-gray-200'}`}>
                             {/* Progress Bar */}
                             <div className="mb-3 sm:mb-4">
                                 <input
@@ -426,12 +431,12 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                     max={duration || 0}
                                     value={currentTime}
                                     onChange={handleSeek}
-                                    className="w-full h-1.5 sm:h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#1db954] touch-manipulation"
+                                    className={`w-full h-1.5 sm:h-1 rounded-lg appearance-none cursor-pointer accent-[#1db954] touch-manipulation ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}
                                     style={{
                                         background: `linear-gradient(to right, #1db954 0%, #1db954 ${(currentTime / duration) * 100}%, #535353 ${(currentTime / duration) * 100}%, #535353 100%)`
                                     }}
                                 />
-                                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <div className={`flex justify-between text-xs mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                     <span>{formatTime(currentTime)}</span>
                                     <span>{formatTime(duration)}</span>
                                 </div>
@@ -455,10 +460,10 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                     </div>
                                     )}
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium text-white truncate">
+                                        <p className={`text-sm font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                             {currentTrack.title}
                                         </p>
-                                        <p className="text-xs text-gray-400 truncate">
+                                        <p className={`text-xs truncate ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                             {currentTrack.artist}
                                         </p>
                                     </div>
@@ -468,7 +473,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                 <div className="flex items-center gap-3 sm:gap-2 md:gap-4">
                                     <button
                                         onClick={handlePrevious}
-                                        className="p-2 sm:p-2 text-gray-400 hover:text-white active:text-white transition-colors touch-manipulation"
+                                        className={`p-2 sm:p-2 transition-colors touch-manipulation ${isDark ? 'text-gray-400 hover:text-white active:text-white' : 'text-gray-600 hover:text-gray-900 active:text-gray-900'}`}
                                         aria-label="Previous track"
                                     >
                                         <SkipBack size={22} className="sm:w-5 sm:h-5" />
@@ -486,7 +491,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                     </button>
                                     <button
                                         onClick={handleNext}
-                                        className="p-2 sm:p-2 text-gray-400 hover:text-white active:text-white transition-colors touch-manipulation"
+                                        className={`p-2 sm:p-2 transition-colors touch-manipulation ${isDark ? 'text-gray-400 hover:text-white active:text-white' : 'text-gray-600 hover:text-gray-900 active:text-gray-900'}`}
                                         aria-label="Next track"
                                     >
                                         <SkipForward size={22} className="sm:w-5 sm:h-5" />
@@ -497,7 +502,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                 <div className="flex items-center gap-2 flex-1 sm:flex-1 justify-end">
                                     <button
                                         onClick={toggleMute}
-                                        className="p-2 text-gray-400 hover:text-white active:text-white transition-colors touch-manipulation"
+                                        className={`p-2 transition-colors touch-manipulation ${isDark ? 'text-gray-400 hover:text-white active:text-white' : 'text-gray-600 hover:text-gray-900 active:text-gray-900'}`}
                                         aria-label={isMuted ? 'Unmute' : 'Mute'}
                                     >
                                         {isMuted || volume === 0 ? (
@@ -512,7 +517,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                                         max="100"
                                         value={isMuted ? 0 : volume}
                                         onChange={handleVolumeChange}
-                                        className="w-16 sm:w-20 md:w-24 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#1db954] touch-manipulation"
+                                        className={`w-16 sm:w-20 md:w-24 h-1 rounded-lg appearance-none cursor-pointer accent-[#1db954] touch-manipulation ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}
                                         style={{
                                             background: `linear-gradient(to right, #1db954 0%, #1db954 ${volume}%, #535353 ${volume}%, #535353 100%)`
                                         }}

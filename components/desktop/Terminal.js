@@ -9,6 +9,8 @@ const commands = [
     { name: 'history', description: 'View my professional experience' },
     { name: 'cat resume', description: 'View my resume (PDF)' },
     { name: 'clear', description: 'Clear the terminal screen' },
+    { name: 'cd dark', description: 'Switch to dark mode' },
+    { name: 'cd light', description: 'Switch to light mode' },
 ];
 
 const Typewriter = ({ text, delay = 0, onComplete, speed = 20 }) => {
