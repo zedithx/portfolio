@@ -277,7 +277,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                     }}
                 >
                     {/* Title Bar */}
-                        <div className={`flex items-center justify-between px-4 py-3 sm:px-4 sm:py-3 border-b ${isDark ? 'bg-[#1a1a1a] border-white/10' : 'bg-gray-100 border-gray-200'}`}>
+                        <div className={`flex items-center justify-between px-4 py-3 sm:px-4 sm:py-3 border-b relative ${isDark ? 'bg-[#1a1a1a] border-white/10' : 'bg-gray-100 border-gray-200'}`}>
                             <div className="flex items-center gap-2 sm:gap-2">
                                 <button 
                                     onClick={(e) => {
@@ -338,7 +338,6 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
                             >
                                 Close
                             </button>
-                            <div className="w-12 sm:w-12"></div>
                         </div>
 
                         {/* Main Content Area */}
