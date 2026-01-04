@@ -391,50 +391,20 @@ export const aboutMeData = {
         'Product Management': {
             baseline: 0,
             max: 100
-        },
-        Social: {
-            baseline: 20,
-            max: 100
-        },
-        Recreational: {
-            baseline: 20,
-            max: 100
         }
     },
     journey: [
         {
             id: 1,
-            title: "Life before university",
-            dialogues: [
-                {
-                    speaker: "hero",
-                    text: "Back then, I honestly wasn't doing great in school. I had almost no discipline, hated studying, and spent most of my time doing anything except my actual work."
-                },
-                {
-                    speaker: "hero",
-                    text: "I kept wondering if there was something like ADHD going on, because no matter how hard I tried, I just couldn't stay focused on subjects like physics, chemistry, math, and science. I came close to retaining in secondary school and even hit around the bottom 23rd percentile in my college exams at one point."
-                },
-                {
-                    speaker: "hero",
-                    text: "But at the same time, whenever it came to hands-on projects and building things, I would get completely obsessed—in a good way—spending late nights working on them without even noticing the time. That contrast made me realize that I'm someone who learns and performs best when I'm creating and building, not just memorizing."
-                }
-            ],
-            category: "Education",
-            icon: "🎓",
-            skillsGained: { Social: 40, Recreational: 80 },
-            scene: "/background/vjc.webp"
-        },
-        {
-            id: 2,
             title: "Internship before University",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "During my army days, I decided to try learning coding and quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework, which later helped me land an internship at Reluvate Technologies, where Django was used for client projects."
+                    text: "Hi, I'm Si Jun, a Full-Stack/Devops/Site Reliability Engineer. My coding journey started during my army days, where I decided to try learning coding and I quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework, which later helped me land an internship at Reluvate Technologies, where Django was used for client projects."
                 },
                 {
                     speaker: "hero",
-                    text: "I went in as a complete noob and spent about 13 hours a day in the first week just trying to keep up and not get overwhelmed. It was intense enough that I almost quit because of the stress and how useless I felt, but I pushed through, and after about a month I finally started to feel like I was genuinely contributing."
+                    text: "During Reluvate, I worked on the backend of a payment platform which was used by notable merchants such as KOI, Watsons and Zara. Today that Payment Platform is used by over 1,860 merchants in Singapore."
                 },
                 {
                     speaker: "hero",
@@ -443,11 +413,11 @@ export const aboutMeData = {
             ],
             category: "Internship",
             icon: "💼",
-            skillsGained: { Backend: 40, 'Product Management': 10, Recreational: -60 },
+            skillsGained: { Backend: 40, 'Product Management': 10 },
             scene: "/background/reluvate.gif"
         },
         {
-            id: 3,
+            id: 2,
             title: "University",
             dialogues: [
                 {
@@ -469,49 +439,45 @@ export const aboutMeData = {
                 },
                 {
                     speaker: "hero",
-                    text: "My grades didn't turn out bad actually, but they weren't first class. In contrast, across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" - diving deep into projects out of genuine passion is where I produce my best work, and also when I'm happiest.",
+                    text: "Across several modules, our projects consistently ranked top three in the cohort and picked up awards.",
                     scene: "/background/SchoolProjectAwards.JPG"
                 }
             ],
             category: "Education",
             icon: "🏛️",
-            skillsGained: { Frontend: 50, Backend: 20, Hardware: 30, 'Telegram Bots': 60, Deployment: 40, LLMs: 30, Devops: 20, 'Product Management': 40, Recreational: 20},
+            skillsGained: { Frontend: 50, Backend: 20, Hardware: 30, 'Telegram Bots': 60, Deployment: 40, LLMs: 30, Devops: 20, 'Product Management': 40 },
             scene: "/background/DesignThinking.JPG"
         },
         {
-            id: 4,
+            id: 3,
             title: "Internships in university",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "In my 3rd year of university, we had a long school break of 8 months. I completed multiple internships at Changi Airport Group, TSMC, and even a Bytedance internship while juggling my studies, each teaching me different aspects of software engineering."
+                    text: "In my 3rd year of university, SUTD had a long school break of 8 months after my exchange. I completed internships at Changi Airport Group, TSMC, and ByteDance while juggling my studies, each teaching me different aspects of software engineering."
                 },
                 {
                     speaker: "hero",
-                    text: "From automation and software engineering at Changi Airport, to DevOps Infrastructure and Telemetry at TSMC, to Site Reliability Engineering at Bytedance - each experience built upon the last."
+                    text: "From automation and software engineering at Changi Airport, to DevOps infrastructure and telemetry at TSMC, to finally getting to Site Reliability Engineering at Bytedance - each experience built upon the last."
                 }
             ],
             category: "Internship",
             icon: "💼",
-            skillsGained: { Backend: 20, DevOps: 40,  'Cloud Infrastructure': 60,  SRE: 40, Deployment: 20, 'Product Management': 20, Recreational: -20 },
+            skillsGained: { Backend: 20, DevOps: 40,  'Cloud Infrastructure': 60,  SRE: 40, Deployment: 20, 'Product Management': 20 },
             scene: "/background/bytedance.webp"
         },
         {
-            id: 5,
+            id: 4,
             title: "What's next?",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey."
-                },
-                {
-                    speaker: "hero",
-                    text: "With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
+                    text: "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey. With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
                 }
             ],
             category: "Future",
             icon: "⭐",
-            skillsGained: { Social: 20, Recreational: 20 },
+            skillsGained: {},
             scene: "/background/sutd.webp"
         }
     ]
@@ -519,31 +485,40 @@ export const aboutMeData = {
 
 // Summary content for journey summary page
 export const journeySummaryContent = {
-    "schoolBeforeUniversity": {
-        "title": "School before university",
-        "content": "Back then, I honestly wasn't doing great in school. I had almost no discipline, hated studying, \
-        and spent most of my time doing anything except my actual work. I kept wondering if there was something like ADHD going on, \
-        because no matter how hard I tried, I just couldn't stay focused on subjects like physics, chemistry, math, and science. \
-        I came close to retaining in secondary school and even hit around the bottom 23rd percentile in my college exams at one point. \
-        But at the same time, whenever it came to hands-on projects and building things, I would get completely obsessed—in a good way—spending \
-        late nights working on them without even noticing the time. That contrast made me realize that I'm someone who learns and performs best when\
-        I'm creating and building, not just memorising."
-    },
     "internshipBeforeUniversity": {
         "title": "Internship before university",
-        "content": "During my army days, I decided to try learning coding and quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework, which later helped me land an internship at Reluvate Technologies, where Django was used for client projects. I went in as a complete noob and spent about 13 hours a day in the first week just trying to keep up and not get overwhelmed. It was intense enough that I almost quit because of the stress and how useless I felt, but I pushed through, and after about a month I finally started to feel like I was genuinely contributing. By the end of the internship, I realised that I really enjoyed coding and loved the feeling of making changes to products that people actually use in the real world."
+        "content": "Hi, I'm Si Jun, a Full-Stack/Devops/Site Reliability Engineer. My coding journey started during my army days, \
+        where I decided to try learning coding and I quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework,\
+         which later helped me land an internship at Reluvate Technologies, where Django was used for client projects. During Reluvate, I worked on the backend ofa payment platform\
+        which was used by notable merchants such as KOI, Watsons and Zara. Today that Payment Platform is used by over 1,860 merchants in Singapore. \
+        By the end of the internship, I realised that I really enjoyed coding and loved the feeling of making changes to products that people actually use in the real world."
     },
     "university": {
         "title": "University Life",
-        "content": "At SUTD, being surrounded by many strong software engineers, especially those from polytechnic backgrounds, pushed me to grow quickly. A classmate encouraged me to join the student government's tech department, which at the time felt like a casual decision but ended up becoming one of the most defining parts of my university life. I went on to build the frontend site for SUTD's largest annual event, Night Fiesta 2024, followed by the websites for Orientation 2024 and LCC 2024, and led the implementation of an RFID-based game carnival system end-to-end (custom RFID bands from a supplier in China, RFID readers, and the supporting software). I also built multiple Telegram bots to run event logistics and engagement. Through these projects, my frontend skills grew rapidly, and I deepened my deployment and backend skills by repeatedly shipping and operating production-facing tools for the school.\\n\\nI also tend to become hyper-focused when building things. At SUTD, I often treated projects like a full-time job, pulling late nights to get them to a level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, and in my computer science modules I pushed my teams and myself to ship products that felt polished and real. Across several modules, our projects consistently ranked in the top three of the cohort and picked up awards, which made me realise I did not need perfect grades to be \"doing well\" - diving deep into projects out of genuine passion is where I produce my best work."
+        "content": "At SUTD, being surrounded by many strong software engineers, especially those from polytechnic backgrounds, pushed me to grow quickly. \
+        A classmate encouraged me to join the student government's tech department, which at the time felt like a casual decision but ended up becoming \
+        one of the most defining parts of my university life. I went on to build the frontend site for SUTD's largest annual event, Night Fiesta 2024,\
+         followed by the websites for Orientation 2024 and LCC 2024, and led the implementation of an RFID-based game carnival system end-to-end\
+          (custom RFID bands from a supplier in China, RFID readers, and the supporting software). \
+          I also built multiple Telegram bots to run event logistics and engagement. Through these projects, my frontend skills grew rapidly, \
+          and I deepened my deployment and backend skills by repeatedly shipping and operating production-facing tools for the school.\\n\\nI also \
+          tend to become hyper-focused when building things. \
+          \n\nAt SUTD, I often treated projects like a full-time job, pulling late nights to get them to a \
+          level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, \
+          and in my computer science modules I pushed my teams and myself to ship products that felt polished and real. Across several modules, \
+          our projects consistently ranked top three in the cohort and picked up awards."
     },
     "internshipsInUniversity": {
         "title": "Internships in university",
-        "content": "In my 3rd year of university, SUTD had a long school break of 8 months after my exchange. I completed multiple internships at Changi Airport Group, TSMC, and even a Bytedance internship while juggling my studies, each teaching me different aspects of software engineering. From automation and software engineering at Changi Airport, to DevOps infrastructure and telemetry at TSMC, to Site Reliability Engineering at Bytedance - each experience built upon the last."
+        "content": "In my 3rd year of university, SUTD had a long school break of 8 months after my exchange. \
+        I completed internships at Changi Airport Group, TSMC, and ByteDance while juggling my studies, \
+         each teaching me different aspects of software engineering. From automation and software engineering at Changi Airport, \
+         to DevOps infrastructure and telemetry at TSMC, to finally getting to Site Reliability Engineering at Bytedance - each experience built upon the last."
     },
     "whatsNext": {
         "title": "What's next?",
-        "content": "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey. With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
+        "content": "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey. \
+        With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
     }
 };
 
