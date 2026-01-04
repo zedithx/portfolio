@@ -13,8 +13,9 @@ import PDFViewer from '../components/desktop/PDFViewer';
 import { useTheme } from '../contexts/ThemeContext';
 
 export default function Home() {
-    const { theme } = useTheme();
-    const isDark = theme === 'dark';
+    const { theme, mounted } = useTheme();
+    // Always use dark mode until mounted to prevent hydration mismatch
+    const isDark = mounted ? theme === 'dark' : true;
     const [activeModal, setActiveModal] = useState(null);
     const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
     const [permissionMessage, setPermissionMessage] = useState(null);

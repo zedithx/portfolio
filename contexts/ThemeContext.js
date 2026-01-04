@@ -3,27 +3,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext(null);
 
-// Function to get initial theme synchronously (for SSR-safe initialization)
-function getInitialTheme() {
-    if (typeof window === 'undefined') {
-        return 'dark'; // Default to dark for SSR
-    }
-    try {
-        const savedTheme = localStorage.getItem('portfolio-theme');
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-            return savedTheme;
-        }
-    } catch (e) {
-        // localStorage might not be available
-    }
-    return 'dark'; // Default to dark mode
-}
-
 export function ThemeProvider({ children }) {
-    const [theme, setTheme] = useState(getInitialTheme);
+    const [mounted, setMounted] = useState(false);
+    const [theme, setTheme] = useState('dark'); // Always start with 'dark' for SSR consistency
 
     useEffect(() => {
-        // Ensure theme is synced with localStorage on mount
+        // Only run on client after mount
+        setMounted(true);
+        
         try {
             const savedTheme = localStorage.getItem('portfolio-theme');
             if (savedTheme === 'dark' || savedTheme === 'light') {
@@ -46,7 +33,7 @@ export function ThemeProvider({ children }) {
     };
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
             {children}
         </ThemeContext.Provider>
     );

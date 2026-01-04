@@ -7,7 +7,7 @@ const commands = [
     { name: 'whoami', description: 'Learn about who I am and my journey' },
     { name: 'ls', description: 'Browse through my portfolio of work' },
     { name: 'history', description: 'View my professional experience' },
-    { name: 'cat resume', description: 'View my resume (PDF)' },
+    { name: 'cat', description: 'View my resume' },
     { name: 'clear', description: 'Clear the terminal screen' },
     { name: 'cd', description: 'Toggle between dark and light mode' },
 ];
@@ -445,10 +445,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened About Me' }]);
                     setCursorPosition(0);
                 }, 1200);
-            } else if (cmd.startsWith('cat resume')) {
+            } else if (cmd === 'cat') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
-                setLoadingCommand('cat resume');
+                setLoadingCommand('cat');
                 setTimeout(() => {
                     // Open PDF viewer modal
                     if (onOpenPDF) {
@@ -531,9 +531,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened About Me' }]);
                             setCursorPosition(0);
                         }, 1200);
-                    } else if (cmd.startsWith('cat resume')) {
+                    } else if (cmd === 'cat') {
                         setIsLoading(true);
-                        setLoadingCommand('cat resume');
+                        setLoadingCommand('cat');
                         
                         setTimeout(() => {
                             // Open PDF viewer modal
@@ -749,7 +749,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                             'whoami': 'Loading about me...',
                                             'ls': 'Initializing projects...',
                                             'history': 'Initializing work experience...',
-                                            'cat resume': 'Opening resume...'
+                                            'cat': 'Opening resume...'
                                         };
                                         return <>{`>`} {loadingMessages[loadingCommand] || `Initializing ${loadingCommand}...`}</>;
                                     })()}
@@ -771,7 +771,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                                 'whoami': 'LOADING DETAILS',
                                                 'ls': 'LOADING PROJECTS',
                                                 'history': 'LOADING EXPERIENCE',
-                                                'cat resume': 'OPENING PDF'
+                                                'cat': 'OPENING PDF'
                                             };
                                             return statusMessages[loadingCommand] || 'LOADING MODULES';
                                         })()}
