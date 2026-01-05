@@ -114,7 +114,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
                                         y: { type: "tween", duration: 0.15, ease: "easeOut" }
                                     }}
-                                    className={`w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 ${isDark ? 'bg-white/95 border-white/50' : 'bg-white border-gray-200'}`}
+                                    className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 ${isDark ? 'bg-white/95 border-white/50' : 'bg-white border-gray-200'}`}
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {isImagePath ? (
@@ -154,9 +154,9 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 <div className="flex items-center justify-between">
                     <motion.div
                         whileHover={{ scale: 1.15, x: 2 }}
-                        className={`px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-1.5 rounded-lg ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15' : 'bg-gray-100 border border-gray-300'}`}
+                        className={`px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-1.5 md:py-2 lg:py-2.5 rounded-lg flex items-center ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15' : 'bg-gray-100 border border-gray-300'}`}
                     >
-                        <span className={`text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-semibold whitespace-nowrap ${isDark ? 'text-white/80' : 'text-gray-700'}`}>
+                        <span className={`text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-semibold whitespace-nowrap leading-none block ${isDark ? 'text-white/80' : 'text-gray-700'}`}>
                             {item.commits.toLocaleString()} Commits
                         </span>
                     </motion.div>
