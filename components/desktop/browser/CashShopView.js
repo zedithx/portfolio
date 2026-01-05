@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, RotateCw, Lock, Search, Github } from 'lucide-react';
 import ItemCard from './ItemCard';
 import { contentData, aboutMeData } from '../../../data/data';
@@ -196,22 +196,45 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
 
             {/* Projects Content */}
             <div className={`flex-1 rounded-b-xl border border-t-0 overflow-hidden flex ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>
-                {selectedProject ? (
-                    /* Project Detail View */
-                    <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-                        <button 
-                            onClick={handleBackToShop}
-                            className={`mb-4 sm:mb-6 flex items-center gap-2 transition-colors text-sm sm:text-base ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-gray-600 hover:text-gray-900'}`}
+                <AnimatePresence mode="wait">
+                    {selectedProject ? (
+                        /* Project Detail View */
+                        <motion.div 
+                            key="project-detail"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8"
                         >
-                            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span>Back to Projects</span>
-                        </button>
-                        <div className={`rounded-lg border p-4 sm:p-6 md:p-8 ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>
-                            {typeof selectedProject.content === 'function' ? selectedProject.content(isDark) : selectedProject.content}
-                        </div>
-                    </div>
-                ) : (
-                    <>
+                            <motion.button 
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                                onClick={handleBackToShop}
+                                className={`mb-4 sm:mb-6 flex items-center gap-2 transition-colors text-sm sm:text-base ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-gray-600 hover:text-gray-900'}`}
+                            >
+                                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span>Back to Projects</span>
+                            </motion.button>
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.15 }}
+                                className={`relative rounded-lg border p-4 sm:p-6 md:p-8 min-h-full flex flex-col ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}
+                            >
+                                {typeof selectedProject.content === 'function' ? selectedProject.content(isDark) : selectedProject.content}
+                            </motion.div>
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="project-list"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="flex-1 flex overflow-hidden"
+                        >
                         {/* Main Content Area */}
                         <div className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6 lg:p-8">
                             {filteredItems !== null ? (
@@ -352,8 +375,9 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                                 </div>
                             </div>
                         </div>
-                    </>
-                )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </>
     );
