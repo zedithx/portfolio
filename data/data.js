@@ -15,8 +15,10 @@ export const projectData = {
                 '/projects/tech-icons/java.webp',
                 '/projects/tech-icons/firebase.png'
             ],
-            description: 'A powerful e-commerce bulk operations platform built with modern web technologies. Features include real-time inventory management, bulk product updates, order processing, and a beautiful responsive design.',
-            techTags: ['React', 'Node.js', 'MongoDB', 'TypeScript']
+            description: 'A mobile app enabling organizations to bulk purchase items together for cost savings. Features include centralized delivery, hardware locker integration, and smart payment processing with Stripe.',
+            techTags: ['Java', 'Firebase', 'Stripe', 'Stream.io', 'Algolia'],
+            githubUrl: null, // Add GitHub URL if available
+            blogUrl: null // Add blog post URL if available
         },
         {
             id: 3,
@@ -102,7 +104,6 @@ export const colorClassesMap = {
     'MongoDB': 'bg-indigo-100 text-indigo-700',
     'TypeScript': 'bg-purple-100 text-purple-700',
     'Next.js': 'bg-blue-100 text-blue-700',
-    'Firebase': 'bg-orange-100 text-orange-700',
     'Tailwind': 'bg-pink-100 text-pink-700',
     'Python': 'bg-purple-100 text-purple-700',
     'OpenAI': 'bg-green-100 text-green-700',
@@ -116,8 +117,185 @@ export const colorClassesMap = {
     'Docker Compose': 'bg-blue-100 text-blue-700'
 };
 
+// Helper function to generate sticky action buttons
+const generateStickyButtons = (project, isDark = false) => {
+    const hasGithub = project.githubUrl && project.githubUrl.trim() !== '';
+    const hasBlog = project.blogUrl && project.blogUrl.trim() !== '';
+    
+    if (!hasGithub && !hasBlog) {
+        return null;
+    }
+    
+    return (
+        <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50" style={{ maxWidth: 'calc(100vw - 3rem)' }}>
+            {hasGithub ? (
+                <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg transition-all hover:scale-105 ${isDark 
+                        ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md' 
+                        : 'bg-gray-900 hover:bg-gray-800 text-white border border-gray-700'}`}
+                >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                    </svg>
+                    <span className="font-medium text-sm">GitHub</span>
+                </a>
+            ) : (
+                <button
+                    disabled
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg cursor-not-allowed ${isDark 
+                        ? 'bg-white/5 text-white/30 border border-white/10' 
+                        : 'bg-gray-100 text-gray-400 border border-gray-200'}`}
+                >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                    </svg>
+                    <span className="font-medium text-sm">GitHub</span>
+                </button>
+            )}
+            
+            {hasBlog ? (
+                <a
+                    href={project.blogUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg transition-all hover:scale-105 ${isDark 
+                        ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md' 
+                        : 'bg-gray-900 hover:bg-gray-800 text-white border border-gray-700'}`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    <span className="font-medium text-sm">Blog Post</span>
+                </a>
+            ) : (
+                <button
+                    disabled
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg cursor-not-allowed ${isDark 
+                        ? 'bg-white/5 text-white/30 border border-white/10' 
+                        : 'bg-gray-100 text-gray-400 border border-gray-200'}`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    <span className="font-medium text-sm">Blog Post</span>
+                </button>
+            )}
+        </div>
+    );
+};
+
 // Helper function to generate project content JSX
 export const generateProjectContent = (project, isDark = false) => {
+    // Custom content for specific projects
+    if (project.title === 'Bulkify') {
+        return (
+            <div className="space-y-8">
+                <div>
+                    <h2 className={`text-3xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
+                    <p className={`text-sm mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Mobile App • School Project • 3rd Place Winner
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                        {project.techTags.map((tag, idx) => {
+                            const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700';
+                            const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80` : colorClassesMap[tag]) : defaultClasses;
+                            return (
+                                <span key={idx} className={`px-3.5 py-1.5 ${className} rounded-md text-sm font-medium`}>
+                                    {tag}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</h3>
+                        <p className="leading-relaxed text-base">
+                            Bulkify is a mobile app that enables organizations to bulk purchase items together for a more convenient and cost-saving experience. Unlike existing solutions that rely on manual management through Google Sheets and multiple delivery locations, Bulkify targets organizations and schools to eliminate these issues by centralizing delivery to a single location, maximizing cost savings for customers.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Key Features</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Smart Payment Processing</h4>
+                                <p className="leading-relaxed text-base">
+                                    Integrated Stripe to withhold bulk buy payments until orders reach the minimum required amount. This ensures that bulk purchases only proceed when enough participants join, protecting both buyers and sellers while maximizing cost savings.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Hardware Locker Integration</h4>
+                                <p className="leading-relaxed text-base">
+                                    Built a hardware locker system integrated into the app. Sellers scan a QR code to unlock and place items inside an assigned locker. Buyers are notified and can scan the QR code generated in the application to unlock their assigned locker and retrieve purchased items, achieving trust and convenience for both buyers and merchants.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="my-8 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-8">
+                            <div className="relative w-full overflow-hidden">
+                                <img 
+                                    src="/projects/bulkify/bulkify_locker.png" 
+                                    alt="Bulkify Hardware Locker" 
+                                    className="w-full h-auto"
+                                    style={{ 
+                                        maxHeight: 'min(75vh, 700px)',
+                                        objectFit: 'contain',
+                                        display: 'block'
+                                    }}
+                                    loading="lazy"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Achievement</h3>
+                        <p className="leading-relaxed text-base">
+                            This app was developed for a school project in the 50.001 module "Introduction To Information Systems And Programming" during our second year. We had approximately 5 weeks to learn app development from scratch and execute this project. The project achieved <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>3rd place out of 30 teams</span>, judged by Singtel Engineers.
+                        </p>
+                        <div className="my-8 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-8">
+                            <div className="relative w-full overflow-hidden">
+                                <img 
+                                    src="/projects/bulkify/bulkify_poster.png" 
+                                    alt="Bulkify Project Poster" 
+                                    className="w-full h-auto"
+                                    style={{ 
+                                        maxHeight: 'min(75vh, 700px)',
+                                        objectFit: 'contain',
+                                        display: 'block'
+                                    }}
+                                    loading="lazy"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-10">
+                    <h3 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Demo</h3>
+                    <div className="flex justify-center -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-8">
+                        <div className="relative w-full max-w-4xl overflow-hidden rounded-lg" style={{ paddingBottom: '56.25%' }}>
+                            <iframe
+                                className="absolute top-0 left-0 w-full h-full"
+                                src="https://www.youtube.com/embed/ccrcRkjByKM"
+                                title="Bulkify Project Demo"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
+                        </div>
+                    </div>
+                </div>
+                
+                {generateStickyButtons(project, isDark)}
+            </div>
+        );
+    }
+    
+    // Default content for other projects
     return (
         <div className="space-y-6">
             <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
@@ -135,6 +313,8 @@ export const generateProjectContent = (project, isDark = false) => {
                     );
                 })}
             </div>
+            
+            {generateStickyButtons(project, isDark)}
         </div>
     );
 };
