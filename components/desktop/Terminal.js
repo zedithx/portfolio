@@ -703,8 +703,22 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     {commands.map((cmd) => (
                                         <div 
                                             key={cmd.name} 
-                                            onClick={() => handleCommandClick(cmd.name)}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                handleCommandClick(cmd.name);
+                                            }}
+                                            onTouchStart={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }}
+                                            onTouchEnd={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                handleCommandClick(cmd.name);
+                                            }}
                                             className={`px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b last:border-0 transition-colors cursor-pointer ${isDark ? 'border-white/5 hover:bg-white/10 active:bg-white/15' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-150'}`}
+                                            style={{ touchAction: 'manipulation' }}
                                         >
                                             <span className={`font-semibold w-20 sm:w-24 text-xs sm:text-sm shrink-0 ${isDark ? 'text-green-400' : 'text-blue-700'}`}>{cmd.name}</span>
                                             <span className={`text-xs sm:text-xs leading-relaxed min-w-0 flex-1 truncate ${isDark ? 'text-white/50' : 'text-gray-600'}`}>{cmd.description}</span>

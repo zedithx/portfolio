@@ -30,6 +30,11 @@ function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpo
                             }
     };
     
+    const handleTouchStart = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+    
     const handleTouchEnd = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -46,6 +51,7 @@ function DockIcon({ app, onPermissionError, onGmailClick, onTerminalClick, onSpo
                 damping: 17
             }}
             onClick={handleClick}
+            onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             style={{ touchAction: 'manipulation' }}
                     >
@@ -195,7 +201,21 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                     className="group relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-end justify-center -translate-y-1 sm:-translate-y-0.5"
                     whileHover={{ y: -8, scale: 1.15 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                    onClick={() => onPermissionError("Mind your own business pfft!")}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onPermissionError("Mind your own business pfft!");
+                    }}
+                    onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }}
+                    onTouchEnd={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onPermissionError("Mind your own business pfft!");
+                    }}
+                    style={{ touchAction: 'manipulation' }}
                 >
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
                         Trash
