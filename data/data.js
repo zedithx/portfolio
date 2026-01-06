@@ -726,6 +726,9 @@ export const generateProjectContent = (project, isDark = false) => {
 
                     <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Cloud Architecture</h3>
+                        <p className={`leading-relaxed text-base mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                            On a side note, looking back, I would have added message queues like SQS along the way to ensure resistance to failure and handle retries during the data ingestion and processing pipelines.
+                        </p>
                         <div className="mt-4 -mx-5">
                             <ZoomableImage
                                 src="/projects/plantpulse/Cloud Architecture.png"
