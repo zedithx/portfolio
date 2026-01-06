@@ -2,7 +2,7 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { contentData, aboutMeData } from '../../data/data';
+import { contentData, aboutMeData, projectData } from '../../data/data';
 import CashShopView from './browser/CashShopView';
 import BrowserView from './browser/BrowserView';
 import FormalAboutMeView from './browser/FormalAboutMeView';
@@ -15,7 +15,19 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
     const data = useMemo(() => contentData[type], [type]);
     const isCashShop = useMemo(() => type === 'projects' && data && data.items, [type, data]);
     const isAboutMe = type === 'about-me';
-    const commits = 1247; // Hardcoded commit count
+    
+    // Calculate total commits from all projects automatically
+    const commits = useMemo(() => {
+        let total = 0;
+        Object.keys(projectData).forEach(category => {
+            projectData[category].forEach(project => {
+                if (project.commits && typeof project.commits === 'number') {
+                    total += project.commits;
+                }
+            });
+        });
+        return total;
+    }, []);
 
     // Reset interactive journey state when modal type changes
     useEffect(() => {

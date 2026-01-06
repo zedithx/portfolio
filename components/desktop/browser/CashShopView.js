@@ -33,7 +33,7 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
 
     // Memoize filtered items to prevent recalculation on every render
     const popularItems = useMemo(() => {
-        return data.items.filter(item => item.category === 'Popular');
+        return data.items.filter(item => item.category === 'School Projects');
     }, [data.items]);
 
     const studentGovernmentItems = useMemo(() => {
@@ -267,10 +267,10 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                             ) : (
                                 /* Categorized Items */
                                 <>
-                                    {/* Popular Items / Featured Projects Section */}
+                                    {/* School Projects Section */}
                                     <div className="mb-4 sm:mb-6 md:mb-8">
                                         <h2 className={`text-base sm:text-lg md:text-xl font-semibold mb-4 sm:mb-5 md:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                            Featured Projects
+                                            School Projects
                                         </h2>
                                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                             {popularItems.map((item) => (

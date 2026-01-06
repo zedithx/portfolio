@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { Medal, Award } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 // Item Card Component with enhanced animations - Memoized for performance
@@ -138,10 +139,16 @@ const ItemCard = React.memo(({ item, onClick }) => {
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ type: 'spring', stiffness: 200 }}
-                        className={`absolute top-2 right-2 px-2.5 py-1 text-xs font-bold rounded-full shadow-lg z-10 ${
-                            item.badge === 'Hot' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+                        className={`absolute top-2 right-2 flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-full shadow-lg z-10 ${
+                            item.badge === 'Hot' ? 'bg-red-500 text-white' :
+                            item.badge === '3rd Place' ? 'bg-amber-700 text-white' :
+                            item.badge === 'Top 3' ? 'bg-amber-700 text-white' :
+                            item.badge === 'Top 2' ? 'bg-gray-400 text-white' :
+                            'bg-green-500 text-white'
                         }`}
                     >
+                        {(item.badge === '3rd Place' || item.badge === 'Top 3') && <Medal className="w-3.5 h-3.5" />}
+                        {item.badge === 'Top 2' && <Award className="w-3.5 h-3.5" />}
                         {item.badge}
                     </motion.div>
                 )}
