@@ -161,10 +161,12 @@ export const projectData = {
                 gradient: 'from-blue-400 to-purple-500'
             },
             techIcons: [
-                '/projects/tech-icons/next.webp'
+                '/projects/tech-icons/next.webp',
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/firebase.png'
             ],
-            description: 'Website for LCC 2024 event. Built with Next.js to provide an engaging and interactive experience for participants.',
-            techTags: ['Next.js'],
+            description: 'Website for SUTD LCC 2024 event, which was an event where seniors shared about their internship and exchange experiences with juniors. Built with Next.js to provide an engaging and interactive experience for participants.',
+            techTags: ['Next.js', 'Python', 'Firebase', 'Digital Ocean'],
             githubUrl: 'https://github.com/zedithx/LCC_website',
             blogUrl: null
         },
@@ -263,7 +265,8 @@ export const colorClassesMap = {
     'Cloud Computing': 'bg-blue-100 text-blue-700',
     'IoT': 'bg-green-100 text-green-700',
     'DynamoDB': 'bg-blue-100 text-blue-700',
-    'PostgreSQL': 'bg-blue-100 text-blue-700'
+    'PostgreSQL': 'bg-blue-100 text-blue-700',
+    'Digital Ocean': 'bg-blue-100 text-blue-700'
 };
 
 // Helper function to generate sticky action buttons
@@ -802,7 +805,79 @@ export const generateProjectContent = (project, isDark = false) => {
         );
     }
     
-    // Default content for other projects
+    if (project.title === 'LCC 2025') {
+        return (
+            <div className="space-y-8">
+                <div className="relative">
+                    <div className="mb-2 pr-0 sm:pr-24 md:pr-32">
+                        <h2 className={`text-2xl sm:text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
+                        <p className={`text-xs sm:text-sm mb-0 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            Website • Telegram Bot • Student Government Project
+                        </p>
+                    </div>
+                    <div className="absolute top-0 right-0 hidden sm:flex flex-col gap-1.5 sm:gap-2 md:gap-2.5">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex sm:hidden mb-3 gap-2">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex flex-wrap gap-2.5 mt-2">
+                        {project.techTags.map((tag, idx) => {
+                            const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700 border border-gray-200';
+                            const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80 border border-white/20` : `${colorClassesMap[tag]} border`) : defaultClasses;
+                            return (
+                                <span key={idx} className={`px-3.5 py-1.5 ${className} rounded-md text-sm font-medium transition-all hover:scale-105`}>
+                                    {tag}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</h3>
+                        <p className="leading-relaxed text-base">
+                            Software development for SUTD LCC 2024 event, which was an event where seniors shared about their internship and exchange experiences with juniors. Built with Next.js to provide an engaging and interactive experience for participants.
+                        </p>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Background & Context</h3>
+                        <p className="leading-relaxed text-base">
+                            The LCC (Learning, Career, and Community) event is an annual SUTD event where seniors share their internship and exchange experiences with juniors, helping them make informed decisions about their academic and career paths.
+                        </p>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Key Features</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Telegram Voting Bot</h4>
+                                <p className="leading-relaxed text-base">
+                                    A Telegram bot developed for voting purposes, allowing participants to cast votes directly through the messaging platform for a seamless and accessible voting experience.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Lucky Draw System</h4>
+                                <p className="leading-relaxed text-base">
+                                    A lucky draw query system that enables fair and transparent random selection of winners during the event, enhancing participant engagement.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Frontend Website</h4>
+                                <p className="leading-relaxed text-base">
+                                    A modern, interactive frontend website built with Next.js that provides event information, schedules, and an engaging user interface for participants to navigate and explore the event content.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+E    // Default content for other projects
     return (
         <div className="space-y-6">
             <div className="flex items-start justify-between gap-4">
