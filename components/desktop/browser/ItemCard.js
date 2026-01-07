@@ -23,18 +23,20 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 type: 'spring', 
                 stiffness: 200, 
                 damping: 15,
-                delay: item.id * 0.1
+                delay: item.id * 0.1,
+                scale: { type: 'tween', duration: 0 },
+                y: { type: 'tween', duration: 0 }
             }}
             whileHover={{ 
                 scale: 1.08,
                 y: -8,
-                transition: { type: 'spring', stiffness: 400, damping: 10 }
+                transition: { type: 'tween', duration: 0.2, ease: 'easeOut' }
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleClick}
-            className={`relative rounded-lg overflow-hidden cursor-pointer transition-all ${isDark ? 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-yellow-500/30' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300'}`}
-            style={isDark ? { border: '1px solid rgba(255, 255, 255, 0.2)' } : {}}
+            className={`relative rounded-lg overflow-hidden cursor-pointer ${isDark ? 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-yellow-500/30' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300'}`}
+            style={isDark ? { border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'transform 0s ease-out' } : { transition: 'transform 0s ease-out' }}
         >
             
             {/* Glow effect on hover (desktop only) */}
@@ -66,7 +68,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                         repeatType: 'reverse',
                         ease: "easeInOut"
                     } : {
-                        duration: 0.3,
+                        duration: 0,
                         ease: "easeOut"
                     }}
                     style={{ willChange: isHovered ? 'transform' : 'auto' }}

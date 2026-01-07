@@ -366,8 +366,8 @@ export const colorClassesMap = {
     'PostgreSQL': 'bg-blue-100 text-blue-700',
     'Digital Ocean': 'bg-blue-100 text-blue-700',
     'Cloud Storage': 'bg-blue-100 text-blue-700',
-    'Expo': 'bg-gray-100 text-gray-700',
-    'Terraform': 'bg-purple-100 text-purple-700',
+    'Expo': 'bg-blue-100 text-blue-700',
+    'Terraform': 'bg-indigo-100 text-indigo-700',
     'Render': 'bg-orange-100 text-orange-700'
 };
 
@@ -1025,12 +1025,12 @@ export const generateProjectContent = (project, isDark = false) => {
                     {generateStickyButtons(project, isDark)}
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
                 {project.techTags.map((tag, idx) => {
-                    const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700';
-                    const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80` : colorClassesMap[tag]) : defaultClasses;
+                    const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700 border border-gray-200';
+                    const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80 border border-white/20` : `${colorClassesMap[tag]} border`) : defaultClasses;
                     return (
-                        <span key={idx} className={`px-3 py-1 ${className} rounded-full text-sm`}>
+                        <span key={idx} className={`px-3.5 py-1.5 ${className} rounded-md text-sm font-medium transition-all hover:scale-105`}>
                             {tag}
                         </span>
                     );
