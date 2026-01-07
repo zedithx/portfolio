@@ -75,14 +75,16 @@ const ItemCard = React.memo(({ item, onClick }) => {
                         <img 
                             src={item.thumbnail.src} 
                             alt={item.title}
-                            className={`object-contain drop-shadow-2xl ${
+                            className={`drop-shadow-2xl ${
                                 item.title === 'Container Networking' 
-                                    ? 'w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40' 
+                                    ? 'w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 object-contain' 
                                     : item.title === 'Monitoring Suite'
-                                    ? 'w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24'
+                                    ? 'w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24 object-contain'
                                     : item.title === 'Tangled'
-                                    ? 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-md'
-                                    : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32'
+                                    ? 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover rounded-md'
+                                    : item.title === '3DC Admin Website'
+                                    ? 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain rounded-md'
+                                    : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain'
                             }`}
                             loading="lazy"
                         />

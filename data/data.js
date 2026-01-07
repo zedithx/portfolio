@@ -279,7 +279,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/cloudstorage.png'
             ],
-            description: 'An automated trading bot that analyzes market data and executes trades based on predefined strategies. Built with Python and cloud storage for data persistence and analysis.',
+            description: 'The project focuses on the co-development of an automated trading bot using the Schwab API, integrated with Discord (voice-enabled) and Telegram bots for real-time interaction and control. It also includes the design and deployment of robust backend infrastructure, secure webhook-based authentication, and site reliability practices to support high availability, scalability, and operational resilience.',
             techTags: ['Python', 'Cloud Storage'],
             githubUrl: null,
             blogUrl: null
@@ -302,6 +302,26 @@ export const projectData = {
             description: 'A social platform co-founded and developed with real-time chat capabilities, AWS infrastructure, and cloud-native architecture. Provisioned AWS infrastructure with Terraform and developed real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB.',
             techTags: ['Expo', 'Python', 'Terraform'],
             githubUrl: null,
+            blogUrl: null
+        },
+        {
+            id: 13,
+            title: '3DC Admin Website',
+            commits: 26,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/3dcadmin/3dc_logo.png',
+                gradient: 'from-slate-600 to-slate-800'
+            },
+            techIcons: [
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/django.png',
+                '/projects/tech-icons/render.png'
+            ],
+            description: 'Admin website for 3DC built with Django and Python. Deployed on Render for reliable hosting and management of administrative functions.',
+            techTags: ['Python', 'Django', 'Render'],
+            githubUrl: 'https://github.com/zedithx/3dc_admin/tree/main/dc_admin',
             blogUrl: null
         }
     ]
@@ -347,7 +367,8 @@ export const colorClassesMap = {
     'Digital Ocean': 'bg-blue-100 text-blue-700',
     'Cloud Storage': 'bg-blue-100 text-blue-700',
     'Expo': 'bg-gray-100 text-gray-700',
-    'Terraform': 'bg-purple-100 text-purple-700'
+    'Terraform': 'bg-purple-100 text-purple-700',
+    'Render': 'bg-orange-100 text-orange-700'
 };
 
 // Helper function to generate sticky action buttons
