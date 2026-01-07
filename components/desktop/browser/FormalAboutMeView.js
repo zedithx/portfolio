@@ -1,8 +1,7 @@
 'use client';
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, RotateCw, Lock, Briefcase, GraduationCap, Code, TrendingUp, Github, Linkedin, Gamepad2 } from 'lucide-react';
-import { journeySummaryContent } from '../../../data/data';
+import { motion } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight, RotateCw, Lock, Github, Linkedin, Gamepad2 } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
@@ -11,33 +10,6 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
     const prefersReducedMotion = typeof window !== 'undefined' 
         ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
         : false;
-
-    const sections = [
-        {
-            key: 'internshipBeforeUniversity',
-            icon: Briefcase,
-            title: 'Internship before University',
-            content: journeySummaryContent.internshipBeforeUniversity.content
-        },
-        {
-            key: 'university',
-            icon: GraduationCap,
-            title: 'University Life',
-            content: journeySummaryContent.university.content
-        },
-        {
-            key: 'internshipsInUniversity',
-            icon: Code,
-            title: 'Internships in University',
-            content: journeySummaryContent.internshipsInUniversity.content
-        },
-        {
-            key: 'whatsNext',
-            icon: TrendingUp,
-            title: "What's Next",
-            content: journeySummaryContent.whatsNext.content
-        }
-    ];
 
     return (
         <>
@@ -130,13 +102,13 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                 <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8">
                     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-8">
                         {/* Header */}
-                        <div className="mb-4 sm:mb-5 md:mb-6 lg:mb-8">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-2">
+                        <div className="mb-6 sm:mb-8">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div>
-                                    <h1 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    <h1 className={`text-xl sm:text-2xl md:text-3xl font-semibold leading-tight mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                         Si Jun Yang
                                     </h1>
-                                    <p className={`text-xs sm:text-sm md:text-base mt-1 leading-snug ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                         Full-Stack / DevOps / Site Reliability Engineer
                                     </p>
                                 </div>
@@ -148,107 +120,103 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                             onToggleToInformal();
                                         }
                                     }}
-                                    className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium border rounded-lg transition-colors w-full sm:w-auto justify-center mt-2 sm:mt-0 ${
+                                    className={`flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-medium border rounded-lg transition-colors w-full sm:w-auto justify-center ${
                                         isDark 
                                             ? 'text-white/80 hover:text-white border-gray-600 hover:bg-gray-800/50' 
                                             : 'text-gray-700 hover:text-gray-900 border-gray-300 hover:bg-gray-50'
                                     }`}
                                 >
-                                    <Gamepad2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                    <Gamepad2 className="w-4 h-4 sm:w-5 sm:h-5" />
                                     <span>Interactive Journey</span>
                                 </button>
                             </div>
                         </div>
 
-                        {/* Quick Summary - Key for headhunters */}
+                        {/* Main Content */}
                         <motion.div
                             initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
                             animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                             transition={prefersReducedMotion ? {} : { duration: 0.3 }}
-                            className={`rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 shadow-sm border mb-4 sm:mb-5 md:mb-6 lg:mb-8 ${
-                                isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-slate-200'
+                            className={`rounded-lg p-5 sm:p-6 md:p-8 border mb-6 sm:mb-8 ${
+                                isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-gray-200'
                             }`}
                         >
-                            <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 md:mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Professional Summary</h2>
-                            <div className={`space-y-2.5 sm:space-y-3 text-xs sm:text-sm md:text-base leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                            <div className={`space-y-5 sm:space-y-6 text-base sm:text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                 <p>
-                                    <strong>Full-Stack/DevOps/Site Reliability Engineer</strong> with hands-on experience building production systems used by <strong>1,860+ merchants</strong> in Singapore. 
-                                    Specialized in backend development, infrastructure automation, and site reliability engineering.
+                                    I'm a Full-Stack and Site Reliability Engineer with hands-on experience building, operating, and scaling production systems across payments, automation, and large-scale infrastructure. My work spans backend development, cloud infrastructure, and reliability engineering, with a strong focus on systems that run in the real world.
                                 </p>
+                                
                                 <p>
-                                    <strong>Key Experience:</strong> Payment platform development (Reluvate Technologies), DevOps infrastructure (TSMC), 
-                                    Site Reliability Engineering (ByteDance), and full-stack development for large-scale student events (SUTD).
+                                    I started my software engineering journey during military service, completing Harvard CS50 and Django-focused coursework before joining Reluvate Technologies as a Backend Engineer Intern. There, I worked on a production payment platform supporting 1,860+ merchants in Singapore, including Watsons, Zara, and KOI — gaining early exposure to payments, reliability, and real production constraints.
                                 </p>
+                                
+                                <div className="space-y-3">
+                                    <p>
+                                        Since then, my experience has progressively deepened into automation, infrastructure, and SRE:
+                                    </p>
+                                    <ul className={`list-disc list-outside space-y-2.5 ml-6 sm:ml-7 md:ml-8 pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        <li>At Changi Airport Group, I built automation and chatbot systems on serverless, event-driven architectures.</li>
+                                        <li>At TSMC, I worked on telemetry and DevOps/SRE infrastructure at industrial scale.</li>
+                                        <li>At ByteDance, I focused on site reliability engineering, including monitoring, automation, and service reliability for large-scale systems.</li>
+                                    </ul>
+                                </div>
+                                
+                                <div className="space-y-3">
+                                    <p>
+                                        Alongside internships, I've been a core contributor to Student Government's Tech Department at the Singapore University of Technology and Design (SUTD), where I repeatedly shipped and operated production systems for campus-wide events. This included:
+                                    </p>
+                                    <ul className={`list-disc list-outside space-y-2.5 ml-6 sm:ml-7 md:ml-8 pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        <li>Frontend event pages for major events (Night Fiesta, Orientation, LCC)</li>
+                                        <li>An end-to-end RFID-based game carnival system, covering hardware sourcing, readers, backend services managing 60 game booths and 600 visitors</li>
+                                        <li>Multiple Telegram bots for event operations and engagement such as Voting and Lucky Draws</li>
+                                    </ul>
+                                </div>
+                                
                                 <p>
-                                    <strong>Technical Focus:</strong> Backend systems, DevOps automation, cloud infrastructure, SRE practices, 
-                                    and production-facing tooling. Projects consistently ranked top three in cohort and received awards.
+                                    These experiences strengthened my ability to own systems end-to-end, from development to deployment to monitoring and system reliability.
+                                </p>
+                                
+                                <p>
+                                    I'm currently completing my final phase of studies at SUTD and preparing for a full-time role in Site Reliability Engineering. In parallel, I'm continuing to build and iterate on Tangled, a social startup, ahead of my full-time start.
                                 </p>
                             </div>
                         </motion.div>
-
-                        {/* Experience Sections */}
-                        {sections.map((section, index) => {
-                            const Icon = section.icon;
-                            return (
-                                <motion.div
-                                    key={section.key}
-                                    initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
-                                    animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-                                    transition={prefersReducedMotion ? {} : { duration: 0.3, delay: index * 0.05 }}
-                                    className={`rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 shadow-sm border mb-4 sm:mb-5 md:mb-6 lg:mb-8 ${
-                                        isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-slate-200'
-                                    }`}
-                                >
-                                    <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 mb-2 sm:mb-3 md:mb-4">
-                                        <div className={`p-1 sm:p-1.5 md:p-2 rounded-lg flex-shrink-0 ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
-                                            <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
-                                        </div>
-                                        <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-semibold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                            {section.title}
-                                        </h2>
-                                    </div>
-                                    <div className={`text-xs sm:text-sm md:text-base leading-relaxed whitespace-pre-line ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                        {section.content}
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
 
                         {/* Contact & Links */}
                         <motion.div
                             initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
                             animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                             transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2 }}
-                            className={`rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 shadow-sm border ${
-                                isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-slate-200'
+                            className={`rounded-lg p-5 sm:p-6 md:p-8 border ${
+                                isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-gray-200'
                             }`}
                         >
-                            <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 md:mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Connect</h2>
-                            <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4">
+                            <h2 className={`text-lg sm:text-xl font-semibold mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Connect</h2>
+                            <div className="flex flex-wrap gap-3">
                                 <a
                                     href="https://github.com/zedithx"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm md:text-base ${
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
                                         isDark 
                                             ? 'bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white' 
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                                     }`}
                                 >
-                                    <Github className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                                    <Github className="w-4 h-4 sm:w-5 sm:h-5" />
                                     <span>GitHub</span>
                                 </a>
                                 <a
                                     href="https://www.linkedin.com/in/yangsijun"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors text-xs sm:text-sm md:text-base ${
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
                                         isDark 
                                             ? 'bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white' 
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                                     }`}
                                 >
-                                    <Linkedin className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                                    <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
                                     <span>LinkedIn</span>
                                 </a>
                             </div>

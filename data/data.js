@@ -1148,7 +1148,7 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Worked on ByteGraph, ByteDance's distributed graph database, focusing on monitoring, on-call responsibilities, and machine operations for production clusters across Singapore and Europe.
+                                Worked on ByteGraph, ByteDance's distributed graph database, focusing on monitoring, machine operations, and automation for increased service reliability for production clusters across Singapore and Europe.
                             </p>
                         </div>
 
@@ -1183,7 +1183,7 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Integrated OpenTelemetry tracing with Spring Boot Starter across 10+ TSMC fabrication labs, engineered auto-generation of test scenarios with Grafana Tempo, and built auto sanity check mechanisms using Prometheus metrics.
+                                Integrated OpenTelemetry tracing with Spring Boot Starter into a critical photomask detection workflow we had, across 10+ TSMC fabrication labs. Used the ordered traces from Grafana Tempo to engineer the auto-generation of test scenarios, and built auto sanity check mechanisms using Prometheus metrics.
                             </p>
                         </div>
 
@@ -1201,7 +1201,7 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Engineered a production-grade, event-driven serverless Slack bot for airport flight operations, implemented centralized CloudWatch log extraction across multiple AWS accounts, and built two production microservices secured behind Apigee API Gateway.
+                                Engineered a production-grade, event-driven serverless Slack bot for automating and optimising some airport flight operations tasks, implemented centralized CloudWatch log extraction surpassing AWS export limit across multiple AWS accounts, and built two production microservices secured behind Apigee API Gateway.
                             </p>
                         </div>
 
@@ -1399,38 +1399,19 @@ export const aboutMeData = {
 export const journeySummaryContent = {
     "internshipBeforeUniversity": {
         "title": "Internship before university",
-        "content": "Hi, I'm Si Jun, a Full-Stack/Devops/Site Reliability Engineer. My coding journey started during my army days, \
-        where I decided to try learning coding and I quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework,\
-         which later helped me land an internship at Reluvate Technologies, where Django was used for client projects. During Reluvate, I worked on the backend ofa payment platform\
-        which was used by notable merchants such as KOI, Watsons and Zara. Today that Payment Platform is used by over 1,860 merchants in Singapore. \
-        By the end of the internship, I realised that I really enjoyed coding and loved the feeling of making changes to products that people actually use in the real world."
+        "content": "Reluvate Technologies — Backend Engineer Intern\n\n• Began software engineering journey during military service; completed Harvard CS50 and Django-focused coursework\n• Joined Reluvate Technologies as a backend intern working on a production payment platform\n• Contributed to backend systems supporting 1,860+ merchants in Singapore, including Watsons, Zara, and KOI\n• Gained first exposure to real-world production systems, payments, and reliability concerns"
     },
     "university": {
         "title": "University Life",
-        "content": "At SUTD, being surrounded by many strong software engineers, especially those from polytechnic backgrounds, pushed me to grow quickly. \
-        A classmate encouraged me to join the student government's tech department, which at the time felt like a casual decision but ended up becoming \
-        one of the most defining parts of my university life. \n\nI went on to build the frontend site for SUTD's largest annual event, Night Fiesta 2024,\
-         followed by the websites for Orientation 2024 and LCC 2024, and led the implementation of an RFID-based game carnival system end-to-end\
-          (custom RFID bands from a supplier in China, RFID readers, and the supporting software). \
-          I also built multiple Telegram bots to run event logistics and engagement. Through these projects, my frontend skills grew rapidly, \
-          and I deepened my deployment and backend skills by repeatedly shipping and operating production-facing tools for the school.\
-          \n\nI also tend to become hyper-focused when building things. \
-          At SUTD, I often treated projects like a full-time job, pulling late nights to get them to a \
-          level I was proud of while traditional studying took a backseat. In a few weeks, I picked up hardware and embedded programming from scratch, \
-          and in my computer science modules I pushed my teams and myself to ship products that felt polished and real. Across several modules, \
-          our projects consistently ranked top three in the cohort and picked up awards."
+        "content": "Singapore University of Technology and Design (SUTD)\n\n• Core contributor to Student Government Tech, delivering production systems for campus-wide events\n• Built and operated frontend websites for Night Fiesta 2024, Orientation 2024, and LCC 2024\n• Led end-to-end implementation of an RFID-based game carnival system (hardware sourcing, readers, backend, and frontend)\n• Developed multiple Telegram bots for event operations and engagement\n• Repeatedly shipped and maintained production-facing tools, strengthening frontend, backend, and deployment skills\n• Academic and project teams consistently ranked top three in cohort, receiving multiple awards"
     },
     "internshipsInUniversity": {
         "title": "Internships in university",
-        "content": "In my 3rd year of university, SUTD had a long school break of 8 months after my exchange. \
-        I completed internships at Changi Airport Group, TSMC, and ByteDance while juggling my studies, \
-         each teaching me different aspects of software engineering. From automation and software engineering at Changi Airport, \
-         to DevOps infrastructure and telemetry at TSMC, to finally getting to Site Reliability Engineering at Bytedance - each experience built upon the last."
+        "content": "• Changi Airport Group (CAG): Automation and event-driven systems\n• TSMC: DevOps, telemetry, and SRE infrastructure at industrial scale\n• ByteDance: Site Reliability Engineering — monitoring, automation, and service reliability at scale\n\nEach role built progressively deeper exposure to automation, infrastructure, and reliability engineering."
     },
     "whatsNext": {
         "title": "What's next?",
-        "content": "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey. \
-        With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
+        "content": "• Completing the final phase of studies at SUTD\n• Preparing for a full-time role in Site Reliability Engineering\n• Continue building and iterating on Tangled, a social startup, ahead of full-time start"
     }
 };
 

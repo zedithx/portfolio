@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const commands = [
-    { name: 'whoami', description: 'Learn about who I am and my journey' },
-    { name: 'ls', description: 'Browse through my portfolio of work' },
-    { name: 'history', description: 'View my professional experience' },
-    { name: 'cat', description: 'View my resume' },
+    { name: 'aboutme', description: 'Learn about who I am and my journey' },
+    { name: 'projects', description: 'Browse through my portfolio of work' },
+    { name: 'experience', description: 'View my professional experience' },
+    { name: 'resume', description: 'View my resume' },
     { name: 'clear', description: 'Clear the terminal screen' },
     { name: 'cd', description: 'Toggle between dark and light mode' },
 ];
@@ -434,7 +434,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                 setHistory(prev => [...prev, { type: 'success', content: `✓ Switched to ${newTheme} mode` }]);
                 setInput('');
                 setCursorPosition(0);
-            } else if (cmd === 'whoami') {
+            } else if (cmd === 'aboutme') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand(cmd);
@@ -445,10 +445,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened About Me' }]);
                     setCursorPosition(0);
                 }, 1200);
-            } else if (cmd === 'cat') {
+            } else if (cmd === 'resume') {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
-                setLoadingCommand('cat');
+                setLoadingCommand('resume');
                 setTimeout(() => {
                     // Open PDF viewer modal
                     if (onOpenPDF) {
@@ -459,13 +459,13 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     setLoadingCommand('');
                     setHistory(prev => [...prev, { type: 'success', content: '✓ Opened resume' }]);
                 }, 1200);
-            } else if (['ls', 'history'].includes(cmd)) {
+            } else if (['projects', 'experience'].includes(cmd)) {
                 setHistory(prev => [...prev, { type: 'input', content: input }]);
                 setIsLoading(true);
                 setLoadingCommand(cmd);
                 setTimeout(() => {
-                    // Map 'ls' to 'projects' and 'history' to 'experience' for the modal
-                    onCommand(cmd === 'ls' ? 'projects' : cmd === 'history' ? 'experience' : cmd);
+                    // Map 'projects' to 'projects' and 'experience' to 'experience' for the modal
+                    onCommand(cmd);
                     // Reset loading state for when user returns
                     setIsLoading(false);
                     setLoadingCommand('');
@@ -520,7 +520,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                         setHistory(prev => [...prev, { type: 'success', content: `✓ Switched to ${newTheme} mode` }]);
                         setInput('');
                         setCursorPosition(0);
-                    } else if (cmd === 'whoami') {
+                    } else if (cmd === 'aboutme') {
                         setIsLoading(true);
                         setLoadingCommand(cmd);
                         
@@ -531,9 +531,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             setHistory(prev => [...prev, { type: 'success', content: '✓ Opened About Me' }]);
                             setCursorPosition(0);
                         }, 1200);
-                    } else if (cmd === 'cat') {
+                    } else if (cmd === 'resume') {
                         setIsLoading(true);
-                        setLoadingCommand('cat');
+                        setLoadingCommand('resume');
                         
                         setTimeout(() => {
                             // Open PDF viewer modal
@@ -547,13 +547,13 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             setInput('');
                             setCursorPosition(0);
                         }, 1200);
-                    } else if (['ls', 'history'].includes(cmd)) {
+                    } else if (['projects', 'experience'].includes(cmd)) {
                         setIsLoading(true);
                         setLoadingCommand(cmd);
                         
                         setTimeout(() => {
-                            // Map 'ls' to 'projects' and 'history' to 'experience' for the modal
-                            onCommand(cmd === 'ls' ? 'projects' : cmd === 'history' ? 'experience' : cmd);
+                            // Map 'projects' to 'projects' and 'experience' to 'experience' for the modal
+                            onCommand(cmd);
                             setIsLoading(false);
                             setLoadingCommand('');
                             setInput('');
@@ -684,7 +684,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     <SequentialTypewriter 
                                         messages={[
                                             { text: "Hi, I'm Si Jun. ", speed: 10 },
-                                            { text: "Welcome to my interactive portfolio. Type or click on a command to explore.", speed: 10 }
+                                            { text: "Welcome to my interactive portfolio. Click on a command to continue.", speed: 10 }
                                         ]}
                                         onComplete={() => setIsAnimating(false)}
                                     />
@@ -760,10 +760,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 <div className={`text-sm font-bold animate-pulse text-center ${isDark ? 'text-green-400' : 'text-blue-700'}`}>
                                     {(() => {
                                         const loadingMessages = {
-                                            'whoami': 'Loading about me...',
-                                            'ls': 'Initializing projects...',
-                                            'history': 'Initializing work experience...',
-                                            'cat': 'Opening resume...'
+                                            'aboutme': 'Loading about me...',
+                                            'projects': 'Initializing projects...',
+                                            'experience': 'Initializing work experience...',
+                                            'resume': 'Opening resume...'
                                         };
                                         return <>{`>`} {loadingMessages[loadingCommand] || `Initializing ${loadingCommand}...`}</>;
                                     })()}
@@ -782,10 +782,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     <span>
                                         {(() => {
                                             const statusMessages = {
-                                                'whoami': 'LOADING DETAILS',
-                                                'ls': 'LOADING PROJECTS',
-                                                'history': 'LOADING EXPERIENCE',
-                                                'cat': 'OPENING PDF'
+                                                'aboutme': 'LOADING DETAILS',
+                                                'projects': 'LOADING PROJECTS',
+                                                'experience': 'LOADING EXPERIENCE',
+                                                'resume': 'OPENING PDF'
                                             };
                                             return statusMessages[loadingCommand] || 'LOADING MODULES';
                                         })()}

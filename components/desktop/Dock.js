@@ -194,36 +194,6 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                         onLoadingStart={handleLoadingStart}
                     />
                 ))}
-                
-                <div className="w-px h-12 sm:h-14 md:h-14 bg-white/20 mx-0.5 sm:mx-1 md:mx-1 self-center" />
-                
-                <motion.div
-                    className="group relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-end justify-center -translate-y-1 sm:-translate-y-0.5"
-                    whileHover={{ y: -8, scale: 1.15 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onPermissionError("Mind your own business pfft!");
-                    }}
-                    onTouchStart={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }}
-                    onTouchEnd={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onPermissionError("Mind your own business pfft!");
-                    }}
-                    style={{ touchAction: 'manipulation' }}
-                >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                        Trash
-                    </div>
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-gray-500/50 to-gray-700/50 flex items-center justify-center text-xl sm:text-2xl md:text-3xl shadow-lg cursor-pointer backdrop-blur-md">
-                        🗑️
-                    </div>
-                </motion.div>
             </motion.div>
         </div>
         </>
