@@ -79,7 +79,7 @@ export const projectData = {
             thumbnail: {
                 type: 'image',
                 src: '/projects/bulkify/bulkify.png',
-                gradient: 'from-blue-400 to-purple-500'
+                gradient: 'from-blue-500 to-indigo-600'
             },
             techIcons: [
                 '/projects/tech-icons/java.webp',
@@ -139,7 +139,7 @@ export const projectData = {
             badge: null,
             thumbnail: {
                 type: 'image',
-                src: '/projects/nightfiesta/rfid.png',
+                src: '/projects/nightfiestarfid/rfid.png',
                 gradient: 'from-indigo-500 to-purple-600'
             },
             techIcons: [
@@ -153,12 +153,12 @@ export const projectData = {
         {
             id: 7,
             title: 'LCC 2025',
-            commits: 58,
+            commits: 77,
             badge: null,
             thumbnail: {
                 type: 'image',
                 src: '/projects/lcc2025/lcc.png',
-                gradient: 'from-blue-400 to-purple-500'
+                gradient: 'from-blue-500 to-indigo-600'
             },
             techIcons: [
                 '/projects/tech-icons/next.webp',
@@ -178,7 +178,7 @@ export const projectData = {
             thumbnail: {
                 type: 'image',
                 src: '/projects/orientation2024/ori.webp',
-                gradient: 'from-blue-400 to-purple-500'
+                gradient: 'from-sky-400 to-blue-500'
             },
             techIcons: [
                 '/projects/tech-icons/next.webp'
@@ -186,6 +186,43 @@ export const projectData = {
             description: 'Website for SUTD\'s 2023 Orientation event. Built with Next.js to provide information and engagement for incoming students.',
             techTags: ['Next.js'],
             githubUrl: 'https://github.com/zedithx/Ori_website',
+            blogUrl: null
+        },
+        {
+            id: 9,
+            title: 'Open House 2025',
+            commits: 44,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/openhouse2025/openhouse.png',
+                gradient: 'from-cyan-400 to-blue-500'
+            },
+            techIcons: [
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/firebase.png'
+            ],
+            description: 'Website and backend system for SUTD Open House 2025 event. Built with Python and Firebase to provide event information and interactive features.',
+            techTags: ['Python', 'Firebase'],
+            githubUrl: 'https://github.com/zedithx/insight-telegram-repo',
+            blogUrl: null
+        },
+        {
+            id: 12,
+            title: 'Night Fiesta 2023',
+            commits: 20,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/nightfiesta2023/night_fiesta.png',
+                gradient: 'from-indigo-600 to-purple-700'
+            },
+            techIcons: [
+                '/projects/tech-icons/next.webp'
+            ],
+            description: 'Website for SUTD\'s Night Fiesta 2023 event. Built with Next.js to provide event information and an engaging experience for participants.',
+            techTags: ['Next.js'],
+            githubUrl: null,
             blogUrl: null
         }
     ],
@@ -225,6 +262,47 @@ export const projectData = {
             ],
             description: 'A Docker Compose-based networking solution for managing multi-container applications. Features include service orchestration, network configuration, volume management, and seamless container communication.',
             techTags: ['Docker Compose', 'Python', 'Ruby on Rails']
+        }
+    ],
+    'Personal Projects': [
+        {
+            id: 10,
+            title: 'Trading Bot',
+            commits: 70,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/tradingbot/trading_bot.png',
+                gradient: 'from-amber-500 to-orange-600'
+            },
+            techIcons: [
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/cloudstorage.png'
+            ],
+            description: 'An automated trading bot that analyzes market data and executes trades based on predefined strategies. Built with Python and cloud storage for data persistence and analysis.',
+            techTags: ['Python', 'Cloud Storage'],
+            githubUrl: null,
+            blogUrl: null
+        },
+        {
+            id: 11,
+            title: 'Tangled',
+            commits: 377,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/experience/tangled_logo.jpeg',
+                gradient: 'from-orange-400 to-pink-500'
+            },
+            techIcons: [
+                '/projects/tech-icons/expo.png',
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/terraform.png'
+            ],
+            description: 'A social platform co-founded and developed with real-time chat capabilities, AWS infrastructure, and cloud-native architecture. Provisioned AWS infrastructure with Terraform and developed real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB.',
+            techTags: ['Expo', 'Python', 'Terraform'],
+            githubUrl: null,
+            blogUrl: null
         }
     ]
 };
@@ -266,7 +344,10 @@ export const colorClassesMap = {
     'IoT': 'bg-green-100 text-green-700',
     'DynamoDB': 'bg-blue-100 text-blue-700',
     'PostgreSQL': 'bg-blue-100 text-blue-700',
-    'Digital Ocean': 'bg-blue-100 text-blue-700'
+    'Digital Ocean': 'bg-blue-100 text-blue-700',
+    'Cloud Storage': 'bg-blue-100 text-blue-700',
+    'Expo': 'bg-gray-100 text-gray-700',
+    'Terraform': 'bg-purple-100 text-purple-700'
 };
 
 // Helper function to generate sticky action buttons
@@ -872,12 +953,44 @@ export const generateProjectContent = (project, isDark = false) => {
                             </div>
                         </div>
                     </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Links</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <a 
+                                    href="https://github.com/zedithx/LCC_telebot" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className={`inline-flex items-center gap-2 text-base hover:underline ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+                                >
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>Telegram Bot Repo</span>
+                                </a>
+                            </div>
+                            <div>
+                                <a 
+                                    href="https://github.com/zedithx/LCC_FirebaseQuery" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className={`inline-flex items-center gap-2 text-base hover:underline ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+                                >
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>Lucky Draw Query Repo</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
     
-E    // Default content for other projects
+    // Default content for other projects
     return (
         <div className="space-y-6">
             <div className="flex items-start justify-between gap-4">

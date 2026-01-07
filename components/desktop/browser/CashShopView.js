@@ -44,6 +44,10 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
         return data.items.filter(item => item.category === 'DevOps Projects');
     }, [data.items]);
 
+    const personalProjectsItems = useMemo(() => {
+        return data.items.filter(item => item.category === 'Personal Projects');
+    }, [data.items]);
+
     const handleProjectClick = useCallback((project) => {
         setSelectedProject(project);
     }, []);
@@ -115,6 +119,11 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                             onClick={() => {
                                 if (selectedProject) {
                                     handleBackToShop();
+                                }
+                                // Force a re-render by clearing and resetting state
+                                setSearchQuery('');
+                                if (selectedProject) {
+                                    setSelectedProject(null);
                                 }
                             }}
                             className={`hidden sm:block p-1.5 rounded-lg transition-colors ${isDark ? 'text-white/70 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-200'}`}
@@ -303,12 +312,30 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
 
                                     {/* DevOps Projects Section */}
                                     {devOpsItems.length > 0 && (
-                                        <div>
+                                        <div className="mb-4 sm:mb-6 md:mb-8">
                                             <h2 className={`text-base sm:text-lg md:text-xl font-semibold mb-4 sm:mb-5 md:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                                 DevOps Projects
                                             </h2>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                                                 {devOpsItems.map((item) => (
+                                                    <ItemCard 
+                                                        key={item.id}
+                                                        item={item}
+                                                        onClick={handleProjectClick}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Personal Projects Section */}
+                                    {personalProjectsItems.length > 0 && (
+                                        <div>
+                                            <h2 className={`text-base sm:text-lg md:text-xl font-semibold mb-4 sm:mb-5 md:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                                Personal Projects
+                                            </h2>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                                                {personalProjectsItems.map((item) => (
                                                     <ItemCard 
                                                         key={item.id}
                                                         item={item}

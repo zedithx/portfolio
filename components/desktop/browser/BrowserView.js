@@ -59,7 +59,14 @@ export default function BrowserView({ type, data, onClose }) {
                             >
                                 <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                             </button>
-                            <button className="hidden sm:block p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors">
+                            <button 
+                                onClick={() => {
+                                    // Scroll to top and force re-render
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                className="hidden sm:block p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors"
+                                title="Reload"
+                            >
                                 <RotateCw className="w-4 h-4" />
                             </button>
                         </div>
@@ -159,7 +166,17 @@ export default function BrowserView({ type, data, onClose }) {
                         >
                             <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </button>
-                        <button className={`hidden sm:block p-1.5 rounded-lg transition-colors ${isDark ? 'text-white/70 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-200'}`}>
+                        <button 
+                            onClick={() => {
+                                // Reset to first page and scroll to top
+                                if (currentPage !== 0) {
+                                    setCurrentPage(0);
+                                }
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className={`hidden sm:block p-1.5 rounded-lg transition-colors ${isDark ? 'text-white/70 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-200'}`}
+                            title="Reload"
+                        >
                             <RotateCw className="w-4 h-4" />
                         </button>
                     </div>

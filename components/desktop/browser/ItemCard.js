@@ -80,6 +80,8 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                     ? 'w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40' 
                                     : item.title === 'Monitoring Suite'
                                     ? 'w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24'
+                                    : item.title === 'Tangled'
+                                    ? 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-md'
                                     : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32'
                             }`}
                             loading="lazy"
