@@ -1189,10 +1189,10 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                At TSMC, I integrated OpenTelemetry tracing across 10+ fabrication labs, enabling automated test scenario generation and system sanity checks using Prometheus metrics. This reduced manual toil and strengthened reliability of critical industrial-scale workflows. I gained experience with Site Reliability and DevOps at Industrial Scale.
+                                At TSMC, I integrated OpenTelemetry tracing with NATS MQ compatibility across 10+ fabrication labs, enabling automated test scenario generation and system sanity checks using Prometheus metrics. This reduced manual toil and strengthened reliability of critical industrial-scale workflows. I gained experience with Site Reliability and DevOps at Industrial Scale.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> Spring Boot, OpenTelemetry, Prometheus, Grafana, Tempo, ArgoCD, ES, Azure CI/CD, Kubernetes, Helm, Chaos Engineering
+                                <span className="font-medium">Tech:</span> Spring Boot, OpenTelemetry, NATS, Prometheus, Grafana, Tempo, ArgoCD, ES, Azure CI/CD, Kubernetes, Helm, Chaos Engineering, Auto Sanity Check
                             </p>
                         </div>
 
