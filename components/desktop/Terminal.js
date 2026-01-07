@@ -684,7 +684,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                     <SequentialTypewriter 
                                         messages={[
                                             { text: "Hi, I'm Si Jun. ", speed: 10 },
-                                            { text: "Welcome to my interactive portfolio. Click on a command to continue.", speed: 10 }
+                                            { text: "Click a command below (or type one if you prefer)", speed: 10 }
                                         ]}
                                         onComplete={() => setIsAnimating(false)}
                                     />

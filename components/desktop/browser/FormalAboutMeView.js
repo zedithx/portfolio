@@ -155,9 +155,9 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                         Since then, my experience has progressively deepened into automation, infrastructure, and SRE:
                                     </p>
                                     <ul className={`list-disc list-outside space-y-2.5 ml-6 sm:ml-7 md:ml-8 pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                        <li>At Changi Airport Group, I built automation and chatbot systems on serverless, event-driven architectures.</li>
-                                        <li>At TSMC, I worked on telemetry and DevOps/SRE infrastructure at industrial scale.</li>
-                                        <li>At ByteDance, I focused on site reliability engineering, including monitoring, automation, and service reliability for large-scale systems.</li>
+                                        <li>At Changi Airport Group, I built Automation and Chatbot Safetyystems on serverless, event-driven architectures.</li>
+                                        <li>At TSMC, I worked on Telemetry and DevOps/SRE infrastructure at industrial scale.</li>
+                                        <li>At ByteDance, I focused on Site Reliability Engineering, including Monitoring, Automation, and Service Reliability for Large-Scale Systems.</li>
                                     </ul>
                                 </div>
                                 

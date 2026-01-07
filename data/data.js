@@ -1148,7 +1148,10 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Worked on ByteGraph, ByteDance's distributed graph database, focusing on monitoring, machine operations, and automation for increased service reliability for production clusters across Singapore and Europe.
+                                At ByteDance, I worked on ByteGraph, a distributed graph database powering production clusters across Singapore and Europe. I focused on automation, operational workflows, and monitoring pipelines to improve system reliability. This role gave me hands-on experience operating global-scale production systems and implementing SRE best practices.
+                            </p>
+                            <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                                <span className="font-medium">Tech:</span> Python, Prometheus, Grafana, ByteGraph, AWS
                             </p>
                         </div>
 
@@ -1160,12 +1163,15 @@ export const contentData = {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Tangled Social</h2>
-                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Co-founder, Software Engineer</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>July 2025 - Current</p>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Co-founder & Software Engineer</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>July 2025 - Present</p>
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Co-founded a social platform, provisioning AWS infrastructure with Terraform and developing a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. Contributed to ~80% of the codebase.
+                                I co-founded a social platform and built the majority of the codebase, including a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. I provisioned production-grade infrastructure with Terraform and implemented end-to-end monitoring and reliability features. This project sharpened my skills in cloud architecture, serverless systems, and production operations.
+                            </p>
+                            <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                                <span className="font-medium">Tech:</span> AWS (Lambda, DynamoDB, WebSocket Gateway), Terraform, Python, Node.js
                             </p>
                         </div>
 
@@ -1176,14 +1182,17 @@ export const contentData = {
                                     <img src="/experience/TSMC.png" alt="TSMC" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Taiwan Semiconductor Manufacturing Company (TSMC)</h2>
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>TSMC</h2>
                                     <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer (DevOps) Intern</p>
                                     <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Intelligent Eng-System Mask Team</p>
                                     <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>June 2025 - Aug 2025</p>
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Integrated OpenTelemetry tracing with Spring Boot Starter into a critical photomask detection workflow we had, across 10+ TSMC fabrication labs. Used the ordered traces from Grafana Tempo to engineer the auto-generation of test scenarios, and built auto sanity check mechanisms using Prometheus metrics.
+                                At TSMC, I integrated OpenTelemetry tracing across 10+ fabrication labs, enabling automated test scenario generation and system sanity checks using Prometheus metrics. This reduced manual toil and strengthened reliability of critical industrial-scale workflows. I gained experience with Site Reliability and DevOps at Industrial Scale.
+                            </p>
+                            <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                                <span className="font-medium">Tech:</span> Spring Boot, OpenTelemetry, Prometheus, Grafana, Automation Scripts
                             </p>
                         </div>
 
@@ -1201,42 +1210,10 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Engineered a production-grade, event-driven serverless Slack bot for automating and optimising some airport flight operations tasks, implemented centralized CloudWatch log extraction surpassing AWS export limit across multiple AWS accounts, and built two production microservices secured behind Apigee API Gateway.
+                                I built event-driven serverless systems to automate operational tasks, including a production Slack bot, multi-account CloudWatch log aggregation, and secure microservices behind Apigee API Gateway. This role developed my expertise in serverless architectures, observability, and operational automation in production environments.
                             </p>
-                        </div>
-
-                        {/* ROOTech */}
-                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
-                                    <img src="/experience/root.jpeg" alt="ROOTech" className="w-full h-full object-contain" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>ROOTech - Student Government</h2>
-                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Nov 2024 - Mar 2025</p>
-                                </div>
-                            </div>
-                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Developed key event webpages and Telegram Bots serving 1,600 students, led the integration of custom RFID bands for a Game Booth Carnival System, and built an AI Chatbot with event pass image generation for Open House 2025 registration, which was used by 1,800 public visitors over 2 days.
-                            </p>
-                        </div>
-
-                        {/* Reluvate Technologies */}
-                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
-                                    <img src="/experience/reluvate_logo.jpeg" alt="Reluvate Technologies" className="w-full h-full object-contain" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Reluvate Technologies</h2>
-                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer Intern</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Payment Platform Team</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Feb 2022 – Jul 2022</p>
-                                </div>
-                            </div>
-                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Engineered core backend functionalities of a Django-based merchant admin portal for a payment platform used by over 1,860 merchants in Singapore, including major brands like KOI, Watsons, and Zara.
+                            <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                                <span className="font-medium">Tech:</span> AWS Lambda, CloudWatch, Apigee API Gateway, Python, Node.js
                             </p>
                         </div>
                     </div>
