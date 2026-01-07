@@ -1151,7 +1151,7 @@ export const contentData = {
                                 At ByteDance, I worked on ByteGraph, a distributed graph database powering production clusters across Singapore and Europe. I focused on automation, operational workflows, and monitoring pipelines to improve system reliability. This role gave me hands-on experience operating global-scale production systems and implementing SRE best practices.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> Python, Prometheus, Grafana, ByteGraph, AWS
+                                <span className="font-medium">Tech:</span> Golang, Grafana, Machine Operations, Distributed Graph Database
                             </p>
                         </div>
 
@@ -1171,7 +1171,7 @@ export const contentData = {
                                 I co-founded a social platform and built the majority of the codebase, including a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. I provisioned production-grade infrastructure with Terraform and implemented end-to-end monitoring and reliability features. This project sharpened my skills in cloud architecture, serverless systems, and production operations.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> AWS (Lambda, DynamoDB, WebSocket Gateway), Terraform, Python, Node.js
+                                <span className="font-medium">Tech:</span> AWS (Lambda, DynamoDB, WebSocket Gateway, ECS rolling deployment), Terraform, Python, Expo, Sentry
                             </p>
                         </div>
 
@@ -1192,7 +1192,7 @@ export const contentData = {
                                 At TSMC, I integrated OpenTelemetry tracing across 10+ fabrication labs, enabling automated test scenario generation and system sanity checks using Prometheus metrics. This reduced manual toil and strengthened reliability of critical industrial-scale workflows. I gained experience with Site Reliability and DevOps at Industrial Scale.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> Spring Boot, OpenTelemetry, Prometheus, Grafana, Automation Scripts
+                                <span className="font-medium">Tech:</span> Spring Boot, OpenTelemetry, Prometheus, Grafana, Tempo, ArgoCD, ES, Azure CI/CD, Kubernetes, Helm, Chaos Engineering
                             </p>
                         </div>
 
@@ -1213,7 +1213,7 @@ export const contentData = {
                                 I built event-driven serverless systems to automate operational tasks, including a production Slack bot, multi-account CloudWatch log aggregation, and secure microservices behind Apigee API Gateway. This role developed my expertise in serverless architectures, observability, and operational automation in production environments.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> AWS Lambda, CloudWatch, Apigee API Gateway, Python, Node.js
+                                <span className="font-medium">Tech:</span> AWS (Cloudwatch, EventBridge, SQS, STS, SSM, S3, Api Gateway, Secrets Manager), Lambda Layers, Power Automate, Apigee Gateway, Python, Node.js, AWS SAM as IaC
                             </p>
                         </div>
                     </div>
