@@ -74,7 +74,7 @@ export const projectData = {
         {
             id: 1,
             title: 'Bulkify',
-            commits: 474,
+            commits: 144,
             badge: '3rd Place',
             thumbnail: {
                 type: 'image',
@@ -93,7 +93,7 @@ export const projectData = {
         {
             id: 2,
             title: 'Plant Pulse',
-            commits: 66,
+            commits: 51,
             badge: 'Top 3',
             thumbnail: {
                 type: 'image',
@@ -113,7 +113,7 @@ export const projectData = {
         {
             id: 3,
             title: 'EnableID',
-            commits: 823,
+            commits: 312,
             badge: 'Top 2',
             thumbnail: {
                 type: 'image',
@@ -268,7 +268,7 @@ export const projectData = {
         {
             id: 10,
             title: 'Trading Bot',
-            commits: 70,
+            commits: 69,
             badge: null,
             thumbnail: {
                 type: 'image',
@@ -287,7 +287,7 @@ export const projectData = {
         {
             id: 11,
             title: 'Tangled',
-            commits: 377,
+            commits: 231,
             badge: null,
             thumbnail: {
                 type: 'image',
