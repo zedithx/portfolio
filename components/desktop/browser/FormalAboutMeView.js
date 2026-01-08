@@ -100,15 +100,15 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
             {/* Browser Content */}
             <div className={`flex-1 rounded-b-xl border border-t-0 overflow-hidden flex flex-col ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>
                 <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8">
-                    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-8">
+                    <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4 md:space-y-6">
                         {/* Header */}
-                        <div className="mb-6 sm:mb-8">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="mb-4 sm:mb-6 md:mb-8">
+                            <div className="flex flex-col gap-3 sm:gap-4">
                                 <div>
-                                    <h1 className={`text-xl sm:text-2xl md:text-3xl font-semibold leading-tight mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    <h1 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold leading-tight mb-1.5 sm:mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                         Si Jun Yang
                                     </h1>
-                                    <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    <p className={`text-xs sm:text-sm md:text-base leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                         Full-Stack / DevOps / Site Reliability Engineer
                                     </p>
                                 </div>
@@ -120,13 +120,13 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                             onToggleToInformal();
                                         }
                                     }}
-                                    className={`flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-medium border rounded-lg transition-colors w-full sm:w-auto justify-center ${
+                                    className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm md:text-base font-medium border rounded-lg transition-colors ${
                                         isDark 
                                             ? 'text-white/80 hover:text-white border-gray-600 hover:bg-gray-800/50' 
                                             : 'text-gray-700 hover:text-gray-900 border-gray-300 hover:bg-gray-50'
                                     }`}
                                 >
-                                    <Gamepad2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <Gamepad2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                                     <span>Interactive Journey</span>
                                 </button>
                             </div>
@@ -137,11 +137,11 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                             initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
                             animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                             transition={prefersReducedMotion ? {} : { duration: 0.3 }}
-                            className={`rounded-lg p-5 sm:p-6 md:p-8 border mb-6 sm:mb-8 ${
+                            className={`rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 border mb-4 sm:mb-6 md:mb-8 ${
                                 isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-gray-200'
                             }`}
                         >
-                            <div className={`space-y-5 sm:space-y-6 text-base sm:text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                            <div className={`space-y-4 sm:space-y-5 md:space-y-6 text-sm sm:text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                 <p>
                                     I'm a Full-Stack and Site Reliability Engineer with hands-on experience building, operating, and scaling production systems across payments, automation, and large-scale infrastructure. My work spans backend development, cloud infrastructure, and reliability engineering, with a strong focus on systems that run in the real world.
                                 </p>
@@ -150,22 +150,22 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                     I started my software engineering journey during military service, completing Harvard CS50 and Django-focused coursework before joining Reluvate Technologies as a Backend Engineer Intern. There, I worked on a production payment platform supporting 1,860+ merchants in Singapore, including Watsons, Zara, and KOI — gaining early exposure to payments, reliability, and real production constraints.
                                 </p>
                                 
-                                <div className="space-y-3">
+                                <div className="space-y-2 sm:space-y-3">
                                     <p>
                                         Since then, my experience has progressively deepened into automation, infrastructure, and SRE:
                                     </p>
-                                    <ul className={`list-disc list-outside space-y-2.5 ml-6 sm:ml-7 md:ml-8 pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    <ul className={`list-disc list-outside space-y-2 ml-5 sm:ml-6 md:ml-8 pl-1.5 sm:pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                         <li>At Changi Airport Group, I built Automation and Chatbot Safetyystems on serverless, event-driven architectures.</li>
                                         <li>At TSMC, I worked on Telemetry and DevOps/SRE infrastructure at industrial scale.</li>
                                         <li>At ByteDance, I focused on Site Reliability Engineering, including Monitoring, Automation, and Service Reliability for Large-Scale Systems.</li>
                                     </ul>
                                 </div>
                                 
-                                <div className="space-y-3">
+                                <div className="space-y-2 sm:space-y-3">
                                     <p>
                                         Alongside internships, I've been a core contributor to Student Government's Tech Department at the Singapore University of Technology and Design (SUTD), where I repeatedly shipped and operated production systems for campus-wide events. This included:
                                     </p>
-                                    <ul className={`list-disc list-outside space-y-2.5 ml-6 sm:ml-7 md:ml-8 pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    <ul className={`list-disc list-outside space-y-2 ml-5 sm:ml-6 md:ml-8 pl-1.5 sm:pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                         <li>Frontend event pages for major events (Night Fiesta, Orientation, LCC)</li>
                                         <li>An end-to-end RFID-based game carnival system, covering hardware sourcing, readers, backend services managing 60 game booths and 600 visitors</li>
                                         <li>Multiple Telegram bots for event operations and engagement such as Voting and Lucky Draws</li>
@@ -187,17 +187,17 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                             initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
                             animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                             transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.2 }}
-                            className={`rounded-lg p-5 sm:p-6 md:p-8 border ${
+                            className={`rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 border ${
                                 isDark ? 'bg-[#2d2d2d] border-gray-700' : 'bg-white border-gray-200'
                             }`}
                         >
-                            <h2 className={`text-lg sm:text-xl font-semibold mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Connect</h2>
-                            <div className="flex flex-wrap gap-3">
+                            <h2 className={`text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Connect</h2>
+                            <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-3">
                                 <a
                                     href="https://github.com/zedithx"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                                    className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors text-xs sm:text-sm md:text-base ${
                                         isDark 
                                             ? 'bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white' 
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
@@ -210,7 +210,7 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                     href="https://www.linkedin.com/in/yangsijun"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                                    className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors text-xs sm:text-sm md:text-base ${
                                         isDark 
                                             ? 'bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white' 
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
