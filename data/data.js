@@ -151,8 +151,27 @@ export const projectData = {
             techTags: ['Python', 'Django', 'PostgreSQL']
         },
         {
+            id: 9,
+            title: 'Open House AI Chatbot',
+            commits: 44,
+            badge: null,
+            thumbnail: {
+                type: 'image',
+                src: '/projects/openhouse2025/openhouse.png',
+                gradient: 'from-cyan-400 to-blue-500'
+            },
+            techIcons: [
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/firebase.png'
+            ],
+            description: 'Website and backend system for SUTD Open House 2025 event. Built with Python and Firebase to provide event information and interactive features.',
+            techTags: ['Python', 'Firebase'],
+            githubUrl: 'https://github.com/zedithx/insight-telegram-repo',
+            blogUrl: null
+        },
+        {
             id: 7,
-            title: 'LCC 2025',
+            title: 'LCC 2025 Website',
             commits: 77,
             badge: null,
             thumbnail: {
@@ -172,7 +191,7 @@ export const projectData = {
         },
         {
             id: 8,
-            title: 'Orientation 2024',
+            title: 'Orientation 2024 Website',
             commits: 26,
             badge: null,
             thumbnail: {
@@ -188,28 +207,10 @@ export const projectData = {
             githubUrl: 'https://github.com/zedithx/Ori_website',
             blogUrl: null
         },
-        {
-            id: 9,
-            title: 'Open House 2025',
-            commits: 44,
-            badge: null,
-            thumbnail: {
-                type: 'image',
-                src: '/projects/openhouse2025/openhouse.png',
-                gradient: 'from-cyan-400 to-blue-500'
-            },
-            techIcons: [
-                '/projects/tech-icons/python.webp',
-                '/projects/tech-icons/firebase.png'
-            ],
-            description: 'Website and backend system for SUTD Open House 2025 event. Built with Python and Firebase to provide event information and interactive features.',
-            techTags: ['Python', 'Firebase'],
-            githubUrl: 'https://github.com/zedithx/insight-telegram-repo',
-            blogUrl: null
-        },
+        
         {
             id: 12,
-            title: 'Night Fiesta 2023',
+            title: 'Night Fiesta 2023 Website',
             commits: 20,
             badge: null,
             thumbnail: {
@@ -242,14 +243,18 @@ export const projectData = {
                 '/projects/tech-icons/grafana.png',
                 '/projects/tech-icons/prometheus.png'
             ],
-            description: 'A comprehensive DevOps monitoring and CI/CD pipeline management system. Features include real-time infrastructure monitoring, automated deployment pipelines, performance metrics visualization, and alerting systems.',
-            techTags: ['Go', 'Grafana', 'Prometheus']
+            description: 'A DevOps monitoring and CI/CD pipeline system built on Golang. It was used to learn the monitoring tool chain precursor \
+            to my TSMC internship, and the deployment was done on Azure VM via a hybrid of Github Runner (for building the images) and local runner\
+             (for pulling and running the image), which was my first time touching Azure Cloud. \n\n I explored optimisation of Docker image especially, \
+             with multi-stage builds, efficient caching of layers, and minimal linux distribution image for final build after binary compilation, which\
+             I could never do with python',
+            techTags: ['Go', 'Grafana', 'Prometheus', 'Azure Cloud', 'Docker Compose']
         },
         {
             id: 6,
             title: 'Container Networking',
             commits: 56,
-            badge: null,
+            badge: 'Full Marks',
             thumbnail: {
                 type: 'image',
                 src: '/projects/container-networking/container.png',
@@ -260,8 +265,10 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/rubyonrails.png'
             ],
-            description: 'A Docker Compose-based networking solution for managing multi-container applications. Features include service orchestration, network configuration, volume management, and seamless container communication.',
-            techTags: ['Docker Compose', 'Python', 'Ruby on Rails']
+            description: 'A containerized multi-service system with CI/CD, test-driven development, and microservices architecture, implemented as a challenging 2nd year master course final project at Tampere University (Finland).',
+            techTags: ['Docker Compose', 'Python', 'Ruby', 'NGINX', 'GitLab CI', 'TDD', 'REST APIs'],
+            githubUrl: 'https://github.com/zedithx/contdevdep-ex',
+            blogUrl: null
         }
     ],
     'Personal Projects': [
@@ -366,6 +373,12 @@ export const colorClassesMap = {
     'PostgreSQL': 'bg-blue-100 text-blue-700',
     'Digital Ocean': 'bg-blue-100 text-blue-700',
     'Cloud Storage': 'bg-blue-100 text-blue-700',
+    'Azure Cloud': 'bg-cyan-100 text-cyan-700',
+    'NGINX': 'bg-green-100 text-green-700',
+    'GitLab CI': 'bg-orange-100 text-orange-700',
+    'TDD': 'bg-purple-100 text-purple-700',
+    'REST APIs': 'bg-blue-100 text-blue-700',
+    'Ruby': 'bg-red-100 text-red-700',
     'Expo': 'bg-blue-100 text-blue-700',
     'Terraform': 'bg-indigo-100 text-indigo-700',
     'Render': 'bg-orange-100 text-orange-700'
@@ -714,8 +727,8 @@ export const generateProjectContent = (project, isDark = false) => {
                                     loading="lazy"
                                 />
                             </div>
+                            </div>
                         </div>
-                    </div>
                 </div>
 
                 <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
@@ -778,14 +791,14 @@ export const generateProjectContent = (project, isDark = false) => {
                         <p className="leading-relaxed text-base">
                             After presenting our project to our professor, we were selected as one of the <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>top three finalists</span> and invited to showcase our solution to <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>experienced engineers from Dell Technologies</span>. Our team came very close to securing the <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Dell Cloud Native Award</span>.
                         </p>
-                    </div>
+                            </div>
 
                     <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Background & Context</h3>
                         <p className="leading-relaxed text-base">
                             For our <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>50.046 Cloud Computing and Internet of Things</span> module, we were tasked with developing a product that applied <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>cloud-native principles</span> and <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>IoT technologies</span> to address a real business need. Despite the very tight <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>2–3 week development timeframe</span>, our team was able to make the most of the opportunity and deliver a functional solution.
                         </p>
-                    </div>
+                        </div>
 
                     <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Key Features</h3>
@@ -826,10 +839,10 @@ export const generateProjectContent = (project, isDark = false) => {
                                     Automated email notifications triggered by critical events such as empty water tanks or elevated disease risk, ensuring timely user awareness and response.
                                 </p>
                             </div>
-                        </div>
                     </div>
+                </div>
 
-                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Cloud Architecture</h3>
                         <p className={`leading-relaxed text-base mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                             On a side note, looking back, I would have added message queues like SQS along the way to ensure resistance to failure and handle retries during the data ingestion and processing pipelines.
@@ -845,15 +858,15 @@ export const generateProjectContent = (project, isDark = false) => {
 
                     <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Promotion Video</h3>
-                        <div className="flex justify-center -mx-5">
-                            <div className="relative w-full max-w-4xl overflow-hidden rounded-lg shadow-lg" style={{ paddingBottom: '56.25%' }}>
-                                <iframe
-                                    className="absolute top-0 left-0 w-full h-full"
+                    <div className="flex justify-center -mx-5">
+                        <div className="relative w-full max-w-4xl overflow-hidden rounded-lg shadow-lg" style={{ paddingBottom: '56.25%' }}>
+                            <iframe
+                                className="absolute top-0 left-0 w-full h-full"
                                     src="https://www.youtube.com/embed/PUh46XgGfsg"
                                     title="Plant Pulse Promotion Video"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                />
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
                             </div>
                         </div>
                     </div>
@@ -907,7 +920,7 @@ export const generateProjectContent = (project, isDark = false) => {
         );
     }
     
-    if (project.title === 'LCC 2025') {
+    if (project.title === 'LCC 2025 Website') {
         return (
             <div className="space-y-8">
                 <div className="relative">
@@ -976,6 +989,37 @@ export const generateProjectContent = (project, isDark = false) => {
                     </div>
 
                     <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Demo</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Website Demo</h4>
+                                <div className="mt-3 -mx-5">
+                                    <img 
+                                        src="/projects/lcc2025/lccwebsite.gif" 
+                                        alt="LCC 2025 Website Demo"
+                                        className="w-full h-auto rounded-lg shadow-lg"
+                                        style={{ maxHeight: '600px', objectFit: 'contain' }}
+                                        loading="lazy"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Telegram Bot Demo</h4>
+                                <div className="mt-3 -mx-5">
+                                    <video 
+                                        src="/projects/lcc2025/lcctelegrambot.mov"
+                                        controls
+                                        className="w-full h-auto rounded-lg shadow-lg"
+                                        style={{ maxHeight: '600px' }}
+                                    >
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Links</h3>
                         <div className="space-y-3">
                             <div>
@@ -1011,13 +1055,236 @@ export const generateProjectContent = (project, isDark = false) => {
         );
     }
     
+    if (project.title === 'Orientation 2024 Website') {
+        return (
+            <div className="space-y-8">
+                <div className="relative">
+                    <div className="mb-2 pr-0 sm:pr-24 md:pr-32">
+                        <h2 className={`text-2xl sm:text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
+                        <p className={`text-xs sm:text-sm mb-0 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            Website • Student Government Project
+                        </p>
+                    </div>
+                    <div className="absolute top-0 right-0 hidden sm:flex flex-col gap-1.5 sm:gap-2 md:gap-2.5">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex sm:hidden mb-3 gap-2">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex flex-wrap gap-2.5 mt-2">
+                        {project.techTags.map((tag, idx) => {
+                            const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700 border border-gray-200';
+                            const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80 border border-white/20` : `${colorClassesMap[tag]} border`) : defaultClasses;
+                            return (
+                                <span key={idx} className={`px-3.5 py-1.5 ${className} rounded-md text-sm font-medium transition-all hover:scale-105`}>
+                                    {tag}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</h3>
+                        <p className="leading-relaxed text-base">
+                            {project.description}
+                        </p>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Demo</h3>
+                        <div className="mt-3 -mx-5">
+                            <img 
+                                src="/projects/orientation2024/orientationwebsite.gif" 
+                                alt="Orientation 2024 Website Demo"
+                                className="w-full h-auto rounded-lg shadow-lg"
+                                style={{ maxHeight: '600px', objectFit: 'contain' }}
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+    if (project.title === 'Tangled') {
+        return (
+            <div className="space-y-8">
+                <div className="relative">
+                    <div className="mb-2 pr-0 sm:pr-24 md:pr-32">
+                        <h2 className={`text-2xl sm:text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
+                        <p className={`text-xs sm:text-sm mb-0 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            Social Platform • Personal Project
+                        </p>
+                    </div>
+                    <div className="absolute top-0 right-0 hidden sm:flex flex-col gap-1.5 sm:gap-2 md:gap-2.5">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex sm:hidden mb-3 gap-2">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex flex-wrap gap-2.5 mt-2">
+                        {project.techTags.map((tag, idx) => {
+                            const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700 border border-gray-200';
+                            const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80 border border-white/20` : `${colorClassesMap[tag]} border`) : defaultClasses;
+                            return (
+                                <span key={idx} className={`px-3.5 py-1.5 ${className} rounded-md text-sm font-medium transition-all hover:scale-105`}>
+                                    {tag}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</h3>
+                        <p className="leading-relaxed text-base mb-4">
+                            {project.description}
+                        </p>
+                        <div className="mt-4 -mx-5">
+                            <img 
+                                src="/projects/tangled/TangledMockup.jpeg" 
+                                alt="Tangled Project Mockup"
+                                className="w-full h-auto rounded-lg shadow-lg"
+                                style={{ maxHeight: '600px', objectFit: 'contain' }}
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+    if (project.title === 'Container Networking') {
+        return (
+            <div className="space-y-8">
+                <div className="relative">
+                    <div className="mb-2 pr-0 sm:pr-24 md:pr-32">
+                        <h2 className={`text-2xl sm:text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
+                        <p className={`text-xs sm:text-sm mb-0 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            CI/CD & Microservices • Exchange Project • Tampere University
+                        </p>
+                    </div>
+                    <div className="absolute top-0 right-0 hidden sm:flex flex-col gap-1.5 sm:gap-2 md:gap-2.5">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex sm:hidden mb-3 gap-2">
+                        {generateStickyButtons(project, isDark)}
+                    </div>
+                    <div className="flex flex-wrap gap-2.5 mt-2">
+                        {project.techTags.map((tag, idx) => {
+                            const defaultClasses = isDark ? 'bg-white/10 text-white/80 border border-white/20' : 'bg-gray-100 text-gray-700 border border-gray-200';
+                            const className = colorClassesMap[tag] ? (isDark ? `${colorClassesMap[tag]} opacity-80 border border-white/20` : `${colorClassesMap[tag]} border`) : defaultClasses;
+                            return (
+                                <span key={idx} className={`px-3.5 py-1.5 ${className} rounded-md text-sm font-medium transition-all hover:scale-105`}>
+                                    {tag}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</h3>
+                        <p className="leading-relaxed text-base">
+                            This project demonstrates a containerized multi-service system with CI/CD, test-driven development, and a microservices architecture. I implemented two services in different languages (Python & Ruby) with distinct networking roles: the Python service is an exposed service accessible from outside the Docker network, while the Ruby service operates as a private service only accessible within the Docker Compose network. The system is managed via an NGINX API Gateway with selective authentication for monitoring, state management, and load balancing.
+                        </p>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Achievement</h3>
+                        <p className="leading-relaxed text-base">
+                            I achieved the <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>maximum marks possible</span> for this project, scoring myself in the <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>top 10% of final year master students</span> in the course.
+                        </p>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Background & Context</h3>
+                        <p className="leading-relaxed text-base">
+                            This was a 2nd year master course final project at Tampere University during my exchange in Finland. The course had a 50% pass rate and a high dropout rate, making it one of the most challenging courses in the program. I spent <span className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>50 hours</span> on the entire project, including other earlier exercises in other branches. Successfully completing this project, with its focus on containerization, microservices, and DevOps practices, led me to pursue a DevOps internship and deepen my interest in infrastructure and reliability engineering.
+                        </p>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>What I Built</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Multi-Service System</h4>
+                                <p className="leading-relaxed text-base">
+                                    Services communicate over Docker network; API Gateway exposes REST endpoints for system state, container info, and request handling.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>System States & Monitoring</h4>
+                                <p className="leading-relaxed text-base">
+                                    Handles INIT, RUNNING, PAUSED, and SHUTDOWN states. SHUTDOWN was particularly tricky—it required stopping multiple container replicas, including the one issuing the command, which I solved using a Python background subprocess to run a bash script.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>State Synchronization</h4>
+                                <p className="leading-relaxed text-base">
+                                    With 3 replicas of Service 1, I had to synchronize state and logs using shared volumes to ensure consistency across round-robin requests.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-2 text-base ${isDark ? 'text-white' : 'text-gray-900'}`}>Advanced NGINX Configuration</h4>
+                                <p className="leading-relaxed text-base">
+                                    Implemented selective authentication per request method and per system state using auth_request and rewrite directives.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Testing & CI/CD</h3>
+                        <div className="space-y-3">
+                            <p className="leading-relaxed text-base">
+                                Tests had to be carefully mocked for shutdown and request endpoints to handle environment-specific behavior.
+                            </p>
+                            <p className="leading-relaxed text-base">
+                                Created a separate Docker Compose setup with temporary shared volumes for testing without affecting production state.
+                            </p>
+                            <p className="leading-relaxed text-base">
+                                CI/CD pipeline with a local GitLab runner automated building, testing, and deployment.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Project Links</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <a
+                                    href="https://drive.google.com/file/d/1dvmot5dbdu8mVUcx_vDbFvow9ddy0Kkz/view?usp=sharing"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`inline-flex items-center gap-2 text-base hover:underline ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>End Report</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
     // Default content for other projects
     return (
         <div className="space-y-6">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                     <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{project.title}</h2>
-                    <p className={`leading-relaxed mt-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <p className={`leading-relaxed mt-2 whitespace-pre-line ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                         {project.description}
                     </p>
                 </div>

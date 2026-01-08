@@ -64,11 +64,14 @@ const SequentialTypewriter = ({ messages, onComplete }) => {
         }
 
         const currentMessage = messages[currentIndex];
-        const previousText = messages.slice(0, currentIndex).reduce((acc, msg) => acc + msg.text, '');
+        const previousText = messages.slice(0, currentIndex).reduce((acc, msg) => {
+            return acc + msg.text + '\n';
+        }, '');
         let i = 0;
         
         const interval = setInterval(() => {
-            setDisplayedText(previousText + currentMessage.text.slice(0, i + 1));
+            const newText = previousText + currentMessage.text.slice(0, i + 1);
+            setDisplayedText(newText);
             i++;
             if (i >= currentMessage.text.length) {
                 clearInterval(interval);
@@ -82,7 +85,7 @@ const SequentialTypewriter = ({ messages, onComplete }) => {
         return () => clearInterval(interval);
     }, [currentIndex, messages, onComplete, isComplete]);
 
-    return <span>{displayedText}</span>;
+    return <span style={{ whiteSpace: 'pre-line' }}>{displayedText}</span>;
 };
 
 export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState, onOpenPDF }) {
@@ -683,8 +686,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 >
                                     <SequentialTypewriter 
                                         messages={[
-                                            { text: "Hi, I'm Si Jun. ", speed: 10 },
-                                            { text: "Click a command below (or type one if you prefer)", speed: 10 }
+                                            { text: "Hi, I'm Si Jun. Welcome to my Macbook Pro!", speed: 10 },
+                                            { text: "Click a command below (or type one if you prefer). You can also click on the dock icons to explore.", speed: 10 }
                                         ]}
                                         onComplete={() => setIsAnimating(false)}
                                     />
