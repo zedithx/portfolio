@@ -63,9 +63,3 @@ export function useScrollTrigger(onTrigger, options = {}) {
         hasTriggered
     };
 }
-
-
-
-
-
-

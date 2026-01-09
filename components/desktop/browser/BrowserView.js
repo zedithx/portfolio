@@ -1,8 +1,9 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, RotateCw, Lock } from 'lucide-react';
+import { X } from 'lucide-react';
 import AboutMeView from './AboutMeView';
+import BrowserChrome from './BrowserChrome';
 import { aboutMeData } from '../../../data/data';
 import { useTheme } from '../../../contexts/ThemeContext';
 
@@ -13,79 +14,13 @@ export default function BrowserView({ type, data, onClose }) {
     if (type === 'background') {
         return (
             <>
-                {/* Browser Chrome */}
-                <div className="bg-[#f6f6f6] rounded-t-xl border border-gray-200 border-b-0 shrink-0">
-                    {/* Title Bar */}
-                    <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b border-gray-200 relative">
-                        <div className="flex items-center gap-1.5 md:gap-2">
-                            <button 
-                                onClick={onClose} 
-                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all group flex items-center justify-center cursor-pointer touch-manipulation"
-                            >
-                                <X className="w-2.5 h-2.5 md:w-2 md:h-2 text-[#ff5f57] group-hover:text-red-800" />
-                            </button>
-                            <button 
-                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all cursor-pointer touch-manipulation" 
-                                title="Minimize"
-                            />
-                            <button 
-                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all cursor-pointer touch-manipulation" 
-                                title="Maximize"
-                            />
-                        </div>
-                        <div className="absolute left-1/2 -translate-x-1/2 text-[10px] md:text-sm text-gray-600 font-medium truncate max-w-[150px] md:max-w-none">
-                            About Me
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="text-gray-500 hover:text-gray-700 transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded hover:bg-gray-100"
-                        >
-                            Close
-                        </button>
-                    </div>
-
-                    {/* Navigation & URL Bar */}
-                    <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2">
-                        <div className="flex items-center gap-0.5 md:gap-1">
-                            <button 
-                                disabled
-                                className="p-1 md:p-1.5 rounded-lg transition-colors text-gray-300 cursor-not-allowed"
-                            >
-                                <ChevronLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                            </button>
-                            <button 
-                                disabled
-                                className="p-1 md:p-1.5 rounded-lg transition-colors text-gray-300 cursor-not-allowed"
-                            >
-                                <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                            </button>
-                            <button 
-                                onClick={() => {
-                                    // Scroll to top and force re-render
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                                className="hidden sm:block p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors"
-                                title="Reload"
-                            >
-                                <RotateCw className="w-4 h-4" />
-                            </button>
-                        </div>
-
-                    <div className="flex-1 flex items-center gap-1.5 md:gap-2 bg-white rounded-lg px-2 md:px-3 py-1 md:py-1.5 border border-gray-200 min-w-0">
-                        <Lock className="w-2.5 h-2.5 md:w-3 md:h-3 text-gray-400 shrink-0" />
-                        <span className="text-[10px] md:text-sm text-gray-600 truncate">portfolio.dev/background</span>
-                    </div>
-                </div>
-
-                    {/* Tabs */}
-                    <div className="flex items-center px-2 -mb-px">
-                        <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-white rounded-t-lg border border-gray-200 border-b-white text-[10px] md:text-sm">
-                            <span className="text-gray-700">About Me</span>
-                            <X className="w-2.5 h-2.5 md:w-3 md:h-3 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                        </div>
-                    </div>
-                </div>
-
+                <BrowserChrome
+                    isDark={false}
+                    title="About Me"
+                    url="portfolio.dev/background"
+                    onClose={onClose}
+                    showReload={true}
+                />
                 {/* Browser Content - AboutMeView */}
                 <div className="flex-1 bg-white rounded-b-xl border border-gray-200 border-t-0 overflow-hidden flex flex-col">
                     <div className="flex-1 overflow-y-auto">
@@ -110,91 +45,29 @@ export default function BrowserView({ type, data, onClose }) {
         }
     }, [currentPage]);
 
+    const handleReload = useCallback(() => {
+        // Reset to first page and scroll to top
+        if (currentPage !== 0) {
+            setCurrentPage(0);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [currentPage]);
+
     return (
         <>
-            {/* Browser Chrome */}
-            <div className={`${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-[#f6f6f6] border-gray-200'} rounded-t-xl border border-b-0 shrink-0`}>
-                {/* Title Bar */}
-                <div className={`flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'} relative`}>
-                    <div className="flex items-center gap-1.5 md:gap-2">
-                        <button 
-                            onClick={onClose} 
-                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all group flex items-center justify-center cursor-pointer touch-manipulation"
-                        >
-                            <X className="w-2.5 h-2.5 md:w-2 md:h-2 text-[#ff5f57] group-hover:text-red-800" />
-                        </button>
-                        <button 
-                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all cursor-pointer touch-manipulation" 
-                            title="Minimize"
-                        />
-                        <button 
-                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all cursor-pointer touch-manipulation" 
-                            title="Maximize"
-                        />
-                    </div>
-                    <div className={`absolute left-1/2 -translate-x-1/2 text-sm md:text-base ${isDark ? 'text-white/80' : 'text-gray-600'} font-medium truncate max-w-[150px] md:max-w-none`}>
-                        {data.pages[currentPage].title}
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className={`${isDark ? 'text-white/50 hover:text-white/80 hover:bg-white/10' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'} transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded`}
-                    >
-                        Close
-                    </button>
-                </div>
-
-                {/* Navigation & URL Bar */}
-                <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2">
-                    <div className="flex items-center gap-0.5 md:gap-1">
-                        <button 
-                            onClick={goPrev}
-                            disabled={currentPage === 0}
-                            className={`p-1 md:p-1.5 rounded-lg transition-colors ${currentPage === 0 
-                                ? (isDark ? 'text-gray-600/50 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')
-                                : (isDark ? 'text-white/70 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-200')
-                            }`}
-                        >
-                            <ChevronLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                        </button>
-                        <button 
-                            onClick={goNext}
-                            disabled={currentPage === totalPages - 1}
-                            className={`p-1 md:p-1.5 rounded-lg transition-colors ${currentPage === totalPages - 1 
-                                ? (isDark ? 'text-gray-600/50 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')
-                                : (isDark ? 'text-white/70 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-200')
-                            }`}
-                        >
-                            <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                        </button>
-                        <button 
-                            onClick={() => {
-                                // Reset to first page and scroll to top
-                                if (currentPage !== 0) {
-                                    setCurrentPage(0);
-                                }
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                            className={`hidden sm:block p-1.5 rounded-lg transition-colors ${isDark ? 'text-white/70 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-gray-200'}`}
-                            title="Reload"
-                        >
-                            <RotateCw className="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    <div className={`flex-1 flex items-center gap-1.5 md:gap-2 rounded-lg px-2 md:px-3 py-1.5 md:py-1.5 border min-w-0 ${isDark ? 'bg-[#2d2d2d] border-gray-600' : 'bg-white border-gray-200'}`}>
-                        <Lock className={`w-3 h-3 md:w-3 md:h-3 shrink-0 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
-                        <span className={`text-sm md:text-base truncate ${isDark ? 'text-white/70' : 'text-gray-600'}`}>portfolio.dev/{type}</span>
-                    </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="flex items-center px-2 -mb-px">
-                    <div className={`flex items-center gap-2 md:gap-2 px-3 md:px-4 py-2 md:py-2 rounded-t-lg border border-b-0 text-sm md:text-base ${isDark ? 'bg-[#2d2d2d] border-gray-700 border-b-[#2d2d2d]' : 'bg-white border-gray-200 border-b-white'}`}>
-                        <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-700'}`}>{data.title}</span>
-                        <X className={`w-2.5 h-2.5 md:w-3 md:h-3 cursor-pointer ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'}`} />
-                    </div>
-                </div>
-            </div>
+            <BrowserChrome
+                isDark={isDark}
+                title={data.pages[currentPage]?.title || data.title}
+                tabTitle={data.title}
+                url={`portfolio.dev/${type}`}
+                onClose={onClose}
+                showReload={true}
+                onPrev={goPrev}
+                onNext={goNext}
+                canGoPrev={currentPage > 0}
+                canGoNext={currentPage < totalPages - 1}
+                onReload={handleReload}
+            />
 
             {/* Browser Content */}
             <div className={`flex-1 rounded-b-xl border border-t-0 overflow-hidden flex flex-col ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>

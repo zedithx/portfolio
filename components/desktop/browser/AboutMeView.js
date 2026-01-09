@@ -1,13 +1,13 @@
 'use client';
 import React, { useRef, useCallback, useMemo, useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSkillProgression } from './hooks/useSkillProgression';
-import HeroSection from './HeroSection';
+import { useSkillProgression } from '../../../hooks/browser/useSkillProgression';
+import HeroSection from './interactivejourney/HeroSection';
 import StatsDrawer from './StatsDrawer';
 import FormalAboutMeView from './FormalAboutMeView';
 
 // Lazy load JourneySlideshow for better initial load performance
-const JourneySlideshow = lazy(() => import('./JourneySlideshow'));
+const JourneySlideshow = lazy(() => import('./interactivejourney/JourneySlideshow'));
 
 export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
     const journeyStartRef = useRef(null);

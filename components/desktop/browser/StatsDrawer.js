@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useStatsDrawer } from './hooks/useStatsDrawer';
+import { useStatsDrawer } from '../../../hooks/browser/useStatsDrawer';
 import { Lock } from 'lucide-react';
 
 export default function StatsDrawer({ skills, showButton = true, buttonPosition = 'fixed' }) {
