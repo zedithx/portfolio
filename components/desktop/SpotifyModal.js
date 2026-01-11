@@ -39,7 +39,7 @@ export default function SpotifyModal({ isOpen, onClose, onPermissionError, onMin
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [volume, setVolume] = useState(100);
+    const [volume, setVolume] = useState(30);
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [isMuted, setIsMuted] = useState(false);
     const audioRef = useRef(null);

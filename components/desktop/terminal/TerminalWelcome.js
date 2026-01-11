@@ -34,7 +34,8 @@ export default function TerminalWelcome({
     isAnimating, 
     sessionText, 
     statusText, 
-    onCommandClick 
+    onCommandClick,
+    onAnimationComplete
 }) {
     return (
         <motion.div 
@@ -62,10 +63,10 @@ export default function TerminalWelcome({
                 >
                     <SequentialTypewriter 
                         messages={[
-                            { text: "Hi, I'm Si Jun. Welcome to my Macbook Pro!", speed: 10 },
-                            { text: "Click a command below (or type one if you prefer). You can also click on the icons below to explore.", speed: 10 }
+                            { text: "Hi, I'm Si Jun!", speed: 10 },
+                            { text: "Click a command or icon in the dock below (or type one if you prefer).", speed: 10 }
                         ]}
-                        onComplete={() => {}}
+                        onComplete={onAnimationComplete || (() => {})}
                     />
                 </motion.p>
             )}

@@ -53,13 +53,12 @@ export const SequentialTypewriter = ({ messages, onComplete }) => {
         }
 
         const currentMessage = messages[currentIndex];
-        const previousText = messages.slice(0, currentIndex).reduce((acc, msg) => {
-            return acc + msg.text + '\n';
-        }, '');
+        const previousText = messages.slice(0, currentIndex).map(msg => msg.text).join(' ');
         let i = 0;
         
         const interval = setInterval(() => {
-            const newText = previousText + currentMessage.text.slice(0, i + 1);
+            const separator = previousText ? ' ' : '';
+            const newText = previousText + separator + currentMessage.text.slice(0, i + 1);
             setDisplayedText(newText);
             i++;
             if (i >= currentMessage.text.length) {
@@ -73,5 +72,5 @@ export const SequentialTypewriter = ({ messages, onComplete }) => {
         return () => clearInterval(interval);
     }, [currentIndex, messages, onComplete, isComplete]);
 
-    return <span style={{ whiteSpace: 'pre-line' }}>{displayedText}</span>;
+    return <span>{displayedText}</span>;
 };

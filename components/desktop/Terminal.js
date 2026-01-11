@@ -1,92 +1,12 @@
 'use client';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
-
-const commands = [
-    { name: 'aboutme', description: 'Learn about who I am and my journey' },
-    { name: 'projects', description: 'Browse through my portfolio of work' },
-    { name: 'experience', description: 'View my professional experience' },
-    { name: 'resume', description: 'View my resume' },
-    { name: 'clear', description: 'Clear the terminal screen' },
-    { name: 'cd', description: 'Toggle between dark and light mode' },
-];
-
-const Typewriter = ({ text, delay = 0, onComplete, speed = 20 }) => {
-    const [displayedText, setDisplayedText] = useState('');
-    
-    useEffect(() => {
-        let timeout;
-        if (delay > 0) {
-            timeout = setTimeout(() => {
-                let i = 0;
-                const interval = setInterval(() => {
-                    setDisplayedText(text.slice(0, i + 1));
-                    i++;
-                    if (i >= text.length) {
-                        clearInterval(interval);
-                        if (onComplete) onComplete();
-                    }
-                }, speed);
-            }, delay);
-        } else {
-            let i = 0;
-            const interval = setInterval(() => {
-                setDisplayedText(text.slice(0, i + 1));
-                i++;
-                if (i >= text.length) {
-                    clearInterval(interval);
-                    if (onComplete) onComplete();
-                }
-            }, speed);
-        }
-        return () => {
-            clearTimeout(timeout);
-            if (timeout) clearTimeout(timeout);
-        };
-    }, [text, delay, speed, onComplete]);
-
-    return <span>{displayedText}</span>;
-};
-
-const SequentialTypewriter = ({ messages, onComplete }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [displayedText, setDisplayedText] = useState('');
-    const [isComplete, setIsComplete] = useState(false);
-
-    useEffect(() => {
-        if (currentIndex >= messages.length) {
-            if (onComplete && !isComplete) {
-                setIsComplete(true);
-                onComplete();
-            }
-            return;
-        }
-
-        const currentMessage = messages[currentIndex];
-        const previousText = messages.slice(0, currentIndex).reduce((acc, msg) => {
-            return acc + msg.text + '\n';
-        }, '');
-        let i = 0;
-        
-        const interval = setInterval(() => {
-            const newText = previousText + currentMessage.text.slice(0, i + 1);
-            setDisplayedText(newText);
-            i++;
-            if (i >= currentMessage.text.length) {
-                clearInterval(interval);
-                // Small pause before next message
-                setTimeout(() => {
-                    setCurrentIndex(prev => prev + 1);
-                }, 200);
-            }
-        }, currentMessage.speed);
-
-        return () => clearInterval(interval);
-    }, [currentIndex, messages, onComplete, isComplete]);
-
-    return <span style={{ whiteSpace: 'pre-line' }}>{displayedText}</span>;
-};
+import TerminalTitleBar from './terminal/TerminalTitleBar';
+import TerminalWelcome from './terminal/TerminalWelcome';
+import TerminalHistory from './terminal/TerminalHistory';
+import TerminalInput from './terminal/TerminalInput';
+import TerminalLoading from './terminal/TerminalLoading';
 
 export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState, onOpenPDF }) {
     const { theme, toggleTheme } = useTheme();
@@ -107,22 +27,6 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const measureRef = useRef(null);
     const typingIntervalRef = useRef(null);
 
-    // Variants for staggered animation
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.3
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, x: -10 },
-        visible: { opacity: 1, x: 0 }
-    };
 
     // Resizing and Dragging state
     const [dimensions, setDimensions] = useState({ width: 850, height: 550, top: 100, left: 100 });
@@ -621,35 +525,13 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             </div>
 
             <div className="h-full flex flex-col">
-                {/* Title Bar */}
-                <div className={`px-4 py-3 flex items-center gap-2 title-bar-drag cursor-grab active:cursor-grabbing shrink-0 ${isDark ? 'bg-[#2d2d2d]' : 'bg-gray-100'}`}>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={(e) => { e.stopPropagation(); onClose(); }} 
-                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer touch-manipulation" 
-                        />
-                        <button
-                            onClick={(e) => { e.stopPropagation(); onMinimize(); }} 
-                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer touch-manipulation" 
-                        />
-                        <button
-                            onClick={(e) => { e.stopPropagation(); onMaximize(); }} 
-                            className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer touch-manipulation" 
-                        />
-                    </div>
-                    <div className="flex-1 text-center select-none">
-                        <span className={`text-sm font-medium ${isDark ? 'text-white/60' : 'text-gray-600'}`}>Terminal — zsh</span>
-                    </div>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onClose();
-                        }}
-                        className={`transition-colors text-xs md:text-sm px-2 md:px-3 py-1 rounded ${isDark ? 'text-white/50 hover:text-white/80 hover:bg-white/10' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'}`}
-                    >
-                        Close
-                    </button>
-                </div>
+                <TerminalTitleBar
+                    isDark={isDark}
+                    onClose={onClose}
+                    onMinimize={onMinimize}
+                    onMaximize={onMaximize}
+                    onDragStart={startDrag}
+                />
 
                 <div 
                     ref={terminalRef}
@@ -661,193 +543,31 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     }}
                 >
                     {showWelcome && !isLoading && (
-                        <motion.div 
-                            initial="hidden"
-                            animate="visible"
-                            variants={containerVariants}
-                            className="mb-4"
-                        >
-                            <motion.pre 
-                                variants={itemVariants}
-                                className={`text-sm sm:text-xs leading-tight mb-4 overflow-x-hidden ${isDark ? 'text-green-400' : 'text-blue-700'}`}
-                            >
-{`┌───────────────────────────────────────┐
-│  ${sessionText.padEnd(37)}│
-│  status: ${statusText.padEnd(28)}│
-└───────────────────────────────────────┘`}
-                            </motion.pre>
-                            
-                            {isReady && (
-                                <motion.p 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    variants={itemVariants} 
-                                    className={`mb-4 text-sm sm:text-sm ${isDark ? 'text-white/70' : 'text-gray-700'}`}
-                                >
-                                    <SequentialTypewriter 
-                                        messages={[
-                                            { text: "Hi, I'm Si Jun. Welcome to my Macbook Pro!", speed: 10 },
-                                            { text: "Click a command below (or type one if you prefer). You can also click on the icons below to explore.", speed: 10 }
-                                        ]}
-                                        onComplete={() => setIsAnimating(false)}
-                                    />
-                                </motion.p>
-                            )}
-
-                            {!isAnimating && (
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className={`border rounded-lg overflow-hidden ${isDark ? 'border-white/10' : 'border-gray-300'}`}
-                                >
-                                    <div className={`px-2 sm:px-3 py-1.5 sm:py-2 border-b ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-100 border-gray-300'}`}>
-                                        <span className={`text-xs sm:text-xs uppercase tracking-wider ${isDark ? 'text-white/50' : 'text-gray-600'}`}>Available Commands</span>
-                                    </div>
-                                    {commands.map((cmd) => (
-                                        <div 
-                                            key={cmd.name} 
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                handleCommandClick(cmd.name);
-                                            }}
-                                            onTouchStart={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                            }}
-                                            onTouchEnd={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                handleCommandClick(cmd.name);
-                                            }}
-                                            className={`px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b last:border-0 transition-colors cursor-pointer ${isDark ? 'border-white/5 hover:bg-white/10 active:bg-white/15' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-150'}`}
-                                            style={{ touchAction: 'manipulation' }}
-                                        >
-                                            <span className={`font-semibold w-20 sm:w-24 text-xs sm:text-sm shrink-0 ${isDark ? 'text-green-400' : 'text-blue-700'}`}>{cmd.name}</span>
-                                            <span className={`text-xs sm:text-xs leading-relaxed min-w-0 flex-1 truncate ${isDark ? 'text-white/50' : 'text-gray-600'}`}>{cmd.description}</span>
-                                        </div>
-                                    ))}
-                                </motion.div>
-                            )}
-                        </motion.div>
+                        <TerminalWelcome
+                            isDark={isDark}
+                            isReady={isReady}
+                            isAnimating={isAnimating}
+                            sessionText={sessionText}
+                            statusText={statusText}
+                            onCommandClick={handleCommandClick}
+                            onAnimationComplete={() => setIsAnimating(false)}
+                        />
                     )}
 
-                    {/* History */}
-                    {!isLoading && history.map((item, index) => (
-                        <div key={index} className="mb-2">
-                            {item.type === 'input' && (
-                                <div className="flex items-start gap-2 mb-1">
-                                    <span className={`font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0 ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
-                                        <span className="hidden sm:inline">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                        <span className="sm:hidden">(base) zedithx@Macbook ~ %</span>
-                                    </span>
-                                    <span className={`text-[14px] sm:text-sm break-all leading-5 ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.content}</span>
-                                </div>
-                            )}
-                            {item.type === 'error' && (
-                                <p className={`ml-0 leading-5 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{item.content}</p>
-                            )}
-                            {item.type === 'success' && (
-                                <p className={`ml-0 leading-5 ${isDark ? 'text-green-400' : 'text-blue-700'}`}>{item.content}</p>
-                            )}
-                        </div>
-                    ))}
+                    {!isLoading && <TerminalHistory isDark={isDark} history={history} />}
 
-                    {isLoading && (
-                        <div className="h-full flex items-center justify-center">
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="w-80 space-y-6 flex flex-col items-center"
-                            >
-                                <div className={`text-sm font-bold animate-pulse text-center ${isDark ? 'text-green-400' : 'text-blue-700'}`}>
-                                    {(() => {
-                                        const loadingMessages = {
-                                            'aboutme': 'Loading about me...',
-                                            'projects': 'Initializing projects...',
-                                            'experience': 'Initializing work experience...',
-                                            'resume': 'Opening resume...'
-                                        };
-                                        return <>{`>`} {loadingMessages[loadingCommand] || `Initializing ${loadingCommand}...`}</>;
-                                    })()}
-                                </div>
-                                
-                                <div className={`w-full h-1.5 rounded-full overflow-hidden border ${isDark ? 'bg-white/5 border-white/10' : 'bg-gray-200 border-gray-300'}`}>
-                                    <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: '100%' }}
-                                        transition={{ duration: 1.2, ease: "easeInOut" }}
-                                        className={`h-full ${isDark ? 'bg-green-500' : 'bg-blue-600'}`}
-                                    />
-                                </div>
-                                
-                                <div className={`flex justify-between text-[9px] font-mono w-full ${isDark ? 'text-white/30' : 'text-gray-500'}`}>
-                                    <span>
-                                        {(() => {
-                                            const statusMessages = {
-                                                'aboutme': 'LOADING DETAILS',
-                                                'projects': 'LOADING PROJECTS',
-                                                'experience': 'LOADING EXPERIENCE',
-                                                'resume': 'OPENING PDF'
-                                            };
-                                            return statusMessages[loadingCommand] || 'LOADING MODULES';
-                                        })()}
-                                    </span>
-                                    <span>DONE</span>
-                                </div>
-                            </motion.div>
-                        </div>
-                    )}
+                    {isLoading && <TerminalLoading isDark={isDark} loadingCommand={loadingCommand} />}
 
-                    {/* Input Line */}
                     {!isLoading && (
-                        <div className="flex items-center gap-2">
-                            <span className={`font-medium text-[14px] sm:text-sm whitespace-nowrap leading-5 shrink-0 ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
-                                <span className="hidden sm:inline">(base) zedithx@Yangs-Macbook-Pro ~ %</span>
-                                <span className="sm:hidden">(base) zedithx@Macbook ~ %</span>
-                            </span>
-                            <div className="flex-1 min-w-0 relative flex items-center h-5">
-                            <input
-                                ref={inputRef}
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                onFocus={(e) => {
-                                    // Prevent terminal from shifting on mobile when keyboard appears
-                                    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-                                        const terminalEl = e.target.closest('[class*="fixed"]') || e.target.closest('.fixed');
-                                        if (terminalEl) {
-                                            const computedLeft = window.getComputedStyle(terminalEl).left;
-                                            if (computedLeft && computedLeft !== 'auto') {
-                                                terminalEl.style.setProperty('left', computedLeft, 'important');
-                                            }
-                                        }
-                                    }
-                                }}
-                                className={`flex-1 bg-transparent outline-none text-[14px] sm:text-sm leading-5 h-5 font-mono ${isDark ? 'text-white' : 'text-gray-900'}`}
-                                style={{ caretColor: 'transparent', maxWidth: '100%' }}
-                                spellCheck={false}
-                                autoComplete="off"
-                            />
-                            <span
-                                ref={measureRef}
-                                className="absolute invisible text-[14px] sm:text-sm leading-5 whitespace-pre font-mono"
-                                style={{ left: 0 }}
-                            >
-                                {input}
-                            </span>
-                            <motion.span
-                                animate={{ opacity: [1, 0] }}
-                                transition={{ duration: 0.8, repeat: Infinity }}
-                                className={`absolute w-1.5 h-4 sm:w-2 sm:h-5 ${isDark ? 'bg-white/80' : 'bg-gray-900/80'}`}
-                                style={{ 
-                                    left: `${cursorPosition}px`,
-                                    marginLeft: '2px'
-                                }}
-                            />
-                            </div>
-                        </div>
+                        <TerminalInput
+                            isDark={isDark}
+                            input={input}
+                            inputRef={inputRef}
+                            measureRef={measureRef}
+                            cursorPosition={cursorPosition}
+                            onInputChange={(e) => setInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        />
                     )}
                 </div>
             </div>
