@@ -85,7 +85,7 @@ export const projectData = {
                 '/projects/tech-icons/java.webp',
                 '/projects/tech-icons/firebase.png'
             ],
-            description: 'A mobile app enabling organizations to bulk purchase items together for cost savings. Features include centralized delivery, hardware locker integration, and smart payment processing with Stripe.',
+            description: 'A mobile app enabling organizations to bulk purchase items together for cost savings with centralized delivery and smart payment processing.',
             techTags: ['Java', 'Firebase', 'Stripe', 'Stream.io', 'Algolia'],
             githubUrl: 'https://github.com/zedithx/JavaAndroidFE',
             blogUrl: null // Add blog post URL if available
@@ -105,7 +105,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/dynamodb.svg'
             ],
-            description: 'A cloud-based IoT infrastructure project for monitoring and managing plant health. Features include real-time sensor data collection, machine learning predictions, and cloud-based analytics.',
+            description: 'A cloud-based IoT infrastructure for monitoring plant health with real-time sensor data and machine learning predictions.',
             techTags: ['Python', 'Next.js', 'TypeScript', 'DynamoDB', 'Jupyter Notebook', 'Cloud Computing', 'IoT'],
             githubUrl: 'https://github.com/zedithx/Cloud-Iot-Infra',
             blogUrl: null
@@ -125,7 +125,7 @@ export const projectData = {
                 '/projects/tech-icons/rubyonrails.png',
                 '/projects/tech-icons/postgresql.webp'
             ],
-            description: 'A comprehensive platform for refugee identification and support services. Features include secure identity management, document verification, and streamlined access to essential services.',
+            description: 'A comprehensive platform for refugee identification and support services with secure identity management and document verification.',
             techTags: ['Next.js', 'Ruby on Rails', 'PostgreSQL', 'RSpec', 'Cypress', 'Tesseract', 'Google Dialogflow', 'Google Cloud Trigger', 'Google Gemini LLM', 'AWS Rekognition'],
             githubUrl: 'https://github.com/Service-Design-Studio/1d-final-project-summer-2024-SDS-2024-Team-14?tab=readme-ov-file',
             blogUrl: null // Add blog post URL if available
@@ -147,7 +147,7 @@ export const projectData = {
                 '/projects/tech-icons/django.png',
                 '/projects/tech-icons/postgresql.webp'
             ],
-            description: 'An RFID-based access control and event management system for student government events. Features include contactless check-in, real-time attendance tracking, and secure event access management.',
+            description: 'An RFID-based access control system for student government events with contactless check-in and real-time attendance tracking.',
             techTags: ['Python', 'Django', 'PostgreSQL']
         },
         {
@@ -164,7 +164,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/firebase.png'
             ],
-            description: 'Website and backend system for SUTD Open House 2025 event. Built with Python and Firebase to provide event information and interactive features.',
+            description: 'Website and backend system for SUTD Open House 2025 event with interactive features and event information.',
             techTags: ['Python', 'Firebase'],
             githubUrl: 'https://github.com/zedithx/insight-telegram-repo',
             blogUrl: null
@@ -184,7 +184,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/firebase.png'
             ],
-            description: 'Website for SUTD LCC 2024 event, which was an event where seniors shared about their internship and exchange experiences with juniors. Built with Next.js to provide an engaging and interactive experience for participants.',
+            description: 'Website for SUTD LCC 2024 event where seniors shared internship and exchange experiences with juniors.',
             techTags: ['Next.js', 'Python', 'Firebase', 'Digital Ocean'],
             githubUrl: 'https://github.com/zedithx/LCC_website',
             blogUrl: null
@@ -202,7 +202,7 @@ export const projectData = {
             techIcons: [
                 '/projects/tech-icons/next.webp'
             ],
-            description: 'Website for SUTD\'s 2023 Orientation event. Built with Next.js to provide information and engagement for incoming students.',
+            description: 'Website for SUTD\'s 2023 Orientation event providing information and engagement for incoming students.',
             techTags: ['Next.js'],
             githubUrl: 'https://github.com/zedithx/Ori_website',
             blogUrl: null
@@ -221,7 +221,7 @@ export const projectData = {
             techIcons: [
                 '/projects/tech-icons/next.webp'
             ],
-            description: 'Website for SUTD\'s Night Fiesta 2023 event. Built with Next.js to provide event information and an engaging experience for participants.',
+            description: 'Website for SUTD\'s Night Fiesta 2023 event providing event information and an engaging experience for participants.',
             techTags: ['Next.js'],
             githubUrl: null,
             blogUrl: null
@@ -243,11 +243,7 @@ export const projectData = {
                 '/projects/tech-icons/grafana.png',
                 '/projects/tech-icons/prometheus.png'
             ],
-            description: 'A DevOps monitoring and CI/CD pipeline system built on Golang. It was used to learn the monitoring tool chain precursor \
-            to my TSMC internship, and the deployment was done on Azure VM via a hybrid of Github Runner (for building the images) and local runner\
-             (for pulling and running the image), which was my first time touching Azure Cloud. \n\n I explored optimisation of Docker image especially, \
-             with multi-stage builds, efficient caching of layers, and minimal linux distribution image for final build after binary compilation, which\
-             I could never do with python',
+            description: 'A DevOps monitoring and CI/CD pipeline system built on Golang with Docker optimization and Azure Cloud deployment.',
             techTags: ['Go', 'Grafana', 'Prometheus', 'Azure Cloud', 'Docker Compose']
         },
         {
@@ -265,7 +261,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/rubyonrails.png'
             ],
-            description: 'A containerized multi-service system with CI/CD, test-driven development, and microservices architecture, implemented as a challenging 2nd year master course final project at Tampere University (Finland).',
+            description: 'A containerized multi-service system with CI/CD, test-driven development, and microservices architecture.',
             techTags: ['Docker Compose', 'Python', 'Ruby', 'NGINX', 'GitLab CI', 'TDD', 'REST APIs'],
             githubUrl: 'https://github.com/zedithx/contdevdep-ex',
             blogUrl: null
@@ -286,7 +282,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/cloudstorage.png'
             ],
-            description: 'The project focuses on the co-development of an automated trading bot using the Schwab API, integrated with Discord (voice-enabled) and Telegram bots for real-time interaction and control. It also includes the design and deployment of robust backend infrastructure, secure webhook-based authentication, and site reliability practices to support high availability, scalability, and operational resilience.',
+            description: 'An automated trading bot using the Schwab API integrated with Discord and Telegram bots for real-time interaction and control.',
             techTags: ['Python', 'Cloud Storage'],
             githubUrl: null,
             blogUrl: null
@@ -306,7 +302,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/terraform.png'
             ],
-            description: 'A social platform co-founded and developed with real-time chat capabilities, AWS infrastructure, and cloud-native architecture. Provisioned AWS infrastructure with Terraform and developed real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB.',
+            description: 'A social platform co-founded with real-time chat capabilities, AWS infrastructure, and cloud-native architecture.',
             techTags: ['Expo', 'Python', 'Terraform'],
             githubUrl: null,
             blogUrl: null
@@ -326,7 +322,7 @@ export const projectData = {
                 '/projects/tech-icons/django.png',
                 '/projects/tech-icons/render.png'
             ],
-            description: 'Admin website for 3DC built with Django and Python. Deployed on Render for reliable hosting and management of administrative functions.',
+            description: 'Admin website for 3DC built with Django and Python for reliable hosting and management of administrative functions.',
             techTags: ['Python', 'Django', 'Render'],
             githubUrl: 'https://github.com/zedithx/3dc_admin/tree/main/dc_admin',
             blogUrl: null

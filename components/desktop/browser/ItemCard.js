@@ -35,7 +35,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleClick}
-            className={`relative rounded-lg overflow-hidden cursor-pointer ${isDark ? 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-yellow-500/30' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300'}`}
+            className={`relative rounded-lg overflow-hidden cursor-pointer flex flex-col ${isDark ? 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-yellow-500/30' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300'}`}
             style={isDark ? { border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'transform 0s ease-out' } : { transition: 'transform 0s ease-out' }}
         >
             
@@ -162,11 +162,20 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 )}
             </div>
             
-            {/* Bottom info section */}
-            <div className={`p-2 sm:p-3 md:p-4 border-t ${isDark ? 'bg-[#1a1a1a] border-gray-700/50' : 'bg-white border-gray-200'}`}>
-                <h3 className={`${isDark ? 'text-white font-bold' : 'text-gray-900 font-semibold'} text-xs sm:text-sm md:text-base mb-1.5 sm:mb-2 truncate`}>{item.title}</h3>
+            {/* Bottom info section - flex column to ensure commits button aligns */}
+            <div className={`p-2 sm:p-3 md:p-4 border-t flex flex-col flex-1 ${isDark ? 'bg-[#1a1a1a] border-gray-700/50' : 'bg-white border-gray-200'}`}>
+                <h3 className={`${isDark ? 'text-white font-bold' : 'text-gray-900 font-semibold'} text-xs sm:text-sm md:text-base mb-1 sm:mb-1.5 truncate`}>{item.title}</h3>
                 
-                <div className="flex items-center justify-between">
+                {/* Description - summary with fixed min-height to balance cards */}
+                <div className="flex-1 min-h-[2.5rem] sm:min-h-[2.75rem] md:min-h-[3rem] mb-2 sm:mb-2.5">
+                    {item.description && (
+                        <p className={`text-[10px] sm:text-[11px] md:text-xs leading-tight ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
+                            {item.description}
+                        </p>
+                    )}
+                </div>
+                
+                <div className="flex items-center justify-between mt-auto">
                     <motion.div
                         whileHover={{ scale: 1.15, x: 2 }}
                         className={`px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-1.5 md:py-2 lg:py-2.5 rounded-lg flex items-center ${isDark ? 'bg-white/10 border border-white/20 hover:bg-white/15' : 'bg-gray-100 border border-gray-300'}`}
