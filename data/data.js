@@ -1476,7 +1476,7 @@ export const contentData = {
                                 I built event-driven serverless systems to automate operational tasks, including a production Slack bot, multi-account CloudWatch log aggregation, and secure microservices behind Apigee API Gateway. This role developed my expertise in serverless architectures, observability, and operational automation in production environments.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> AWS (Cloudwatch, EventBridge, SQS, STS, SSM, S3, Api Gateway, Secrets Manager), Lambda Layers, Power Automate, Apigee Gateway, Python, Node.js, AWS SAM as IaC
+                                <span className="font-medium">Tech:</span> AWS (CloudWatch, EventBridge, SQS, STS, SSM, S3, API Gateway, Secrets Manager), Lambda Layers, Power Automate, Apigee Gateway, Python, Node.js, AWS SAM as IaC
                             </p>
                         </div>
                     </div>
@@ -1597,7 +1597,7 @@ export const aboutMeData = {
             ],
             category: "Education",
             icon: "🏛️",
-            skillsGained: { Frontend: 50, Backend: 20, Hardware: 30, 'Telegram Bots': 60, Deployment: 40, LLMs: 30, Devops: 20, 'Product Management': 40 },
+            skillsGained: { Frontend: 50, Backend: 20, Hardware: 30, 'Telegram Bots': 60, Deployment: 40, LLMs: 30, DevOps: 20, 'Product Management': 40 },
             scene: "/background/DesignThinking.JPG"
         },
         {
@@ -1610,7 +1610,7 @@ export const aboutMeData = {
                 },
                 {
                     speaker: "hero",
-                    text: "From automation and software engineering at Changi Airport, to DevOps infrastructure and telemetry at TSMC, to finally getting to Site Reliability Engineering at Bytedance - each experience built upon the last."
+                    text: "From automation and software engineering at Changi Airport, to DevOps infrastructure and telemetry at TSMC, to finally getting to Site Reliability Engineering at ByteDance - each experience built upon the last."
                 }
             ],
             category: "Internship",
