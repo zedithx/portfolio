@@ -237,7 +237,7 @@ export default function Home() {
             <PDFViewer
                 isOpen={isPDFViewerOpen}
                 onClose={handleClosePDF}
-                pdfUrl="/resume/Yang Si Jun's Resume.pdf"
+                pdfUrl="/resume/Yang Si Jun Resume.pdf"
                 title="Yang Si Jun's Resume"
             />
         </div>
