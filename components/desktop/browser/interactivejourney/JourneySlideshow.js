@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ScrollText } from 'lucide-react';
 import { preloadImages } from '../../../../utils/preloadImages';
 import GameFrame from './GameFrame';
 import LoadingSpinner from './LoadingSpinner';
@@ -39,6 +39,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [recentlyUnlockedSkills, setRecentlyUnlockedSkills] = useState(new Set()); // Track skills that just unlocked for animation
     const [isAnimating, setIsAnimating] = useState(false); // Track if any animations are in progress
 
+    const safeJourney = Array.isArray(journey) ? journey : [];
+
     // Memoize prefersReducedMotion to avoid checking on every render
     const prefersReducedMotion = useMemo(() => {
         if (typeof window === 'undefined') return false;
@@ -56,7 +58,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
-    const currentCard = journey[currentIndex];
+    const currentCard = safeJourney[currentIndex];
     // Use safe dialogue access - will be validated later
     const currentDialogue = currentCard?.dialogues?.[dialogueIndex];
 
@@ -141,7 +143,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     const uniqueUnlockedSkills = hasUnlocks ? [...new Set(result.unlockedSkills)] : [];
                     
                     // STEP 1: Show point notification popup first
-                    const isLastSlide = currentIndex === journey.length - 1;
+                    const isLastSlide = currentIndex === safeJourney.length - 1;
                     const popupDuration = isLastSlide ? 2000 : 3000;
                     
                     // Start animation tracking
@@ -205,12 +207,12 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 }
             }
         }
-    }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, journey.length]);
+    }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, safeJourney.length]);
 
     // Navigation hooks
     const { goNext, goPrev, goToSlide, goToSummary } = useJourneyNavigation({
         currentIndex,
-        journey,
+        journey: safeJourney,
         isTransitioning,
         isAnimating,
         setIsTransitioning,
@@ -224,13 +226,13 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     // Memoize all unique background images from journey and preload them
     const bgImages = useMemo(() => {
         // Collect scenes from cards and dialogues
-        const cardScenes = journey.map(card => card.scene).filter(Boolean);
-        const dialogueScenes = journey.flatMap(card => 
+        const cardScenes = safeJourney.map(card => card.scene).filter(Boolean);
+        const dialogueScenes = safeJourney.flatMap(card => 
             (card.dialogues || []).map(dialogue => dialogue.scene).filter(Boolean)
         );
         const uniqueBgs = [...new Set([...cardScenes, ...dialogueScenes])];
         return uniqueBgs;
-    }, [journey]);
+    }, [safeJourney]);
 
     // Preload ALL background images immediately on mount for instant transitions
     useEffect(() => {
@@ -242,28 +244,28 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
     // Aggressively preload next 2-3 slides ahead for smoother navigation
     useEffect(() => {
-        if (journey.length > 0) {
+        if (safeJourney.length > 0) {
             const imagesToPreload = [];
             
             // Preload next 3 slides ahead
             for (let i = 1; i <= 3; i++) {
-                const nextIndex = (currentIndex + i) % journey.length;
-                if (journey[nextIndex]?.scene) {
-                    imagesToPreload.push(journey[nextIndex].scene);
+                const nextIndex = (currentIndex + i) % safeJourney.length;
+                if (safeJourney[nextIndex]?.scene) {
+                    imagesToPreload.push(safeJourney[nextIndex].scene);
                 }
             }
             
             // Also preload previous slide (in case user goes back)
-            const prevIndex = currentIndex > 0 ? currentIndex - 1 : journey.length - 1;
-            if (journey[prevIndex]?.scene) {
-                imagesToPreload.push(journey[prevIndex].scene);
+            const prevIndex = currentIndex > 0 ? currentIndex - 1 : safeJourney.length - 1;
+            if (safeJourney[prevIndex]?.scene) {
+                imagesToPreload.push(safeJourney[prevIndex].scene);
             }
             
             if (imagesToPreload.length > 0) {
                 preloadImages(imagesToPreload);
             }
         }
-    }, [currentIndex, journey]);
+    }, [currentIndex, safeJourney]);
 
     // Attach touch event listeners for buttons on mobile
     useEffect(() => {
@@ -425,7 +427,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     // Calculate final skill values by summing all skillsGained from all journey segments
     // This ensures the summary always shows the complete final values regardless of user progress
     const finalSkills = useMemo(() => {
-        if (!skills || !journey) return {};
+        if (!skills || !safeJourney.length) return {};
         
         // Start with baseline values from initial skills
         const final = {};
@@ -437,7 +439,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         });
         
         // Sum all skillsGained from all journey segments
-        journey.forEach((segment) => {
+        safeJourney.forEach((segment) => {
             if (segment.skillsGained) {
                 Object.entries(segment.skillsGained).forEach(([skillName, gain]) => {
                     if (final[skillName]) {
@@ -452,7 +454,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         });
         
         return final;
-    }, [skills, journey]);
+    }, [skills, safeJourney]);
 
     // Memoize summary skills using the calculated final values
     const summarySkills = useMemo(() => {
@@ -492,7 +494,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         const { technicalSkills, nonTechnicalSkills } = summarySkills;
         return (
             <SummaryView
-                journey={journey}
+                journey={safeJourney}
                 skills={skills}
                 technicalSkills={technicalSkills}
                 nonTechnicalSkills={nonTechnicalSkills}
@@ -508,7 +510,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     // Early return after all hooks - ensure we have valid data
     // Don't return null, render a loading/empty state instead to maintain hook consistency
     // Only show loading if journey is empty or currentIndex is invalid
-    if (!journey || journey.length === 0 || currentIndex < 0 || currentIndex >= journey.length) {
+    if (currentIndex < 0 || currentIndex >= safeJourney.length) {
         return (
             <div className="w-full h-full flex items-center justify-center">
                 <div className="text-yellow-400 text-xl">Loading adventure...</div>
@@ -635,12 +637,12 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     </div>
                 </motion.h2>
 
-                {/* Main Content - Desktop: Side by side, Mobile: Stacked, Focus on Adventure Log */}
-                <div className="flex flex-col lg:flex-row gap-4 md:gap-6 flex-1 min-h-0 px-4 md:px-6 pb-4 md:pb-6 lg:overflow-hidden">
-                    {/* Adventure Slideshow - Full width on mobile */}
-                    <div className="flex-1 min-h-0 flex flex-col w-full lg:w-auto">
-
-                {/* Stage Background with Character Scene */}
+                {/* Main Content - Desktop: Side by side, Mobile: Stacked. lg:overflow-y-auto so full skills list can be seen when tall */}
+                <div className="flex flex-col lg:flex-row gap-4 md:gap-6 flex-1 min-h-0 px-4 md:px-6 pb-4 md:pb-6 lg:overflow-y-auto lg:overflow-x-hidden">
+                    {/* Adventure Slideshow - Full width on mobile, flex-1 on desktop */}
+                    <div className="flex-1 min-h-0 flex flex-col w-full lg:min-w-0">
+                        {/* Stage wrapper: takes all available height so the scene fills the area */}
+                        <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={showMultiBackground ? `${currentCard.id}-multi` : `${currentCard.id}-${currentScene || 'default'}`}
@@ -648,7 +650,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         animate={prefersReducedMotion ? {} : { opacity: 1 }}
                         exit={prefersReducedMotion ? {} : { opacity: 0 }}
                         transition={prefersReducedMotion ? {} : { duration: 0.3, ease: 'easeOut' }}
-                        className="w-full h-full rounded-lg relative overflow-hidden"
+                        className="w-full h-full min-h-0 rounded-lg relative overflow-hidden"
                         style={{
                             border: '3px solid #ffd700',
                             boxShadow: '0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.5)',
@@ -1020,7 +1022,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                         boxShadow: '0 0 20px rgba(255, 215, 0, 0.4)',
                                         pointerEvents: isTransitioning || isAnimating ? 'none' : 'auto'
                                     }}
-                                    aria-label={currentIndex === journey.length - 1 ? "Go to summary" : "Next adventure"}
+                                    aria-label={currentIndex === safeJourney.length - 1 ? "Go to summary" : "Next adventure"}
                                 >
                                     <ChevronRight className="w-6 h-6" />
                                 </button>
@@ -1028,10 +1030,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         )}
                     </motion.div>
                 </AnimatePresence>
+                        </div>
 
                         {/* Slide Indicators - Compact */}
                         <div className="flex items-center justify-center gap-2 mt-2 shrink-0">
-                            {journey.map((_, index) => (
+                            {safeJourney.map((_, index) => (
                                 <button
                                     key={index}
                                     onClick={() => goToSlide(index)}
@@ -1051,32 +1054,34 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
                     </div>
 
-                    {/* Skills Accordion - Mobile (Below Adventure Log) */}
+                    {/* Skills Accordion - Mobile only (hidden on lg so desktop uses sidebar) */}
                     {skills && (
-                        <SkillList
-                            technicalSkills={technicalSkills}
-                            nonTechnicalSkills={nonTechnicalSkills}
-                            skills={skills}
-                            isSkillsExpanded={isSkillsExpanded}
-                            setIsSkillsExpanded={setIsSkillsExpanded}
-                            recentlyUnlockedSkills={recentlyUnlockedSkills}
-                            recentlyUpdatedSkills={recentlyUpdatedSkills}
-                            previousSkillValues={previousSkillValues}
-                            prefersReducedMotion={prefersReducedMotion}
-                            isMobile={true}
-                        />
+                        <div className="lg:hidden w-full shrink-0">
+                            <SkillList
+                                technicalSkills={technicalSkills}
+                                nonTechnicalSkills={nonTechnicalSkills}
+                                skills={skills}
+                                isSkillsExpanded={isSkillsExpanded}
+                                setIsSkillsExpanded={setIsSkillsExpanded}
+                                recentlyUnlockedSkills={recentlyUnlockedSkills}
+                                recentlyUpdatedSkills={recentlyUpdatedSkills}
+                                previousSkillValues={previousSkillValues}
+                                prefersReducedMotion={prefersReducedMotion}
+                                isMobile={true}
+                            />
+                        </div>
                     )}
 
-                    {/* Skills Sidebar - Desktop (Right Side) */}
+                    {/* Skills Sidebar - Desktop only (right side). Full list visible, no internal scroll. */}
                     {skills && (
                         <motion.div
                             initial={prefersReducedMotion ? {} : { opacity: 0, x: 20 }}
                             animate={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
                             transition={prefersReducedMotion ? {} : { duration: 0.5, delay: 0.2 }}
-                            className="hidden lg:block w-72 flex-shrink-0 min-h-0 flex flex-col"
+                            className="hidden lg:flex w-72 flex-shrink-0 flex-col self-start"
                         >
                             <div 
-                                className="p-3 rounded-lg flex-1 min-h-0 flex flex-col overflow-hidden"
+                                className="p-3 rounded-lg flex flex-col"
                                 style={{
                                     background: 'rgba(0, 0, 0, 0.7)',
                                     backdropFilter: 'blur(10px)',
@@ -1085,7 +1090,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                 }}
                             >
                                 <h3 
-                                    className="text-lg font-bold mb-4 text-center"
+                                    className="text-lg font-bold mb-4 text-center shrink-0"
                                     style={{
                                         color: '#ffd700',
                                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
@@ -1095,10 +1100,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     SKILLS
                                 </h3>
                                 
-                                {/* Technical Skills - Scrollable */}
-                                <div className="mb-4 flex-1 min-h-0 overflow-y-auto pr-1">
+                                {/* Technical Skills - full list visible */}
+                                <div className="mb-4">
                                     <h4 
-                                        className="text-xs font-bold mb-2 px-2 shrink-0"
+                                        className="text-xs font-bold mb-2 px-2"
                                         style={{
                                             color: '#ffd700',
                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
@@ -1122,10 +1127,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     </div>
                                 </div>
 
-                                {/* Non-Technical Skills - Scrollable */}
-                                <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+                                {/* Non-Technical Skills - full list visible */}
+                                <div>
                                     <h4 
-                                        className="text-xs font-bold mb-2 px-2 shrink-0"
+                                        className="text-xs font-bold mb-2 px-2"
                                         style={{
                                             color: '#ffd700',
                                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',

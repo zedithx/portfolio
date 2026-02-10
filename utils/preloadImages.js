@@ -1,4 +1,5 @@
 export const preloadImages = (urls) => {
+    if (typeof window === 'undefined' || typeof Image === 'undefined') return;
     if (!urls || urls.length === 0) return;
     
     const uniqueUrls = [...new Set(urls)];

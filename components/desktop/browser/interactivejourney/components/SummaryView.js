@@ -174,30 +174,35 @@ export default function SummaryView({
                                             >
                                                 {section.title}
                                             </h2>
-                                            <div className="mt-4">
-                                                {section.content
-                                                    .replace(/\\n\\n/g, '\n\n')
-                                                    .split('\n\n')
-                                                    .map((paragraph, paraIndex) => (
-                                                        paragraph.trim() && (
-                                                            <motion.p
-                                                                key={paraIndex}
-                                                                initial={prefersReducedMotion ? {} : { opacity: 0 }}
-                                                                animate={prefersReducedMotion ? {} : { opacity: 1 }}
-                                                                transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (index * 0.1) + (paraIndex * 0.05) }}
-                                                                className="text-sm sm:text-base md:text-lg leading-relaxed mb-4"
-                                                                style={{
-                                                                    color: '#e0e0e0',
-                                                                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                                                                    fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                                                                    textAlign: 'left',
-                                                                    lineHeight: '1.7'
-                                                                }}
-                                                            >
-                                                                {paragraph.trim()}
-                                                            </motion.p>
-                                                        )
-                                                    ))}
+                                            <div className="mt-4 space-y-5">
+                                                {(() => {
+                                                    const raw = section.content.replace(/\\n/g, '\n');
+                                                    const paragraphs = raw.split(/\n\n+/).map(block => {
+                                                        return block
+                                                            .replace(/\n\s*[•\-]\s*/g, ' ')
+                                                            .replace(/\n+/g, ' ')
+                                                            .replace(/\s+/g, ' ')
+                                                            .trim();
+                                                    }).filter(Boolean);
+                                                    return paragraphs.map((paragraph, paraIndex) => (
+                                                        <motion.p
+                                                            key={paraIndex}
+                                                            initial={prefersReducedMotion ? {} : { opacity: 0 }}
+                                                            animate={prefersReducedMotion ? {} : { opacity: 1 }}
+                                                            transition={prefersReducedMotion ? {} : { duration: 0.3, delay: 0.1 + (index * 0.1) + (paraIndex * 0.05) }}
+                                                            className="text-sm sm:text-base md:text-lg leading-relaxed"
+                                                            style={{
+                                                                color: '#e0e0e0',
+                                                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                                                                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                                                                textAlign: 'left',
+                                                                lineHeight: '1.75'
+                                                            }}
+                                                        >
+                                                            {paragraph}
+                                                        </motion.p>
+                                                    ));
+                                                })()}
                                             </div>
                                         </motion.div>
                                     ))}

@@ -1635,23 +1635,23 @@ export const aboutMeData = {
     ]
 };
 
-// Summary content for journey summary page
+// Summary content for journey summary page (fluid prose, no bullet points)
 export const journeySummaryContent = {
     "internshipBeforeUniversity": {
         "title": "Internship before university",
-        "content": "Reluvate Technologies — Backend Engineer Intern\n\n• Began software engineering journey during military service; completed Harvard CS50 and Django-focused coursework\n• Joined Reluvate Technologies as a backend intern working on a production payment platform\n• Contributed to backend systems supporting 1,860+ merchants in Singapore, including Watsons, Zara, and KOI\n• Gained first exposure to real-world production systems, payments, and reliability concerns"
+        "content": "Reluvate Technologies — Backend Engineer Intern\n\nBegan my software engineering journey during military service, completing Harvard CS50 and Django-focused coursework before joining Reluvate Technologies as a backend intern on a production payment platform. I contributed to backend systems supporting 1,860+ merchants in Singapore, including Watsons, Zara, and KOI, and gained first exposure to real-world production systems, payments, and reliability concerns."
     },
     "university": {
         "title": "University Life",
-        "content": "Singapore University of Technology and Design (SUTD)\n\n• Core contributor to Student Government Tech, delivering production systems for campus-wide events\n• Built and operated frontend websites for Night Fiesta 2024, Orientation 2024, and LCC 2024\n• Led end-to-end implementation of an RFID-based game carnival system (hardware sourcing, readers, backend, and frontend)\n• Developed multiple Telegram bots for event operations and engagement\n• Repeatedly shipped and maintained production-facing tools, strengthening frontend, backend, and deployment skills\n• Academic and project teams consistently ranked top three in cohort, receiving multiple awards"
+        "content": "Singapore University of Technology and Design (SUTD)\n\nI was a core contributor to Student Government Tech, delivering production systems for campus-wide events. I built and operated frontend websites for Night Fiesta 2024, Orientation 2024, and LCC 2024, led end-to-end implementation of an RFID-based game carnival system (hardware sourcing, readers, backend, and frontend), and developed multiple Telegram bots for event operations and engagement. I repeatedly shipped and maintained production-facing tools, strengthening frontend, backend, and deployment skills. Academic and project teams consistently ranked top three in cohort, receiving multiple awards."
     },
     "internshipsInUniversity": {
         "title": "Internships in university",
-        "content": "• Changi Airport Group (CAG): Automation and event-driven systems\n• TSMC: DevOps, telemetry, and SRE infrastructure at industrial scale\n• ByteDance: Site Reliability Engineering — monitoring, automation, and service reliability at scale\n\nEach role built progressively deeper exposure to automation, infrastructure, and reliability engineering."
+        "content": "At Changi Airport Group (CAG) I worked on automation and event-driven systems. At TSMC I focused on DevOps, telemetry, and SRE infrastructure at industrial scale. At ByteDance I did Site Reliability Engineering — monitoring, automation, and service reliability at scale. Each role built progressively deeper exposure to automation, infrastructure, and reliability engineering."
     },
     "whatsNext": {
         "title": "What's next?",
-        "content": "• Completing the final phase of studies at SUTD\n• Preparing for a full-time role in Site Reliability Engineering\n• Continue building and iterating on Tangled, a social startup, ahead of full-time start"
+        "content": "Completing the final phase of studies at SUTD, preparing for a full-time role in Site Reliability Engineering, and continuing to build and iterate on Tangled, a social startup, ahead of my full-time start."
     }
 };
 
