@@ -1,6 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useGlitch } from 'react-powerglitch';
 import { SequentialTypewriter } from './Typewriter';
 
 const commands = [
@@ -37,6 +38,31 @@ export default function TerminalWelcome({
     onCommandClick,
     onAnimationComplete
 }) {
+    const { ref: glitchRef, startGlitch, stopGlitch } = useGlitch({
+        playMode: 'manual',
+        hideOverflow: false,
+        timing: { duration: 700, iterations: 1 },
+        glitchTimeSpan: { start: 0, end: 1 },
+        shake: { velocity: 8, amplitudeX: 0.08, amplitudeY: 0.08 },
+        slice: { count: 4, velocity: 10, minHeight: 0.02, maxHeight: 0.08, hueRotate: false },
+        pulse: false
+    });
+
+    useEffect(() => {
+        if (!isReady || !statusText) return;
+        if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        startGlitch();
+        const stopTimer = setTimeout(() => {
+            stopGlitch();
+        }, 780);
+
+        return () => {
+            clearTimeout(stopTimer);
+            stopGlitch();
+        };
+    }, [isReady, statusText, startGlitch, stopGlitch]);
+
     return (
         <motion.div 
             initial="hidden"
@@ -45,6 +71,7 @@ export default function TerminalWelcome({
             className="mb-4"
         >
             <motion.pre 
+                ref={glitchRef}
                 variants={itemVariants}
                 className={`text-sm sm:text-xs leading-tight mb-4 overflow-x-hidden ${isDark ? 'text-green-400' : 'text-blue-700'}`}
             >

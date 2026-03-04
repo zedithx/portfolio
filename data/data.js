@@ -1491,7 +1491,7 @@ export const aboutMeData = {
     hero: {
         name: "Si Jun",
         avatar: "/background/avatars/Tech SiJun.jpg",
-        primaryTrait: "Full Stack Developer",
+        primaryTrait: "Site Reliability Engineer",
         ctaText: "Start Journey"
     },
     skills: {
@@ -1552,7 +1552,7 @@ export const aboutMeData = {
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "Hi, I'm Si Jun, a Full-Stack/Devops/Site Reliability Engineer. My coding journey started during my army days, where I decided to try learning coding and I quickly got hooked. I went through Harvard's CS50 course and an Udemy course on the Django framework, which later helped me land an internship at Reluvate Technologies, where Django was used for client projects."
+                    text: "Hi, I'm Si Jun, an SRE-focused engineer. My coding journey started during my army days, where I first got hooked on building systems. I went through Harvard's CS50 and a Django course, which helped me land an internship at Reluvate Technologies and gave me my first exposure to production workloads."
                 },
                 {
                     speaker: "hero",
@@ -1654,4 +1654,3 @@ export const journeySummaryContent = {
         "content": "Completing the final phase of studies at SUTD, preparing for a full-time role in Site Reliability Engineering, and continuing to build and iterate on Tangled, a social startup, ahead of my full-time start."
     }
 };
-

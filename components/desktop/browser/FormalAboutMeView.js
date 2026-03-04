@@ -29,7 +29,7 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                         <PageHeader
                             isDark={isDark}
                             title="Si Jun Yang"
-                            subtitle="Full-Stack / DevOps / Site Reliability Engineer"
+                            subtitle="Site Reliability Engineer / Platform Automation"
                             onToggleToInformal={onToggleToInformal}
                         />
 
@@ -37,7 +37,7 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                         <ContentSection isDark={isDark} prefersReducedMotion={prefersReducedMotion}>
                             <div className={`space-y-4 sm:space-y-5 md:space-y-6 text-sm sm:text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                 <p>
-                                    I'm a Full-Stack and Site Reliability Engineer with hands-on experience building, operating, and scaling production systems across payments, automation, and large-scale infrastructure. My work spans backend development, cloud infrastructure, and reliability engineering, with a strong focus on systems that run in the real world.
+                                    I'm an SRE-focused engineer with hands-on experience building, operating, and scaling production systems across payments, automation, and large-scale infrastructure. My core strengths are observability, operational automation, and reliability engineering for systems that run in the real world.
                                 </p>
                                 
                                 <p>
@@ -86,4 +86,3 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
         </>
     );
 }
-

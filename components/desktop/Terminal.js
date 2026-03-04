@@ -8,6 +8,15 @@ import TerminalHistory from './terminal/TerminalHistory';
 import TerminalInput from './terminal/TerminalInput';
 import TerminalLoading from './terminal/TerminalLoading';
 
+const STATUS_SEQUENCE = [
+    'service health nominal',
+    'slo checks passing',
+    'error budget on target',
+    'alerts routed to on-call',
+    'latency p95 stable',
+    'runbooks loaded'
+];
+
 export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState, onOpenPDF }) {
     const { theme, toggleTheme } = useTheme();
     const isDark = theme === 'dark';
@@ -26,6 +35,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const terminalRef = useRef(null);
     const measureRef = useRef(null);
     const typingIntervalRef = useRef(null);
+    const statusIndexRef = useRef(0);
 
 
     // Resizing and Dragging state
@@ -59,7 +69,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setIsReady(false);
         } else {
             setSessionText('session: zedithx');
-            setStatusText('systems ready');
+            statusIndexRef.current = 0;
+            setStatusText(STATUS_SEQUENCE[0]);
             setIsReady(true);
         }
         
@@ -83,7 +94,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     // Start typing status
                     setTimeout(() => {
                         let j = 0;
-                        const fullStatusText = 'systems warming up...';
+                        const fullStatusText = 'observability warm-up...';
                         const statusInterval = setInterval(() => {
                             setStatusText(fullStatusText.slice(0, j + 1));
                             j++;
@@ -92,12 +103,13 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                                 // Wait 0.5s then type out "ready"
                                 setTimeout(() => {
                                     let k = 0;
-                                    const readyText = 'systems ready';
+                                    const readyText = STATUS_SEQUENCE[0];
                                     const readyInterval = setInterval(() => {
                                         setStatusText(readyText.slice(0, k + 1));
                                         k++;
                                         if (k > readyText.length) {
                                             clearInterval(readyInterval);
+                                            statusIndexRef.current = 0;
                                             setIsReady(true);
                                         }
                                     }, 40);
@@ -109,6 +121,39 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             }, 40);
         }
     }, [showWelcome, isAnimating, sessionText]);
+
+    useEffect(() => {
+        if (!isReady) return;
+
+        let rotationTimeout = null;
+        let isDisposed = false;
+
+        const rotateStatus = () => {
+            const nextIndex = (statusIndexRef.current + 1) % STATUS_SEQUENCE.length;
+            const nextStatus = STATUS_SEQUENCE[nextIndex];
+            setStatusText(nextStatus);
+            statusIndexRef.current = nextIndex;
+        };
+
+        const bootDelay = setTimeout(() => {
+            const scheduleNextRotation = () => {
+                if (isDisposed) return;
+                const nextDelay = 3600 + Math.floor(Math.random() * 2200);
+                rotationTimeout = setTimeout(() => {
+                    rotateStatus();
+                    scheduleNextRotation();
+                }, nextDelay);
+            };
+
+            scheduleNextRotation();
+        }, 2400);
+
+        return () => {
+            isDisposed = true;
+            clearTimeout(bootDelay);
+            if (rotationTimeout) clearTimeout(rotationTimeout);
+        };
+    }, [isReady]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -161,7 +206,8 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             setCursorPosition(0);
             // Ensure session and status are set (not animated)
             setSessionText('session: zedithx');
-            setStatusText('systems ready');
+            statusIndexRef.current = 0;
+            setStatusText(STATUS_SEQUENCE[0]);
             setIsReady(true);
             // Scroll to bottom when restoring
             setTimeout(() => {
