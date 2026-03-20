@@ -147,14 +147,18 @@ export default function MenuBar({ onPermissionError }) {
 
     return (
         <>
-            <div className="fixed top-0 left-0 right-0 h-7 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-2 sm:px-3 md:px-4 z-50">
+            <nav className="fixed top-0 left-0 right-0 h-7 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-2 sm:px-3 md:px-4 z-50" aria-label="Menu bar">
                 <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
                     {/* Apple Menu */}
                     <div className="relative flex items-center" ref={appleMenuRef}>
-                        <img 
+                        <img
                             src="/menubar-icon/apple.png"
-                            alt="Apple"
-                            className="w-4 h-4 cursor-pointer brightness-200 contrast-200" 
+                            alt="Apple menu"
+                            role="button"
+                            tabIndex={0}
+                            aria-haspopup="true"
+                            aria-expanded={isAppleMenuOpen}
+                            className="w-4 h-4 cursor-pointer brightness-200 contrast-200"
                             onClick={() => {
                                 closeAllMenus();
                                 setIsAppleMenuOpen(!isAppleMenuOpen);
@@ -855,7 +859,7 @@ export default function MenuBar({ onPermissionError }) {
                         {formatDate(time)} {formatTime(time)}
                     </span>
                 </div>
-            </div>
+            </nav>
 
             {/* Widget Screen */}
             <AnimatePresence>

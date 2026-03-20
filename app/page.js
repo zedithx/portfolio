@@ -10,6 +10,7 @@ import GmailConfirmModal from '../components/desktop/GmailConfirmModal';
 import GmailComposeModal from '../components/desktop/GmailComposeModal';
 import SpotifyModal from '../components/desktop/SpotifyModal';
 import PDFViewer from '../components/desktop/PDFViewer';
+import { Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 export default function Home() {
@@ -131,7 +132,8 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="min-h-screen w-full relative overflow-hidden bg-black">
+        <main className="min-h-screen w-full relative overflow-hidden bg-black" role="application" aria-label="Yang Si Jun's Portfolio — macOS Desktop">
+            <h1 className="sr-only">Yang Si Jun — Software Developer Portfolio</h1>
             {/* Desktop Wallpaper */}
             <div 
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat w-full h-full"
@@ -204,9 +206,12 @@ export default function Home() {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             className="w-[90%] max-w-[400px] bg-[#1e1e1e]/90 backdrop-blur-3xl border border-white/20 rounded-xl shadow-2xl p-6 text-center"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Message sent successfully"
                         >
                             <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="text-2xl">✓</span>
+                                <Check className="w-6 h-6 text-green-400" aria-hidden="true" />
                             </div>
                             <h3 className="text-white font-semibold text-lg mb-2">Message Sent!</h3>
                             <p className="text-white/70 text-sm mb-6">
@@ -240,7 +245,7 @@ export default function Home() {
                 pdfUrl="/resume/Yang Si Jun Resume.pdf"
                 title="Yang Si Jun's Resume"
             />
-        </div>
+        </main>
     );
 }
 

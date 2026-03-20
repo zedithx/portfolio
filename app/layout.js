@@ -1,93 +1,137 @@
 import './globals.css';
 import { ThemeProvider } from '../contexts/ThemeContext';
+import ErrorBoundary from '../components/ErrorBoundary';
+import { Inter, Orbitron, Rajdhani } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  variable: '--font-orbitron',
+});
+
+const rajdhani = Rajdhani({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-rajdhani',
+});
+
+const BASE_URL = 'https://www.zedithx.com';
 
 export const metadata = {
-  title: 'zedithx',
-  description: 'A portfolio website mimicking macOS desktop with a terminal interface.',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'Yang Si Jun | Software Developer Portfolio',
+    template: '%s | Yang Si Jun',
+  },
+  description:
+    'Interactive macOS-themed portfolio of Yang Si Jun — software developer specializing in full-stack development, DevOps, and cloud infrastructure. Explore projects, skills, and experience through a unique terminal interface.',
+  keywords: [
+    'Yang Si Jun',
+    'zedithx',
+    'software developer',
+    'full-stack developer',
+    'portfolio',
+    'DevOps',
+    'cloud infrastructure',
+    'React',
+    'Next.js',
+    'Java',
+    'Firebase',
+  ],
+  authors: [{ name: 'Yang Si Jun', url: BASE_URL }],
+  creator: 'Yang Si Jun',
+  publisher: 'Yang Si Jun',
   icons: {
     icon: '/favicon/favicon.ico',
+    apple: '/favicon/apple-touch-icon.png',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: BASE_URL,
+    siteName: 'Yang Si Jun — Portfolio',
+    title: 'Yang Si Jun | Software Developer Portfolio',
+    description:
+      'Interactive macOS-themed developer portfolio. Explore projects, skills, and experience through a unique desktop & terminal interface.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Yang Si Jun — Software Developer Portfolio',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Yang Si Jun | Software Developer Portfolio',
+    description:
+      'Interactive macOS-themed developer portfolio with a terminal interface.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: BASE_URL,
   },
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Yang Si Jun',
+    url: BASE_URL,
+    sameAs: [
+      'https://github.com/zedithx',
+      'https://www.linkedin.com/in/yangsijun',
+    ],
+    jobTitle: 'Software Developer',
+    knowsAbout: [
+      'Full-Stack Development',
+      'DevOps',
+      'Cloud Infrastructure',
+      'React',
+      'Next.js',
+      'Java',
+      'Firebase',
+    ],
+  };
+
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${orbitron.variable} ${rajdhani.variable}`}>
       <head>
-        <link rel="icon" href="/favicon/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="min-h-screen fixed inset-0 overflow-hidden w-full">
-        <style dangerouslySetInnerHTML={{ __html: `
-          * {
-              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-              box-sizing: border-box;
-          }
-          
-          html, body {
-              position: fixed;
-              overflow: hidden;
-              width: 100%;
-              height: 100%;
-              -webkit-overflow-scrolling: touch;
-              overscroll-behavior: none;
-          }
-          
-          /* Prevent viewport shift on mobile when keyboard appears */
-          @supports (-webkit-touch-callout: none) {
-              html {
-                  height: -webkit-fill-available;
-              }
-              body {
-                  min-height: -webkit-fill-available;
-              }
-          }
-          
-          input, textarea {
-              -webkit-user-select: text;
-              user-select: text;
-          }
-          
-          body > * {
-              max-width: 100vw;
-              overflow-x: hidden;
-          }
-          
-          ::-webkit-scrollbar {
-              width: 8px;
-              height: 8px;
-          }
-          
-          ::-webkit-scrollbar-track {
-              background: transparent;
-          }
-          
-          ::-webkit-scrollbar-thumb {
-              background: rgba(255, 255, 255, 0.2);
-              border-radius: 4px;
-          }
-          
-          ::-webkit-scrollbar-thumb:hover {
-              background: rgba(255, 255, 255, 0.3);
-          }
-
-          ::selection {
-              background: rgba(99, 102, 241, 0.3);
-          }
-        `}} />
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
 }
-
-

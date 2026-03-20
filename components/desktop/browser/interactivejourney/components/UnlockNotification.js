@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LockOpen } from 'lucide-react';
 
 export default function UnlockNotification({ 
     unlockedSkills, 
@@ -43,7 +44,7 @@ export default function UnlockNotification({
                         transition={prefersReducedMotion ? {} : { duration: 0.6, type: 'spring', stiffness: 200 }}
                         className="text-4xl md:text-5xl mb-2"
                     >
-                        🔓
+                        <LockOpen className="w-10 h-10 md:w-12 md:h-12 text-yellow-400" />
                     </motion.div>
                     <h3
                         className="text-lg md:text-xl font-bold mb-2"

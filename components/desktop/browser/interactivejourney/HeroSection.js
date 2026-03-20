@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Sword } from 'lucide-react';
 
 export default function HeroSection({ hero, onStartJourney }) {
     const prefersReducedMotion = typeof window !== 'undefined' 
@@ -52,8 +53,8 @@ export default function HeroSection({ hero, onStartJourney }) {
                                 fetchPriority="high"
                             />
                         ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center text-5xl md:text-6xl">
-                                ⚔️
+                            <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center">
+                                <Sword className="w-12 h-12 md:w-16 md:h-16 text-yellow-400" />
                             </div>
                         )}
                         {/* Glow effect */}

@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { Check } from 'lucide-react';
 
 export default function MenuItem({ item, onClick }) {
     if (item.type === 'divider') {
@@ -15,14 +16,15 @@ export default function MenuItem({ item, onClick }) {
     }
 
     return (
-        <div
+        <button
             onClick={() => onClick && onClick(item)}
-            className={`px-4 py-1 text-white text-[13px] hover:bg-blue-600 cursor-default flex justify-between items-center ${
+            className={`w-full text-left px-4 py-1 text-white text-[13px] hover:bg-blue-600 cursor-default flex justify-between items-center ${
                 item.checked ? 'flex items-center gap-2' : ''
             }`}
+            role="menuitem"
         >
             <div className="flex items-center gap-2">
-                {item.checked && <span className="text-[10px]">✓</span>}
+                {item.checked && <Check className="w-3 h-3" />}
                 <span>{item.label}</span>
             </div>
             {item.badge && (
@@ -36,6 +38,6 @@ export default function MenuItem({ item, onClick }) {
             {item.arrow && (
                 <span className="text-white/40">›</span>
             )}
-        </div>
+        </button>
     );
 }

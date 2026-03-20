@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Sword } from 'lucide-react';
 
 export default function SceneElements({
     currentCard,
@@ -52,8 +53,8 @@ export default function SceneElements({
                         }}
                     />
                 ) : (
-                    <div className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center text-3xl md:text-4xl lg:text-5xl rounded-lg">
-                        ⚔️
+                    <div className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-gradient-to-br from-purple-600 to-blue-800 flex items-center justify-center rounded-lg">
+                        <Sword className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 text-yellow-400" />
                     </div>
                 )}
                 <div 

@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStatsDrawer } from '../../../hooks/browser/useStatsDrawer';
-import { Lock } from 'lucide-react';
+import { Lock, Swords, X } from 'lucide-react';
 
 export default function StatsDrawer({ skills, showButton = true, buttonPosition = 'fixed' }) {
     const { isOpen, openDrawer, closeDrawer, drawerRef } = useStatsDrawer();
@@ -45,7 +45,7 @@ export default function StatsDrawer({ skills, showButton = true, buttonPosition 
                             }}
                         />
                     )}
-                    <span className="relative z-10">⚔️ STATS</span>
+                    <Swords className="w-4 h-4 relative z-10" /> <span className="relative z-10">STATS</span>
                 </motion.button>
             )}
 
@@ -110,7 +110,7 @@ export default function StatsDrawer({ skills, showButton = true, buttonPosition 
                                     letterSpacing: '2px'
                                 }}
                             >
-                                ⚔️ CHARACTER STATS ⚔️
+                                <Swords className="w-6 h-6 inline" /> CHARACTER STATS <Swords className="w-6 h-6 inline" />
                             </h2>
                             <button
                                 onClick={closeDrawer}
@@ -122,7 +122,7 @@ export default function StatsDrawer({ skills, showButton = true, buttonPosition 
                                 }}
                                 aria-label="Close statistics"
                             >
-                                <span className="text-xl font-bold">✕</span>
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
 
@@ -271,7 +271,7 @@ export default function StatsDrawer({ skills, showButton = true, buttonPosition 
                                                 className="mt-2 text-xs md:text-sm"
                                                 style={{ color: '#999' }}
                                             >
-                                                🔒 Unlock: {Object.entries(skill.unlockThreshold).map(([req, val]) => `${req} ≥${val}`).join(', ')}
+                                                <Lock className="w-3 h-3 inline mr-1" />Unlock: {Object.entries(skill.unlockThreshold).map(([req, val]) => `${req} ≥${val}`).join(', ')}
                                             </p>
                                         )}
                                     </motion.div>

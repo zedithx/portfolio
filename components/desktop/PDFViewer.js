@@ -100,16 +100,19 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
                         {/* Title Bar */}
                         <div className={`px-4 py-3 flex items-center justify-between shrink-0 border-b ${isDark ? 'bg-[#2d2d2d] border-white/10' : 'bg-gray-100 border-gray-200'}`}>
                             <div className="flex items-center gap-3">
-                                <div className="flex gap-2">
-                                    <div 
+                                <div className="flex gap-2" role="group" aria-label="Window controls">
+                                    <button
                                         onClick={onClose}
-                                        className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer transition-all" 
+                                        className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 cursor-pointer transition-all"
+                                        aria-label="Close PDF viewer"
                                     />
-                                    <div 
-                                        className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer transition-all" 
+                                    <button
+                                        className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 cursor-pointer transition-all"
+                                        aria-label="Minimize"
                                     />
-                                    <div 
-                                        className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer transition-all" 
+                                    <button
+                                        className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 cursor-pointer transition-all"
+                                        aria-label="Maximize"
                                     />
                                 </div>
                                 <span className={`text-sm font-medium ml-2 ${isDark ? 'text-white/70' : 'text-gray-600'}`}>PDF Viewer</span>

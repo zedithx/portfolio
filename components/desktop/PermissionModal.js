@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AlertTriangle } from 'lucide-react';
 
 export default function PermissionModal({ isOpen, onClose, message }) {
     const defaultMessage = "You do not have root access. Please use sudo or contact your administrator.";
@@ -23,7 +24,7 @@ export default function PermissionModal({ isOpen, onClose, message }) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div 
+                <div
                     className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm"
                     onClick={(e) => {
                         // Click outside to close
@@ -38,11 +39,14 @@ export default function PermissionModal({ isOpen, onClose, message }) {
                         exit={{ scale: 0.9, opacity: 0 }}
                         className="w-[90%] max-w-[400px] bg-[#1e1e1e]/90 backdrop-blur-3xl border border-white/20 rounded-xl shadow-2xl p-6 text-center"
                         onClick={(e) => e.stopPropagation()}
+                        role="alertdialog"
+                        aria-modal="true"
+                        aria-labelledby="permission-title"
                     >
                         <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span className="text-2xl">⚠️</span>
+                            <AlertTriangle className="w-6 h-6 text-orange-400" aria-hidden="true" />
                         </div>
-                        <h3 className="text-white font-semibold text-lg mb-2">Permission Denied</h3>
+                        <h3 id="permission-title" className="text-white font-semibold text-lg mb-2">Permission Denied</h3>
                         <p className="text-white/70 text-sm mb-6">
                             {displayMessage}
                         </p>

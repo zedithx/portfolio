@@ -121,21 +121,27 @@ export default function GmailComposeModal({ isOpen, onClose, visitorEmail, onPer
                         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                         className="w-full max-w-3xl h-full max-h-[90vh] flex flex-col bg-white rounded-lg shadow-2xl overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Compose email"
                     >
                         {/* Title Bar */}
                         <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-200">
-                            <div className="flex items-center gap-2">
-                                <button 
-                                    onClick={onClose} 
-                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                            <div className="flex items-center gap-2" role="group" aria-label="Window controls">
+                                <button
+                                    onClick={onClose}
+                                    className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                                    aria-label="Close"
                                 ></button>
-                                <button 
-                                    onClick={() => onPermissionError && onPermissionError("You cannot minimize when on this page.")} 
-                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                                <button
+                                    onClick={() => onPermissionError && onPermissionError("You cannot minimize when on this page.")}
+                                    className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#febc2e] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                                    aria-label="Minimize"
                                 />
-                                <button 
-                                    onClick={() => onPermissionError && onPermissionError("You cannot maximize when on this page.")} 
-                                className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                                <button
+                                    onClick={() => onPermissionError && onPermissionError("You cannot maximize when on this page.")}
+                                    className="w-4 h-4 md:w-3 md:h-3 rounded-full bg-[#28c840] hover:brightness-90 transition-all cursor-pointer touch-manipulation"
+                                    aria-label="Maximize"
                                 />
                             </div>
                             <div className="absolute left-1/2 -translate-x-1/2 text-sm text-gray-700 font-medium">

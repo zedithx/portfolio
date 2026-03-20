@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Mail } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
 export default function GmailConfirmModal({ isOpen, onConfirm, onCancel }) {
@@ -72,11 +73,14 @@ export default function GmailConfirmModal({ isOpen, onConfirm, onCancel }) {
                         exit={{ scale: 0.9, opacity: 0 }}
                         className={`w-[90%] max-w-[400px] backdrop-blur-3xl border rounded-xl shadow-2xl p-6 ${isDark ? 'bg-[#1e1e1e]/90 border-white/20' : 'bg-white border-gray-200'}`}
                         onClick={(e) => e.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="gmail-confirm-title"
                     >
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-blue-500/20' : 'bg-blue-100'}`}>
-                            <span className="text-2xl">✉️</span>
+                            <Mail className="w-6 h-6 text-blue-400" aria-hidden="true" />
                         </div>
-                        <h3 className={`font-semibold text-lg mb-2 text-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        <h3 id="gmail-confirm-title" className={`font-semibold text-lg mb-2 text-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             Looking to contact me?
                         </h3>
                         <p className={`text-sm mb-4 text-center ${isDark ? 'text-white/70' : 'text-gray-600'}`}>

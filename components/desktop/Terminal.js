@@ -424,7 +424,7 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                     setLoadingCommand('');
                 }, 1500); 
             } else {
-                setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'error', content: `Command not found: ${cmd}.` }]);
+                setHistory(prev => [...prev, { type: 'input', content: input }, { type: 'error', content: `Command not found: ${cmd}. Available: aboutme, projects, experience, resume, clear, cd` }]);
             }
             
             setInput('');

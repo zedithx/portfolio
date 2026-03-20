@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Lock } from 'lucide-react';
 import { useSkillHelpers } from '../../../../../hooks/journey/useSkillHelpers';
 import AnimatedValue from '../AnimatedValue';
 
@@ -79,7 +80,7 @@ export default function SkillItem({
                         className="text-[10px] text-gray-500 flex items-center gap-1"
                         style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                     >
-                        🔒 LOCKED
+                        <Lock className="w-3 h-3 inline mr-0.5" /> LOCKED
                     </span>
                 ) : (
                     <motion.span 
@@ -105,7 +106,7 @@ export default function SkillItem({
             >
                 {isLocked ? (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[8px] text-gray-500">🔒</span>
+                        <Lock className="w-2 h-2 text-gray-500" />
                     </div>
                 ) : (
                     <motion.div

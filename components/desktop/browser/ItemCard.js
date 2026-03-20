@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Medal, Award } from 'lucide-react';
+import { Medal, Award, Settings } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 // Item Card Component with enhanced animations - Memoized for performance
@@ -132,7 +132,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                             loading="lazy"
                                         />
                                     ) : (
-                                        <span className="text-sm sm:text-base md:text-lg">⚙️</span>
+                                        <Settings className="w-4 h-4 md:w-5 md:h-5 text-white/60" />
                                     )}
                                 </motion.div>
                             );

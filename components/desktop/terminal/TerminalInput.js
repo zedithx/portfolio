@@ -24,6 +24,7 @@ export default function TerminalInput({
                     value={input}
                     onChange={onInputChange}
                     onKeyDown={onKeyDown}
+                    aria-label="Terminal command input"
                     onFocus={(e) => {
                         if (typeof window !== 'undefined' && window.innerWidth < 768) {
                             const terminalEl = e.target.closest('[class*="fixed"]') || e.target.closest('.fixed');
