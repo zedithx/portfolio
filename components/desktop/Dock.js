@@ -6,10 +6,48 @@ import { Link } from 'lucide-react';
 const dockApps = [
     { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
     { name: 'Gmail', icon: '/dock-icons/gmail.webp' },
-    { name: 'GitHub', icon: '/platform-icons/github.webp' },
-    { name: 'LinkedIn', icon: '/platform-icons/linkedin.webp' },
+    {
+        name: 'GitHub',
+        icon: '/platform-icons/github.webp',
+        loadingService: 'github',
+        url: 'https://github.com/zedithx'
+    },
+    {
+        name: 'LinkedIn',
+        icon: '/platform-icons/linkedin.webp',
+        iconClassName: 'scale-[85%]',
+        loadingService: 'linkedin',
+        url: 'https://linkedin.com/in/yang-si-jun/'
+    },
+    {
+        name: 'Tangled',
+        icon: '/experience/tangled_logo_highres.jpg',
+        imageClassName: 'h-[84%] w-[84%] rounded-lg object-cover',
+        loadingService: 'tangled',
+        tooltip: 'Tangled',
+        ariaLabel: 'Tangled - 2,000+ App Store users',
+        badge: '2K+',
+        url: 'https://www.tangledsocial.com'
+    },
     { name: 'Spotify', icon: '/dock-icons/spotify.png' },
 ];
+
+const loadingServices = {
+    github: {
+        icon: '/platform-icons/github.webp',
+        label: 'Connecting to GitHub...'
+    },
+    linkedin: {
+        icon: '/platform-icons/linkedin.webp',
+        iconClassName: 'scale-[85%]',
+        label: 'Connecting to LinkedIn...'
+    },
+    tangled: {
+        icon: '/experience/tangled_logo_highres.jpg',
+        label: 'Opening Tangled...',
+        detail: '2,000+ App Store users'
+    }
+};
 
 function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, terminalState, spotifyModalState, onLoadingStart, iconRef }) {
     const scale = useMotionValue(1);
@@ -74,10 +112,8 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
             onTerminalClick();
         } else if (app.name === 'Gmail') {
             onGmailClick();
-        } else if (app.name === 'GitHub') {
-            onLoadingStart('github', 'https://github.com/zedithx');
-        } else if (app.name === 'LinkedIn') {
-            onLoadingStart('linkedin', 'https://linkedin.com/in/yang-si-jun/');
+        } else if (app.url && app.loadingService) {
+            onLoadingStart(app.loadingService, app.url);
         } else if (app.name === 'Spotify') {
             onSpotifyClick();
         } else {
@@ -105,7 +141,7 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
         <motion.button
             ref={iconRef}
             className="group relative cursor-pointer"
-            aria-label={`Open ${app.name}`}
+            aria-label={`Open ${app.ariaLabel || app.tooltip || app.name}`}
             style={prefersReducedMotion ? {} : { scale: springScale, y: springY }}
             transition={{
                 type: 'spring',
@@ -117,15 +153,22 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
             onTouchEnd={handleTouchEnd}
             {...hoverProps}
         >
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800/90 rounded-md text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                {app.name}
+            <div className="absolute -top-7 left-1/2 z-50 max-w-40 -translate-x-1/2 rounded bg-gray-800/90 px-1.5 py-0.5 text-center text-[10px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                {app.tooltip || app.name}
             </div>
-            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl overflow-hidden shadow-lg cursor-pointer flex items-center justify-center">
-                <img
-                    src={app.icon}
-                    alt={app.name}
-                    className={`w-full h-full object-cover ${app.name === 'LinkedIn' ? 'scale-[85%]' : ''}`}
-                />
+            <div className="relative h-10 w-10 min-[380px]:h-12 min-[380px]:w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
+                <div className={`flex h-full w-full items-center justify-center overflow-hidden rounded-lg shadow-lg cursor-pointer sm:rounded-xl ${app.iconBoxClassName || ''}`}>
+                    <img
+                        src={app.icon}
+                        alt={app.name}
+                        className={app.imageClassName || `w-full h-full object-cover ${app.iconClassName || ''}`}
+                    />
+                </div>
+                {app.badge && (
+                    <span className="absolute -right-1.5 -top-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full border border-white/80 bg-red-500 px-0.5 text-[8px] font-bold leading-none text-white shadow-lg">
+                        {app.badge}
+                    </span>
+                )}
             </div>
             {(app.active ||
               (app.name === 'Terminal' && terminalState !== 'closed') ||
@@ -140,6 +183,7 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
     const [isLoading, setIsLoading] = useState(false);
     const [loadingService, setLoadingService] = useState(null);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+    const loadingMeta = loadingService ? loadingServices[loadingService] : null;
 
     const mouseX = useMotionValue(-1000);
     const isHovering = useRef(false);
@@ -222,7 +266,7 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                             exit={{ opacity: 0, scale: 0.8 }}
                             className="w-80 space-y-6 flex flex-col items-center"
                         >
-                            {(loadingService === 'github' || loadingService === 'linkedin') && (
+                            {loadingMeta && (
                                 <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1, rotate: [0, 360] }}
@@ -233,16 +277,25 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                                     className="w-24 h-24 flex items-center justify-center"
                                 >
                                     <img
-                                        src={loadingService === 'github' ? '/platform-icons/github.webp' : '/platform-icons/linkedin.webp'}
+                                        src={loadingMeta.icon}
                                         alt={loadingService}
-                                        className={`w-full h-full object-contain ${loadingService === 'linkedin' ? 'scale-85' : ''}`}
+                                        className={`w-full h-full object-contain ${loadingMeta.iconClassName || ''}`}
                                     />
                                 </motion.div>
                             )}
 
-                            <div className="text-green-400 text-sm font-bold animate-pulse text-center flex items-center gap-1.5">
-                                {loadingService === 'github' && <><Link className="w-4 h-4" /> Connecting to GitHub...</>}
-                                {loadingService === 'linkedin' && <><Link className="w-4 h-4" /> Connecting to LinkedIn...</>}
+                            <div className="text-green-400 text-sm font-bold animate-pulse text-center flex flex-col items-center gap-1">
+                                {loadingMeta && (
+                                    <span className="flex items-center gap-1.5">
+                                        <Link className="w-4 h-4" />
+                                        {loadingMeta.label}
+                                    </span>
+                                )}
+                                {loadingMeta?.detail && (
+                                    <span className="text-[11px] font-semibold tracking-wide text-white/60">
+                                        {loadingMeta.detail}
+                                    </span>
+                                )}
                             </div>
 
                             <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/10">
@@ -268,7 +321,7 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, type: 'spring', stiffness: 100 }}
-                className="flex items-end gap-1.5 sm:gap-2 md:gap-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white/10 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl"
+                className="flex items-end gap-1 px-2 py-2 bg-white/10 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl min-[380px]:gap-1.5 min-[380px]:px-2.5 sm:gap-2 sm:px-3 sm:py-2.5 md:gap-1.5"
                 aria-label="Application dock"
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
@@ -297,4 +350,3 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
         </>
     );
 }
-

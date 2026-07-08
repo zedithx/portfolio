@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { CloudCog, ExternalLink, MessageCircle, Store, UsersRound, X } from 'lucide-react';
 
 // Zoomable Image Component
 const ZoomableImage = ({ src, alt, isDark = false }) => {
@@ -70,6 +70,29 @@ const ZoomableImage = ({ src, alt, isDark = false }) => {
 
 // Project Data organized by category
 export const projectData = {
+    'Featured Project': [
+        {
+            id: 11,
+            title: 'Tangled',
+            commits: 1235,
+            badge: '2K+ Users',
+            featured: true,
+            thumbnail: {
+                type: 'image',
+                src: '/experience/tangled_logo_highres.jpg',
+                gradient: 'from-[#FAFAF8] to-[#F5F2ED]'
+            },
+            techIcons: [
+                '/projects/tech-icons/expo.png',
+                '/projects/tech-icons/python.webp',
+                '/projects/tech-icons/terraform.png'
+            ],
+            description: 'A live App Store social platform co-founded and scaled to 2,000+ users, with real-time chat, AWS infrastructure, and cloud-native architecture.',
+            techTags: ['Expo', 'Python', 'Terraform'],
+            githubUrl: null,
+            blogUrl: null
+        }
+    ],
     'School Projects': [
         {
             id: 1,
@@ -288,26 +311,6 @@ export const projectData = {
             blogUrl: null
         },
         {
-            id: 11,
-            title: 'Tangled',
-            commits: 231,
-            badge: null,
-            thumbnail: {
-                type: 'image',
-                src: '/experience/tangled_logo.jpeg',
-                gradient: 'from-orange-400 to-pink-500'
-            },
-            techIcons: [
-                '/projects/tech-icons/expo.png',
-                '/projects/tech-icons/python.webp',
-                '/projects/tech-icons/terraform.png'
-            ],
-            description: 'A social platform co-founded with real-time chat capabilities, AWS infrastructure, and cloud-native architecture.',
-            techTags: ['Expo', 'Python', 'Terraform'],
-            githubUrl: null,
-            blogUrl: null
-        },
-        {
             id: 13,
             title: '3DC Admin Website',
             commits: 26,
@@ -379,6 +382,36 @@ export const colorClassesMap = {
     'Terraform': 'bg-indigo-100 text-indigo-700',
     'Render': 'bg-orange-100 text-orange-700'
 };
+
+const tangledInterestChips = [
+    { label: 'Entertainment', bg: 'rgba(103,162,185,0.1)', darkBg: 'rgba(103,162,185,0.16)', border: 'rgba(103,162,185,0.33)', text: '#67A2B9', darkText: '#D9EBF3' },
+    { label: 'Learning', bg: 'rgba(103,162,185,0.1)', darkBg: 'rgba(103,162,185,0.16)', border: 'rgba(103,162,185,0.33)', text: '#67A2B9', darkText: '#D9EBF3' },
+    { label: 'Cafes & Meals', bg: 'rgba(255,115,55,0.1)', darkBg: 'rgba(255,115,55,0.16)', border: 'rgba(255,115,55,0.33)', text: '#FF7337', darkText: '#FFE7DC' },
+    { label: 'Outdoors', bg: 'rgba(143,166,3,0.1)', darkBg: 'rgba(143,166,3,0.16)', border: 'rgba(143,166,3,0.33)', text: '#8FA603', darkText: '#EAEFCE' },
+    { label: 'Gaming', bg: 'rgba(245,187,0,0.1)', darkBg: 'rgba(245,187,0,0.16)', border: 'rgba(245,187,0,0.33)', text: '#B78A00', darkText: '#FFF4D1' },
+    { label: 'Creative', bg: 'rgba(103,162,185,0.1)', darkBg: 'rgba(103,162,185,0.16)', border: 'rgba(103,162,185,0.33)', text: '#67A2B9', darkText: '#D9EBF3' }
+];
+
+const tangledProofPoints = [
+    {
+        title: 'Interest-first discovery',
+        description: 'Soft chips, shared context, and small-group flows make matching feel curated instead of random.',
+        accent: '#67A2B9',
+        Icon: UsersRound
+    },
+    {
+        title: 'Realtime social layer',
+        description: 'WebSocket chat, group state, and event-ready flows turn discovery into active conversation.',
+        accent: '#FF7337',
+        Icon: MessageCircle
+    },
+    {
+        title: 'Production operations',
+        description: 'Terraform, AWS, Sentry, and rolling deploys keep the live App Store product observable.',
+        accent: '#8FA603',
+        Icon: CloudCog
+    }
+];
 
 // Helper function to generate sticky action buttons
 const generateStickyButtons = (project, isDark = false) => {
@@ -1106,6 +1139,38 @@ export const generateProjectContent = (project, isDark = false) => {
     }
     
     if (project.title === 'Tangled') {
+        const tangledSurfaceClass = isDark
+            ? 'border-[#344054] bg-[#151B20] text-white shadow-[0_20px_45px_-35px_rgba(0,0,0,0.85)]'
+            : 'border-[#EEE7DF] bg-[#FAFAF8] text-[#101828] shadow-[0_20px_45px_-35px_rgba(16,24,40,0.55)]';
+        const tangledLogoShellClass = isDark
+            ? 'border-[#344054] bg-[#20272D] shadow-[0_12px_24px_-18px_rgba(0,0,0,0.9)]'
+            : 'border-[#EEE7DF] bg-white shadow-[0_12px_24px_-18px_rgba(16,24,40,0.45)]';
+        const tangledMutedTextClass = isDark ? 'text-[#9BA1A6]' : 'text-[#6A7282]';
+        const tangledHeadingClass = isDark ? 'text-white' : 'text-[#101828]';
+        const tangledProofStripClass = isDark
+            ? 'divide-[#344054] border-[#344054] bg-[#11181C]/75'
+            : 'divide-[#EEE7DF] border-[#EEE7DF] bg-white/70';
+        const tangledCtaClass = isDark
+            ? 'bg-[#67A2B9] text-white shadow-[0_14px_30px_-20px_rgba(103,162,185,0.9)] hover:bg-[#5A94AA]'
+            : 'bg-[#101828] text-white shadow-[0_14px_30px_-20px_rgba(16,24,40,0.65)] hover:bg-[#182132]';
+        const tangledBadgeStyles = {
+            store: {
+                backgroundColor: isDark ? 'rgba(103,162,185,0.16)' : 'rgba(103,162,185,0.1)',
+                borderColor: 'rgba(103,162,185,0.33)',
+                color: isDark ? '#D9EBF3' : '#67A2B9'
+            },
+            users: {
+                backgroundColor: isDark ? 'rgba(143,166,3,0.16)' : 'rgba(143,166,3,0.1)',
+                borderColor: 'rgba(143,166,3,0.33)',
+                color: isDark ? '#EAEFCE' : '#8FA603'
+            },
+            commits: {
+                backgroundColor: isDark ? 'rgba(245,187,0,0.16)' : 'rgba(245,187,0,0.1)',
+                borderColor: 'rgba(245,187,0,0.33)',
+                color: isDark ? '#FFF4D1' : '#B78A00'
+            }
+        };
+
         return (
             <div className="space-y-8">
                 <div className="relative">
@@ -1135,6 +1200,106 @@ export const generateProjectContent = (project, isDark = false) => {
                 </div>
 
                 <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className={`relative overflow-hidden rounded-[22px] border ${tangledSurfaceClass}`}>
+                        <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-70" aria-hidden="true">
+                            <div className="absolute -right-10 top-8 h-px w-56 -rotate-6 bg-[#67A2B9]/30" />
+                            <div className="absolute -right-8 top-16 h-px w-44 -rotate-6 bg-[#8FA603]/25" />
+                            <div className="absolute -left-12 bottom-12 h-px w-52 rotate-6 bg-[#FF7337]/25" />
+                            <div className="absolute left-10 bottom-6 h-px w-28 rotate-6 bg-[#F5BB00]/30" />
+                        </div>
+
+                        <div className="relative p-5 sm:p-6">
+                            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[18px] border ${tangledLogoShellClass}`}>
+                                            <img src="/experience/tangled_logo_highres.jpg" alt="Tangled logo" className="h-10 w-10 rounded-[14px] object-cover" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className={`text-xs font-semibold ${tangledMutedTextClass}`}>Tangled Social</p>
+                                            <p className={`text-lg font-black leading-tight ${tangledHeadingClass}`}>Find your People.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span
+                                            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold uppercase"
+                                            style={tangledBadgeStyles.store}
+                                        >
+                                            <Store className="h-3.5 w-3.5" />
+                                            Live on App Store
+                                        </span>
+                                        <span
+                                            className="rounded-full border px-3 py-1 text-[11px] font-bold"
+                                            style={tangledBadgeStyles.users}
+                                        >
+                                            2,000+ users
+                                        </span>
+                                        <span
+                                            className="rounded-full border px-3 py-1 text-[11px] font-bold"
+                                            style={tangledBadgeStyles.commits}
+                                        >
+                                            1,235 commits
+                                        </span>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <h3 className={`text-2xl sm:text-3xl font-black leading-tight ${tangledHeadingClass}`}>
+                                            A shipped social app with the Tangled product language.
+                                        </h3>
+                                        <p className={`max-w-3xl text-sm sm:text-base leading-relaxed ${tangledMutedTextClass}`}>
+                                            Tangled uses a soft, airy interface to make meeting people feel less transactional: rounded surfaces, calm discovery lanes, compact chips, and warm accent colors backed by production-grade realtime infrastructure.
+                                        </p>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        {tangledInterestChips.map((interest) => (
+                                            <span
+                                                key={interest.label}
+                                                className="rounded-full border px-3 py-1.5 text-xs sm:text-sm font-semibold"
+                                                style={{
+                                                    backgroundColor: isDark ? interest.darkBg : interest.bg,
+                                                    borderColor: interest.border,
+                                                    color: isDark ? interest.darkText : interest.text
+                                                }}
+                                            >
+                                                {interest.label}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => window.open('https://www.tangledsocial.com', '_blank', 'noopener,noreferrer')}
+                                    className={`inline-flex w-fit cursor-pointer items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#67A2B9]/45 ${tangledCtaClass}`}
+                                >
+                                    Visit Tangled
+                                    <ExternalLink className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className={`relative grid gap-0 divide-y border-t sm:grid-cols-3 sm:divide-x sm:divide-y-0 ${tangledProofStripClass}`}>
+                            {tangledProofPoints.map(({ title, description, accent, Icon }) => (
+                                <div key={title} className="p-5">
+                                    <div
+                                        className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-[14px]"
+                                        style={{
+                                            backgroundColor: `${accent}${isDark ? '26' : '1A'}`,
+                                            color: accent
+                                        }}
+                                    >
+                                        <Icon className="h-5 w-5" />
+                                    </div>
+                                    <p className={`text-lg font-black leading-tight ${tangledHeadingClass}`}>{title}</p>
+                                    <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${tangledMutedTextClass}`}>
+                                        {description}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className={`rounded-lg ${isDark ? 'bg-gray-800/30' : 'bg-gray-50'} p-5 border ${isDark ? 'border-gray-700/50' : 'border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</h3>
                         <p className="leading-relaxed text-base mb-4">
@@ -1422,7 +1587,7 @@ export const contentData = {
                         <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
-                                    <img src="/experience/tangled_logo.jpeg" alt="Tangled Social" className="w-full h-full object-contain" />
+                                    <img src="/experience/tangled_logo_highres.jpg" alt="Tangled Social" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Tangled Social</h2>
@@ -1431,7 +1596,7 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                I co-founded a social platform and built the majority of the codebase, including a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. I provisioned production-grade infrastructure with Terraform and implemented end-to-end monitoring and reliability features. This project sharpened my skills in cloud architecture, serverless systems, and production operations.
+                                I co-founded a live App Store social platform with 2,000+ users and built the majority of the codebase, including a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. I provisioned production-grade infrastructure with Terraform and implemented end-to-end monitoring and reliability features. This project sharpened my skills in cloud architecture, serverless systems, and production operations.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
                                 <span className="font-medium">Tech:</span> AWS (Lambda, DynamoDB, WebSocket Gateway, ECS rolling deployment), Terraform, Python, Expo, Sentry

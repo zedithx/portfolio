@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, RotateCw, Lock, Search, Github } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCw, Lock, Search, Github, Star } from 'lucide-react';
 import ItemCard from './ItemCard';
 import { contentData, aboutMeData } from '../../../data/data';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -32,6 +32,10 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
     }, [data.items, searchQuery]);
 
     // Memoize filtered items to prevent recalculation on every render
+    const featuredItems = useMemo(() => {
+        return data.items.filter(item => item.category === 'Featured Project');
+    }, [data.items]);
+
     const popularItems = useMemo(() => {
         return data.items.filter(item => item.category === 'School Projects');
     }, [data.items]);
@@ -276,6 +280,34 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
                             ) : (
                                 /* Categorized Items */
                                 <>
+                                    {/* Featured Project Section */}
+                                    {featuredItems.length > 0 && (
+                                        <div className="mb-5 sm:mb-7 md:mb-9">
+                                            <div className="mb-4 sm:mb-5 md:mb-6 flex items-center gap-2">
+                                                <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${isDark ? 'bg-yellow-400/15 text-yellow-300 border border-yellow-300/20' : 'bg-yellow-50 text-yellow-600 border border-yellow-200'}`}>
+                                                    <Star className="h-4 w-4 fill-current" />
+                                                </span>
+                                                <div>
+                                                    <h2 className={`text-base sm:text-lg md:text-xl font-semibold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                                        Featured Project
+                                                    </h2>
+                                                    <p className={`text-xs sm:text-sm ${isDark ? 'text-white/45' : 'text-gray-500'}`}>
+                                                        Live App Store product with real users
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                                                {featuredItems.map((item) => (
+                                                    <ItemCard 
+                                                        key={item.id}
+                                                        item={item}
+                                                        onClick={handleProjectClick}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* School Projects Section */}
                                     <div className="mb-4 sm:mb-6 md:mb-8">
                                         <h2 className={`text-base sm:text-lg md:text-xl font-semibold mb-4 sm:mb-5 md:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -409,6 +441,5 @@ export default function CashShopView({ onClose, onPermissionError, data, commits
         </>
     );
 }
-
 
 

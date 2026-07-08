@@ -9,6 +9,32 @@ const ItemCard = React.memo(({ item, onClick }) => {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const [isHovered, setIsHovered] = useState(false);
+    const isFeatured = Boolean(item.featured);
+    const thumbnailBackgroundClass = isFeatured
+        ? 'bg-gradient-to-br from-[#F7F3EC] via-[#FCFAF5] to-[#ECE6DD]'
+        : `bg-gradient-to-b ${item.thumbnail.gradient}`;
+    const techIconContainerClass = isFeatured
+        ? 'bg-white/95 border-[#DED6CC]'
+        : (isDark ? 'bg-white/95 border-white/50' : 'bg-white border-gray-200');
+    const cardChromeClass = isDark
+        ? (isFeatured ? 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-[#67A2B9]/20' : 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-yellow-500/30')
+        : (isFeatured ? 'bg-white shadow-md hover:shadow-lg border border-[#EEE7DF]' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300');
+    const hoverGlowClass = isFeatured
+        ? (isDark ? 'bg-[#67A2B9]/5' : 'bg-gradient-to-br from-[#67A2B9]/8 via-[#F5BB00]/8 to-[#FF7337]/8')
+        : (isDark ? 'bg-gradient-to-br from-yellow-400/10 to-purple-500/10' : 'bg-gradient-to-br from-blue-50/50 to-purple-50/50');
+    const cardStyle = isDark
+        ? { border: isFeatured ? '1px solid rgba(103, 162, 185, 0.35)' : '1px solid rgba(255, 255, 255, 0.2)', transition: 'transform 0s ease-out' }
+        : { transition: 'transform 0s ease-out' };
+    const featuredRingClass = isFeatured ? (isDark ? 'ring-1 ring-[#67A2B9]/45' : 'ring-1 ring-[#67A2B9]/25') : '';
+    const thumbnailContentClass = isFeatured ? 'relative z-10 w-full h-full flex items-center justify-center pb-14' : 'relative z-10 w-full h-full flex items-center justify-center';
+    const techIconRowClass = isFeatured
+        ? 'absolute bottom-3 left-3 right-3 flex items-center justify-center z-10 gap-2'
+        : 'absolute bottom-2 left-2 right-2 flex items-center justify-center z-10 gap-1 sm:gap-1.5 md:gap-2';
+    const techIconSizeClass = isFeatured
+        ? 'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12'
+        : 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16';
+    const entranceDelay = isFeatured ? 0.02 : Math.min(item.id * 0.035, 0.24);
+    const techIconDelayBase = isFeatured ? 0.06 : entranceDelay + 0.18;
     
     const handleClick = useCallback(() => {
         onClick(item);
@@ -23,37 +49,57 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 type: 'spring', 
                 stiffness: 200, 
                 damping: 15,
-                delay: item.id * 0.1,
+                delay: entranceDelay,
                 scale: { type: 'tween', duration: 0 },
                 y: { type: 'tween', duration: 0 }
             }}
             whileHover={{ 
-                scale: 1.08,
-                y: -8,
+                scale: isFeatured ? 1.03 : 1.08,
+                y: isFeatured ? -4 : -8,
                 transition: { type: 'tween', duration: 0.2, ease: 'easeOut' }
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={handleClick}
-            className={`relative rounded-lg overflow-hidden cursor-pointer flex flex-col ${isDark ? 'bg-[#1a1a1a] shadow-lg hover:shadow-xl hover:shadow-yellow-500/30' : 'bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-300'}`}
-            style={isDark ? { border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'transform 0s ease-out' } : { transition: 'transform 0s ease-out' }}
+            className={`relative rounded-lg overflow-hidden cursor-pointer flex flex-col ${cardChromeClass} ${featuredRingClass}`}
+            style={cardStyle}
         >
             
             {/* Glow effect on hover (desktop only) */}
             {isHovered && (
                 <div
-                    className={`absolute inset-0 pointer-events-none ${isDark ? 'bg-gradient-to-br from-yellow-400/10 to-purple-500/10' : 'bg-gradient-to-br from-blue-50/50 to-purple-50/50'}`}
+                    className={`absolute inset-0 pointer-events-none ${hoverGlowClass}`}
                     style={{ willChange: 'opacity' }}
                 />
             )}
             
             
             {/* Item thumbnail area with clean MapleStory-style background */}
-            <div className={`aspect-square bg-gradient-to-b ${item.thumbnail.gradient} flex items-center justify-center relative overflow-hidden`}>
+            <div className={`aspect-square ${thumbnailBackgroundClass} flex items-center justify-center relative overflow-hidden`}>
+                {isFeatured && (
+                    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+                        <img
+                            src="/experience/tangled_green_stroke.svg"
+                            alt=""
+                            className="absolute -left-14 -top-8 h-40 w-28 rotate-[-18deg] opacity-35"
+                            loading="eager"
+                            decoding="async"
+                        />
+                        <img
+                            src="/experience/tangled_yellow_stroke.svg"
+                            alt=""
+                            className="absolute -right-14 -top-10 h-44 w-32 rotate-[12deg] opacity-35"
+                            loading="eager"
+                            decoding="async"
+                        />
+                        <div className="absolute -left-12 bottom-5 h-28 w-40 rotate-[22deg] rounded-[999px] border-[5px] border-[#67A2B9]/28 border-r-transparent border-t-transparent" />
+                        <div className="absolute -right-12 bottom-7 h-24 w-36 rotate-[-18deg] rounded-[999px] border-[5px] border-[#FF7337]/30 border-l-transparent border-t-transparent" />
+                    </div>
+                )}
                 {/* Bounce animation for thumbnail - only on hover (desktop) */}
                 <motion.div
-                    className="relative z-10 w-full h-full flex items-center justify-center"
-                    animate={isHovered ? {
+                    className={thumbnailContentClass}
+                    animate={isHovered && !isFeatured ? {
                         y: [0, -10, 0],
                         rotate: [0, 5, -5, 0],
                         scale: [1, 1.05, 1]
@@ -83,12 +129,14 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                     : item.title === 'Monitoring Suite'
                                     ? 'w-20 h-20 sm:w-22 sm:h-22 md:w-24 md:h-24 object-contain'
                                     : item.title === 'Tangled'
-                                    ? 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover rounded-md'
+                                    ? 'w-20 h-20 sm:w-24 sm:h-24 md:w-24 md:h-24 object-contain rounded-xl shadow-[0_18px_34px_-24px_rgba(16,24,40,0.65)]'
                                     : item.title === '3DC Admin Website'
                                     ? 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain rounded-md'
                                     : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain'
                             }`}
-                            loading="lazy"
+                            loading={isFeatured ? 'eager' : 'lazy'}
+                            fetchPriority={isFeatured ? 'high' : 'auto'}
+                            decoding="async"
                         />
                     ) : (
                         <span className="text-4xl sm:text-5xl md:text-6xl drop-shadow-2xl">
@@ -99,7 +147,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                 
                 {/* Technology Icons - In thumbnail area */}
                 {item.techIcons && item.techIcons.length > 0 && (
-                    <div className={`absolute bottom-2 left-2 right-2 flex items-center justify-center z-10 gap-1 sm:gap-1.5 md:gap-2`}>
+                    <div className={techIconRowClass}>
                         {item.techIcons.slice(0, 3).map((tech, idx) => {
                             const isImagePath = typeof tech === 'string' && tech.startsWith('/');
                             return (
@@ -113,7 +161,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         y: -5
                                     }}
                                     transition={{ 
-                                        delay: item.id * 0.1 + 0.3 + idx * 0.05,
+                                        delay: techIconDelayBase + idx * 0.04,
                                         type: 'spring',
                                         stiffness: 400,
                                         damping: 25,
@@ -121,15 +169,17 @@ const ItemCard = React.memo(({ item, onClick }) => {
                                         rotate: { type: "tween", duration: 0.15, ease: "easeOut" },
                                         y: { type: "tween", duration: 0.15, ease: "easeOut" }
                                     }}
-                                    className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 ${isDark ? 'bg-white/95 border-white/50' : 'bg-white border-gray-200'}`}
+                                    className={`${techIconSizeClass} rounded-lg flex items-center justify-center overflow-hidden shadow-lg border-2 ${techIconContainerClass}`}
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     {isImagePath ? (
                                         <img 
                                             src={tech} 
                                             alt={tech.split('/').pop()} 
-                                            className="w-full h-full object-contain p-1 sm:p-1 md:p-1.5"
-                                            loading="lazy"
+                                            className="w-full h-full object-contain p-1.5"
+                                            loading={isFeatured ? 'eager' : 'lazy'}
+                                            fetchPriority={isFeatured ? 'high' : 'auto'}
+                                            decoding="async"
                                         />
                                     ) : (
                                         <Settings className="w-4 h-4 md:w-5 md:h-5 text-white/60" />
@@ -151,6 +201,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                             item.badge === 'Top 3' ? 'bg-amber-700 text-white' :
                             item.badge === 'Top 2' ? 'bg-gray-400 text-white' :
                             item.badge === 'Full Marks' ? 'bg-yellow-500 text-white' :
+                            item.badge === '2K+ Users' ? 'bg-[#67A2B9] text-white' :
                             'bg-green-500 text-white'
                         }`}
                     >
