@@ -1153,6 +1153,7 @@ export const generateProjectContent = (project, isDark = false) => {
         const tangledCtaClass = isDark
             ? 'bg-[#67A2B9] text-white shadow-[0_14px_30px_-20px_rgba(103,162,185,0.9)] hover:bg-[#5A94AA]'
             : 'bg-[#101828] text-white shadow-[0_14px_30px_-20px_rgba(16,24,40,0.65)] hover:bg-[#182132]';
+        const tangledDecorClass = isDark ? 'opacity-100' : 'opacity-95';
         const tangledBadgeStyles = {
             store: {
                 backgroundColor: isDark ? 'rgba(103,162,185,0.16)' : 'rgba(103,162,185,0.1)',
@@ -1201,11 +1202,38 @@ export const generateProjectContent = (project, isDark = false) => {
 
                 <div className={`space-y-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                     <div className={`relative overflow-hidden rounded-[22px] border ${tangledSurfaceClass}`}>
-                        <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-70" aria-hidden="true">
-                            <div className="absolute -right-10 top-8 h-px w-56 -rotate-6 bg-[#67A2B9]/30" />
-                            <div className="absolute -right-8 top-16 h-px w-44 -rotate-6 bg-[#8FA603]/25" />
-                            <div className="absolute -left-12 bottom-12 h-px w-52 rotate-6 bg-[#FF7337]/25" />
-                            <div className="absolute left-10 bottom-6 h-px w-28 rotate-6 bg-[#F5BB00]/30" />
+                        <div className={`pointer-events-none absolute inset-0 overflow-hidden ${tangledDecorClass}`} aria-hidden="true">
+                            <img
+                                src="/experience/tangled_green_stroke.svg"
+                                alt=""
+                                className="absolute -left-20 -top-20 h-72 w-52 rotate-[-20deg] opacity-75 sm:-left-16 sm:-top-24 sm:h-80 sm:w-56"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <img
+                                src="/experience/tangled_yellow_stroke.svg"
+                                alt=""
+                                className="absolute left-[28%] -top-24 h-64 w-56 rotate-[24deg] opacity-75 sm:left-[32%] sm:-top-28 sm:h-72 sm:w-60"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <img
+                                src="/experience/tangled_hero_decor.svg"
+                                alt=""
+                                className="absolute -right-40 -top-24 h-[380px] w-[720px] max-w-none opacity-70 sm:-right-36 sm:-top-32 sm:h-[440px] sm:w-[820px]"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <img
+                                src="/experience/tangled_hero_decor.svg"
+                                alt=""
+                                className="absolute -left-48 bottom-[-180px] h-[360px] w-[680px] max-w-none rotate-180 opacity-45"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <div className="absolute -left-16 bottom-14 h-44 w-72 rotate-[18deg] rounded-[999px] border-[9px] border-[#67A2B9]/70 border-r-transparent border-t-transparent" />
+                            <div className="absolute -right-16 bottom-12 h-40 w-64 rotate-[-18deg] rounded-[999px] border-[9px] border-[#FF7337]/70 border-l-transparent border-t-transparent" />
+                            <div className="absolute right-[18%] top-24 h-28 w-44 rotate-[16deg] rounded-[999px] border-[7px] border-[#F5BB00]/45 border-b-transparent border-l-transparent" />
                         </div>
 
                         <div className="relative p-5 sm:p-6">
@@ -1279,9 +1307,34 @@ export const generateProjectContent = (project, isDark = false) => {
                             </div>
                         </div>
 
-                        <div className={`relative grid gap-0 divide-y border-t sm:grid-cols-3 sm:divide-x sm:divide-y-0 ${tangledProofStripClass}`}>
+                        <div className={`relative grid gap-0 divide-y overflow-hidden border-t sm:grid-cols-3 sm:divide-x sm:divide-y-0 ${tangledProofStripClass}`}>
+                            <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-80" aria-hidden="true">
+                                <img
+                                    src="/experience/tangled_green_stroke.svg"
+                                    alt=""
+                                    className="absolute -left-10 -bottom-24 h-56 w-44 rotate-[70deg] opacity-65"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <img
+                                    src="/experience/tangled_yellow_stroke.svg"
+                                    alt=""
+                                    className="absolute left-[42%] -bottom-28 h-52 w-44 rotate-[-74deg] opacity-60"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <img
+                                    src="/experience/tangled_hero_decor.svg"
+                                    alt=""
+                                    className="absolute -right-36 -bottom-44 h-[300px] w-[620px] max-w-none rotate-180 opacity-55"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <div className="absolute left-[20%] -top-14 h-28 w-56 rotate-[-10deg] rounded-[999px] border-[8px] border-[#67A2B9]/50 border-b-transparent border-l-transparent" />
+                                <div className="absolute right-[8%] -bottom-14 h-28 w-52 rotate-[10deg] rounded-[999px] border-[8px] border-[#FF7337]/55 border-l-transparent border-t-transparent" />
+                            </div>
                             {tangledProofPoints.map(({ title, description, accent, Icon }) => (
-                                <div key={title} className="p-5">
+                                <div key={title} className="relative p-5">
                                     <div
                                         className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-[14px]"
                                         style={{

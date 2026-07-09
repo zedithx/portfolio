@@ -1,0 +1,23 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 1996.17 1165" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Container">
+<rect width="1600" height="947" transform="translate(55 218)" fill="url(#paint0_radial_0_7)"/>
+<rect width="1600" height="947" transform="translate(55 218)" fill="url(#paint1_radial_0_7)"/>
+<g id="svg" clip-path="url(#clip0_0_7)">
+<path id="Vector" d="M270.623 1.17137C65.2061 19.5562 679.828 385.092 290.801 305.895C-199.894 206.001 320.06 740.577 -144.996 427.601" stroke="var(--stroke-0, #8FA603)" stroke-width="10" stroke-linecap="round"/>
+</g>
+<path id="Vector_2" d="M1302.95 154.296C1282.33 287.801 1341.19 513.141 1741.68 346.462C2142.18 179.782 1972.15 347.671 1837.08 452.45" stroke="var(--stroke-0, #F5BB00)" stroke-width="10" stroke-linecap="round"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_0_7" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 284.1) rotate(-90) scale(378.8 640)">
+<stop stop-color="#F5BB00" stop-opacity="0.1"/>
+<stop offset="0.6" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint1_radial_0_7" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(800 568.2) rotate(-90) scale(473.5 960)">
+<stop stop-color="#67A2B9" stop-opacity="0.12"/>
+<stop offset="0.7" stop-opacity="0"/>
+</radialGradient>
+<clipPath id="clip0_0_7">
+<rect width="437" height="743" fill="white"/>
+</clipPath>
+</defs>
+</svg>
