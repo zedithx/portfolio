@@ -1615,7 +1615,7 @@ export const contentData = {
                 title: 'Experience',
                 content: (isDark = false) => (
                     <div className="space-y-4 sm:space-y-5 md:space-y-8">
-                        {/* ByteDance */}
+                        {/* ByteDance Full-time */}
                         <div className="space-y-2 sm:space-y-3 md:space-y-4">
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
@@ -1623,16 +1623,15 @@ export const contentData = {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>ByteDance</h2>
-                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer (SRE) Intern</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Data Infrastructure SRE Team</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Sep 2025 - Dec 2025</p>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer (SRE) Full-time</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Jul 2026 - Present</p>
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                At ByteDance, I worked on ByteGraph, a distributed graph database powering production clusters across Singapore and Europe. I focused on automation, operational workflows, and monitoring pipelines to improve system reliability. This role gave me hands-on experience operating global-scale production systems and implementing SRE best practices.
+                                Maintaining multimodal components such as HBase, ByteKV, and TokaDB.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> Golang, Grafana, Machine Operations, Distributed Graph Database
+                                <span className="font-medium">Tech:</span> HBase, ByteKV, TokaDB, Site Reliability Engineering
                             </p>
                         </div>
 
@@ -1653,6 +1652,27 @@ export const contentData = {
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
                                 <span className="font-medium">Tech:</span> AWS (Lambda, DynamoDB, WebSocket Gateway, ECS rolling deployment), Terraform, Python, Expo, Sentry
+                            </p>
+                        </div>
+
+                        {/* ByteDance Internship */}
+                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                            <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
+                                    <img src="/experience/bytedance_logo.png" alt="ByteDance" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>ByteDance</h2>
+                                    <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Software Engineer (SRE) Intern</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Data Infrastructure SRE Team</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Sep 2025 - Dec 2025</p>
+                                </div>
+                            </div>
+                            <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                At ByteDance, I worked on ByteGraph, a distributed graph database powering production clusters across Singapore and Europe. I focused on automation, operational workflows, and monitoring pipelines to improve system reliability. This role gave me hands-on experience operating global-scale production systems and implementing SRE best practices.
+                            </p>
+                            <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                                <span className="font-medium">Tech:</span> Golang, Grafana, Machine Operations, Distributed Graph Database
                             </p>
                         </div>
 

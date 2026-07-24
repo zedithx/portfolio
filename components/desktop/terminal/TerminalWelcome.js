@@ -1,7 +1,6 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { useGlitch } from 'react-powerglitch';
 import { SequentialTypewriter } from './Typewriter';
 
 const commands = [
@@ -12,6 +11,12 @@ const commands = [
     { name: 'clear', description: 'Clear the terminal screen' },
     { name: 'cd', description: 'Toggle between dark and light mode' },
 ];
+
+const welcomeMessages = [
+    { text: "Hi, I'm Si Jun!", speed: 10 },
+    { text: "Click a command or icon in the dock below (or type one if you prefer).", speed: 10 }
+];
+const completedWelcomeText = welcomeMessages.map(({ text }) => text).join(' ');
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -35,34 +40,10 @@ export default function TerminalWelcome({
     isAnimating, 
     sessionText, 
     statusText, 
+    statusGlitchKey,
     onCommandClick,
     onAnimationComplete
 }) {
-    const { ref: glitchRef, startGlitch, stopGlitch } = useGlitch({
-        playMode: 'manual',
-        hideOverflow: false,
-        timing: { duration: 700, iterations: 1 },
-        glitchTimeSpan: { start: 0, end: 1 },
-        shake: { velocity: 8, amplitudeX: 0.08, amplitudeY: 0.08 },
-        slice: { count: 4, velocity: 10, minHeight: 0.02, maxHeight: 0.08, hueRotate: false },
-        pulse: false
-    });
-
-    useEffect(() => {
-        if (!isReady || !statusText) return;
-        if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-        startGlitch();
-        const stopTimer = setTimeout(() => {
-            stopGlitch();
-        }, 780);
-
-        return () => {
-            clearTimeout(stopTimer);
-            stopGlitch();
-        };
-    }, [isReady, statusText, startGlitch, stopGlitch]);
-
     return (
         <motion.div 
             initial="hidden"
@@ -70,16 +51,20 @@ export default function TerminalWelcome({
             variants={containerVariants}
             className="mb-4"
         >
-            <motion.pre 
-                ref={glitchRef}
+            <motion.div
                 variants={itemVariants}
-                className={`text-sm sm:text-xs leading-tight mb-4 overflow-x-hidden ${isDark ? 'text-green-400' : 'text-blue-700'}`}
+                className="mb-4 w-max max-w-full"
             >
-{`┌───────────────────────────────────────┐
-│  ${sessionText.padEnd(37)}│
-│  status: ${statusText.padEnd(28)}│
-└───────────────────────────────────────┘`}
-            </motion.pre>
+                <div
+                    key={statusGlitchKey}
+                    className={`box-border grid w-max min-w-[42ch] max-w-full border border-current px-2.5 py-1.5 font-mono text-[15px] leading-snug overflow-x-auto ${isReady ? 'terminal-status-glitch' : ''} ${isDark ? 'text-green-400' : 'text-blue-700'}`}
+                >
+                    <div className="whitespace-nowrap">{sessionText}</div>
+                    <div className="whitespace-nowrap">
+                        status: {statusText}
+                    </div>
+                </div>
+            </motion.div>
             
             {isReady && (
                 <motion.p 
@@ -88,13 +73,12 @@ export default function TerminalWelcome({
                     variants={itemVariants} 
                     className={`mb-4 text-sm sm:text-sm ${isDark ? 'text-white/70' : 'text-gray-700'}`}
                 >
-                    <SequentialTypewriter 
-                        messages={[
-                            { text: "Hi, I'm Si Jun!", speed: 10 },
-                            { text: "Click a command or icon in the dock below (or type one if you prefer).", speed: 10 }
-                        ]}
-                        onComplete={onAnimationComplete || (() => {})}
-                    />
+                    {isAnimating ? (
+                        <SequentialTypewriter
+                            messages={welcomeMessages}
+                            onComplete={onAnimationComplete}
+                        />
+                    ) : completedWelcomeText}
                 </motion.p>
             )}
 

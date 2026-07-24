@@ -30,9 +30,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
     const techIconRowClass = isFeatured
         ? 'absolute bottom-3 left-3 right-3 flex items-center justify-center z-10 gap-2'
         : 'absolute bottom-2 left-2 right-2 flex items-center justify-center z-10 gap-1 sm:gap-1.5 md:gap-2';
-    const techIconSizeClass = isFeatured
-        ? 'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12'
-        : 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16';
+    const techIconSizeClass = 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16';
     const entranceDelay = isFeatured ? 0.02 : Math.min(item.id * 0.035, 0.24);
     const techIconDelayBase = isFeatured ? 0.06 : entranceDelay + 0.18;
     

@@ -9,13 +9,20 @@ import TerminalInput from './terminal/TerminalInput';
 import TerminalLoading from './terminal/TerminalLoading';
 
 const STATUS_SEQUENCE = [
-    'service health nominal',
-    'slo checks passing',
-    'error budget on target',
-    'alerts routed to on-call',
-    'latency p95 stable',
-    'runbooks loaded'
+    '这个集群需要扩容一下',
+    'Alarm ringing, I need to fix something!',
+    '我在跳机器！',
+    'Cluster needs upgrading brrrr brrrrr...',
+    'git add . && git commit -m "yolo" && git push origin main'
 ];
+
+const ENGLISH_TYPING_DELAY = 14;
+const CHINESE_TYPING_DELAY = 32;
+const getTypingDelay = (character) => (
+    /[\u3400-\u9fff\uf900-\ufaff]/u.test(character)
+        ? CHINESE_TYPING_DELAY
+        : ENGLISH_TYPING_DELAY
+);
 
 export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, terminalState, onOpenPDF }) {
     const { theme, toggleTheme } = useTheme();
@@ -30,11 +37,13 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     const [cursorPosition, setCursorPosition] = useState(0);
     const [sessionText, setSessionText] = useState('');
     const [statusText, setStatusText] = useState('');
+    const [statusGlitchKey, setStatusGlitchKey] = useState(0);
     const [isReady, setIsReady] = useState(false);
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
     const measureRef = useRef(null);
     const typingIntervalRef = useRef(null);
+    const statusTypingIntervalRef = useRef(null);
     const statusIndexRef = useRef(0);
 
 
@@ -52,6 +61,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         if (typingIntervalRef.current) {
             clearInterval(typingIntervalRef.current);
             typingIntervalRef.current = null;
+        }
+        if (statusTypingIntervalRef.current) {
+            clearTimeout(statusTypingIntervalRef.current);
+            statusTypingIntervalRef.current = null;
         }
         
         setHistory([]);
@@ -82,45 +95,55 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
     };
 
     useEffect(() => {
-        if (showWelcome && isAnimating && sessionText === '') {
-            // Type out session text
-            const fullSessionText = 'session: zedithx';
-            let i = 0;
-            const sessionInterval = setInterval(() => {
-                setSessionText(fullSessionText.slice(0, i + 1));
-                i++;
-                if (i > fullSessionText.length) {
-                    clearInterval(sessionInterval);
-                    // Start typing status
-                    setTimeout(() => {
-                        let j = 0;
-                        const fullStatusText = 'observability warm-up...';
-                        const statusInterval = setInterval(() => {
-                            setStatusText(fullStatusText.slice(0, j + 1));
-                            j++;
-                            if (j > fullStatusText.length) {
-                                clearInterval(statusInterval);
-                                // Wait 0.5s then type out "ready"
-                                setTimeout(() => {
-                                    let k = 0;
-                                    const readyText = STATUS_SEQUENCE[0];
-                                    const readyInterval = setInterval(() => {
-                                        setStatusText(readyText.slice(0, k + 1));
-                                        k++;
-                                        if (k > readyText.length) {
-                                            clearInterval(readyInterval);
-                                            statusIndexRef.current = 0;
-                                            setIsReady(true);
-                                        }
-                                    }, 40);
-                                }, 500);
-                            }
-                        }, 40);
-                    }, 100);
+        if (!showWelcome || !isAnimating) return;
+
+        let isDisposed = false;
+        let typingTimeout = null;
+
+        const typeText = (text, updateText, onComplete) => {
+            let characterIndex = 0;
+
+            const typeNextCharacter = () => {
+                if (isDisposed) return;
+
+                characterIndex += 1;
+                updateText(text.slice(0, characterIndex));
+
+                if (characterIndex >= text.length) {
+                    onComplete();
+                    return;
                 }
-            }, 40);
-        }
-    }, [showWelcome, isAnimating, sessionText]);
+
+                typingTimeout = setTimeout(
+                    typeNextCharacter,
+                    getTypingDelay(text[characterIndex])
+                );
+            };
+
+            typingTimeout = setTimeout(
+                typeNextCharacter,
+                getTypingDelay(text[characterIndex])
+            );
+        };
+
+        typeText('session: zedithx', setSessionText, () => {
+            typingTimeout = setTimeout(() => {
+                typeText('observability warm-up...', setStatusText, () => {
+                    typingTimeout = setTimeout(() => {
+                        typeText(STATUS_SEQUENCE[0], setStatusText, () => {
+                            statusIndexRef.current = 0;
+                            setIsReady(true);
+                        });
+                    }, 500);
+                });
+            }, 100);
+        });
+
+        return () => {
+            isDisposed = true;
+            if (typingTimeout) clearTimeout(typingTimeout);
+        };
+    }, [showWelcome, isAnimating]);
 
     useEffect(() => {
         if (!isReady) return;
@@ -131,8 +154,36 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         const rotateStatus = () => {
             const nextIndex = (statusIndexRef.current + 1) % STATUS_SEQUENCE.length;
             const nextStatus = STATUS_SEQUENCE[nextIndex];
-            setStatusText(nextStatus);
             statusIndexRef.current = nextIndex;
+
+            if (statusTypingIntervalRef.current) {
+                clearTimeout(statusTypingIntervalRef.current);
+            }
+
+            let characterIndex = 0;
+            setStatusText('');
+            const typeNextCharacter = () => {
+                if (isDisposed) return;
+
+                characterIndex += 1;
+                setStatusText(nextStatus.slice(0, characterIndex));
+
+                if (characterIndex >= nextStatus.length) {
+                    statusTypingIntervalRef.current = null;
+                    setStatusGlitchKey((key) => key + 1);
+                    return;
+                }
+
+                statusTypingIntervalRef.current = setTimeout(
+                    typeNextCharacter,
+                    getTypingDelay(nextStatus[characterIndex])
+                );
+            };
+
+            statusTypingIntervalRef.current = setTimeout(
+                typeNextCharacter,
+                getTypingDelay(nextStatus[characterIndex])
+            );
         };
 
         const bootDelay = setTimeout(() => {
@@ -152,6 +203,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
             isDisposed = true;
             clearTimeout(bootDelay);
             if (rotationTimeout) clearTimeout(rotationTimeout);
+            if (statusTypingIntervalRef.current) {
+                clearTimeout(statusTypingIntervalRef.current);
+                statusTypingIntervalRef.current = null;
+            }
         };
     }, [isReady]);
 
@@ -527,6 +582,10 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
         }, 30); // Type each character every 30ms
     }, [handleClear, onCommand, onOpenPDF, theme, toggleTheme]);
 
+    const handleWelcomeAnimationComplete = useCallback(() => {
+        setIsAnimating(false);
+    }, []);
+
     // Calculate safe left position for mobile to prevent horizontal shifting
     const safeLeft = useMemo(() => {
         if (terminalState === 'maximized') return 0;
@@ -595,8 +654,9 @@ export default function Terminal({ onCommand, onClose, onMinimize, onMaximize, t
                             isAnimating={isAnimating}
                             sessionText={sessionText}
                             statusText={statusText}
+                            statusGlitchKey={statusGlitchKey}
                             onCommandClick={handleCommandClick}
-                            onAnimationComplete={() => setIsAnimating(false)}
+                            onAnimationComplete={handleWelcomeAnimationComplete}
                         />
                     )}
 

@@ -68,6 +68,41 @@ body > * {
   background: rgba(99, 102, 241, 0.3);
 }
 
+@keyframes terminal-status-glitch {
+  0%, 100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: none;
+  }
+  12% {
+    transform: translate3d(-4px, 1px, 0) skewX(-1deg);
+    filter: drop-shadow(3px 0 rgba(255, 0, 85, 0.7)) drop-shadow(-3px 0 rgba(0, 225, 255, 0.65));
+  }
+  24% {
+    transform: translate3d(5px, -1px, 0) skewX(1deg);
+  }
+  38% {
+    transform: translate3d(-2px, 0, 0);
+    filter: contrast(1.5) drop-shadow(2px 0 rgba(255, 0, 85, 0.55)) drop-shadow(-2px 0 rgba(0, 225, 255, 0.55));
+  }
+  52% {
+    transform: translate3d(4px, 1px, 0) skewX(-0.75deg);
+  }
+  68% {
+    transform: translate3d(-3px, -1px, 0) skewX(0.75deg);
+    filter: brightness(1.35);
+  }
+  82% {
+    transform: translate3d(2px, 0, 0);
+    filter: drop-shadow(1px 0 rgba(255, 0, 85, 0.45)) drop-shadow(-1px 0 rgba(0, 225, 255, 0.45));
+  }
+}
+
+.terminal-status-glitch {
+  animation: terminal-status-glitch 560ms steps(1, end) both;
+  will-change: transform, filter;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
