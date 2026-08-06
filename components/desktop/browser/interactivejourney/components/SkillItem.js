@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
 import { useSkillHelpers } from '../../../../../hooks/journey/useSkillHelpers';
 import AnimatedValue from '../AnimatedValue';
+import { adventureMotion } from '../motionConfig';
 
 export default function SkillItem({ 
     skillName, 
@@ -40,9 +41,9 @@ export default function SkillItem({
                 scale: [1, 1.03, 1]
             } : {}}
             transition={isRecentlyUnlocked && !prefersReducedMotion ? { 
-                duration: 0.6,
+                duration: 0.35,
                 ease: 'easeOut'
-            } : { duration: 0.8, ease: 'easeOut' }}
+            } : { duration: 0.4, ease: 'easeOut' }}
             style={{
                 willChange: (isRecentlyUpdated || isRecentlyUnlocked) ? 'transform' : 'auto',
                 padding: isRecentlyUpdated ? '4px' : '0',
@@ -58,9 +59,9 @@ export default function SkillItem({
                         scale: [1, 1.3, 1]
                     } : isRecentlyUpdated ? { scale: [1, 1.2, 1] } : {}}
                     transition={isRecentlyUnlocked && !prefersReducedMotion ? {
-                        duration: 0.6,
+                        duration: 0.35,
                         ease: 'easeOut'
-                    } : { duration: 0.8, ease: 'easeOut' }}
+                    } : { duration: 0.4, ease: 'easeOut' }}
                     style={{ willChange: (isRecentlyUpdated || isRecentlyUnlocked) ? 'transform' : 'auto' }}
                 >
                     {icon}
@@ -90,7 +91,7 @@ export default function SkillItem({
                             color: ['#fbbf24', '#ffd700', '#fbbf24'],
                             scale: [1, 1.2, 1]
                         } : {}}
-                        transition={{ duration: 1.0 }}
+                        transition={{ duration: 0.4 }}
                     >
                         <AnimatedValue from={prevValue} to={isRecentlyUpdated ? value : prevValue} max={max} showGain={isRecentlyUpdated} />
                     </motion.span>
@@ -113,7 +114,7 @@ export default function SkillItem({
                         initial={prefersReducedMotion || !hasPreviousValue ? {} : { width: `${prevPercentage}%` }}
                         animate={prefersReducedMotion ? {} : { width: `${displayPercentage}%` }}
                         transition={prefersReducedMotion || !hasPreviousValue ? {} : { 
-                            duration: isRecentlyUpdated ? 1.2 : 0,
+                            duration: isRecentlyUpdated ? adventureMotion.progressSeconds : 0,
                             ease: [0.16, 1, 0.3, 1],
                             type: 'tween'
                         }}
@@ -141,7 +142,7 @@ export default function SkillItem({
                                     x: ['-100%', '100%']
                                 }}
                                 transition={{
-                                    duration: 1.5,
+                                    duration: 0.7,
                                     repeat: Infinity,
                                     ease: 'linear'
                                 }}

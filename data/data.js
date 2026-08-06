@@ -1273,10 +1273,10 @@ export const generateProjectContent = (project, isDark = false) => {
 
                                     <div className="space-y-2">
                                         <h3 className={`text-2xl sm:text-3xl font-black leading-tight ${tangledHeadingClass}`}>
-                                            A shipped social app with the Tangled product language.
+                                            A shipped social app that turns shared interests into real plans.
                                         </h3>
                                         <p className={`max-w-3xl text-sm sm:text-base leading-relaxed ${tangledMutedTextClass}`}>
-                                            Tangled uses a soft, airy interface to make meeting people feel less transactional: rounded surfaces, calm discovery lanes, compact chips, and warm accent colors backed by production-grade realtime infrastructure.
+                                            Tangled helps people discover and float ideas, form small groups around shared interests, and move from conversation to meeting up—with realtime chat, Ty-assisted planning, and production-grade infrastructure behind every connection.
                                         </p>
                                     </div>
 

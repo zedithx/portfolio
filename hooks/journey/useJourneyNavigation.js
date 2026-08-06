@@ -1,5 +1,6 @@
 'use client';
 import { useCallback } from 'react';
+import { adventureMotion } from '../../components/desktop/browser/interactivejourney/motionConfig';
 
 export const useJourneyNavigation = ({
     currentIndex,
@@ -22,12 +23,12 @@ export const useJourneyNavigation = ({
             setTimeout(() => {
                 setShowSummary(true);
                 setIsTransitioning(false);
-            }, 300);
+            }, adventureMotion.navigationMs);
         } else if (currentIndex < journey.length - 1) {
             setIsTransitioning(true);
             setTimeout(() => {
                 setCurrentIndex(prev => prev + 1);
-            }, 300);
+            }, adventureMotion.navigationMs);
         }
     }, [currentIndex, journey.length, isTransitioning, isAnimating, setIsTransitioning, setCurrentIndex, setShowDialogue, setShowSummary]);
 
@@ -37,7 +38,7 @@ export const useJourneyNavigation = ({
             setIsAnimating(false);
             setTimeout(() => {
                 setCurrentIndex(prev => prev - 1);
-            }, 300);
+            }, adventureMotion.navigationMs);
         }
     }, [currentIndex, isTransitioning, isAnimating, setIsTransitioning, setCurrentIndex, setIsAnimating]);
 
@@ -47,7 +48,7 @@ export const useJourneyNavigation = ({
             setShowSummary(false);
             setTimeout(() => {
                 setCurrentIndex(index);
-            }, 300);
+            }, adventureMotion.navigationMs);
         }
     }, [currentIndex, isTransitioning, setIsTransitioning, setCurrentIndex, setShowSummary]);
 
@@ -58,7 +59,7 @@ export const useJourneyNavigation = ({
             setTimeout(() => {
                 setShowSummary(true);
                 setIsTransitioning(false);
-            }, 300);
+            }, adventureMotion.navigationMs);
         }
     }, [isTransitioning, setIsTransitioning, setShowDialogue, setShowSummary]);
 

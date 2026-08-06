@@ -16,7 +16,7 @@ export default function UnlockNotification({
                 initial={prefersReducedMotion ? {} : { scale: 0, opacity: 0, y: -50 }}
                 animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1, y: 0 }}
                 exit={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0, y: -20 }}
-                transition={prefersReducedMotion ? {} : { duration: 0.5, type: 'spring', stiffness: 300 }}
+                transition={prefersReducedMotion ? {} : { duration: 0.3, type: 'spring', stiffness: 420, damping: 24 }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] pointer-events-none"
                 style={{
                     minWidth: '280px',
@@ -41,7 +41,7 @@ export default function UnlockNotification({
                     <motion.div
                         initial={prefersReducedMotion ? {} : { scale: 0, rotate: -180 }}
                         animate={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
-                        transition={prefersReducedMotion ? {} : { duration: 0.6, type: 'spring', stiffness: 200 }}
+                        transition={prefersReducedMotion ? {} : { duration: 0.35, type: 'spring', stiffness: 320, damping: 22 }}
                         className="text-4xl md:text-5xl mb-2"
                     >
                         <LockOpen className="w-10 h-10 md:w-12 md:h-12 text-yellow-400" />

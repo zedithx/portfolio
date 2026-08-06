@@ -16,6 +16,7 @@ import SkillList from './components/SkillList';
 import SkillItem from './components/SkillItem';
 import { useSkillHelpers } from '../../../../hooks/journey/useSkillHelpers';
 import { useJourneyNavigation } from '../../../../hooks/journey/useJourneyNavigation';
+import { adventureMotion } from './motionConfig';
 
 export default function JourneySlideshow({ journey, updateSkills, onSkillGain, hero, skills, onToggleToFormal }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,6 +28,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const desktopPopupTimeoutRef = useRef(null);
+    const continueRewardSequenceRef = useRef(null);
     const skipButtonRef = useRef(null);
     const returnButtonRef = useRef(null);
     const [isSkillsExpanded, setIsSkillsExpanded] = useState(false);
@@ -87,12 +89,12 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         return newValues;
                     });
                     
-                    // Call onComplete when last skill animation finishes (after 2000ms animation)
+                    // Call onComplete when the final skill highlight finishes.
                     if (index === skillNames.length - 1 && onComplete) {
                         onComplete();
                     }
-                }, 2000);
-            }, index * 300); // 300ms delay between each skill animation
+                }, adventureMotion.progressHighlightMs);
+            }, index * adventureMotion.progressStaggerMs);
         });
     }, []);
 
@@ -111,6 +113,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 clearTimeout(desktopPopupTimeoutRef.current);
                 desktopPopupTimeoutRef.current = null;
             }
+            continueRewardSequenceRef.current = null;
         }
     }, [currentIndex, currentCard]);
 
@@ -144,7 +147,9 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     
                     // STEP 1: Show point notification popup first
                     const isLastSlide = currentIndex === safeJourney.length - 1;
-                    const popupDuration = isLastSlide ? 2000 : 3000;
+                    const popupDuration = isLastSlide
+                        ? adventureMotion.finalRewardPopupMs
+                        : adventureMotion.rewardPopupMs;
                     
                     // Start animation tracking
                     setIsAnimating(true);
@@ -155,10 +160,11 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     if (desktopPopupTimeoutRef.current) {
                         clearTimeout(desktopPopupTimeoutRef.current);
                     }
-                    desktopPopupTimeoutRef.current = setTimeout(() => {
+                    const continueRewardSequence = () => {
                         setShowDesktopPopup(false);
                         setDesktopPopupSkills(null);
                         desktopPopupTimeoutRef.current = null;
+                        continueRewardSequenceRef.current = null;
                         
                         // STEP 2: After popup, show unlock notification (if any)
                         if (hasUnlocks) {
@@ -166,10 +172,10 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             // Track for unlock animation
                             setRecentlyUnlockedSkills(prev => new Set([...prev, ...uniqueUnlockedSkills]));
                             
-                            // Clear unlock notification after 4 seconds
+                            // Keep the unlock readable, then move directly into progress.
                             setTimeout(() => {
                                 setUnlockedSkills([]);
-                            }, 4000);
+                            }, adventureMotion.unlockNoticeMs);
                             
                             // Clear unlock animation highlight after 2 seconds
                             setTimeout(() => {
@@ -178,27 +184,26 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     uniqueUnlockedSkills.forEach(skill => newSet.delete(skill));
                                     return newSet;
                                 });
-                            }, 2000);
+                            }, adventureMotion.unlockHighlightMs);
                             
                             // STEP 3: After unlock notification, animate skill bars sequentially
-                            // Wait for unlock notification duration (4 seconds) + small buffer
                             setTimeout(() => {
                                 animateSkillsSequentially(updatedSkillNames, () => {
                                     // All animations complete
                                     setIsAnimating(false);
                                 });
-                            }, 4500);
+                            }, adventureMotion.unlockToProgressMs);
                         } else {
                             // No unlocks, so animate skill bars right after popup closes
-                            // Small delay to ensure popup is fully closed
-                            setTimeout(() => {
-                                animateSkillsSequentially(updatedSkillNames, () => {
-                                    // All animations complete
-                                    setIsAnimating(false);
-                                });
-                            }, 100);
+                            animateSkillsSequentially(updatedSkillNames, () => {
+                                // All animations complete
+                                setIsAnimating(false);
+                            });
                         }
-                    }, popupDuration);
+                    };
+
+                    continueRewardSequenceRef.current = continueRewardSequence;
+                    desktopPopupTimeoutRef.current = setTimeout(continueRewardSequence, popupDuration);
                     
                     if (onSkillGain) {
                         onSkillGain(currentCard.id, currentCard.skillsGained);
@@ -207,7 +212,15 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                 }
             }
         }
-    }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, safeJourney.length]);
+    }, [dialogueIndex, currentCard, processedCards, updateSkills, onSkillGain, currentIndex, safeJourney.length, skills, animateSkillsSequentially]);
+
+    const dismissRewardPopup = useCallback(() => {
+        if (desktopPopupTimeoutRef.current) {
+            clearTimeout(desktopPopupTimeoutRef.current);
+            desktopPopupTimeoutRef.current = null;
+        }
+        continueRewardSequenceRef.current?.();
+    }, []);
 
     // Navigation hooks
     const { goNext, goPrev, goToSlide, goToSummary } = useJourneyNavigation({
@@ -649,7 +662,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                         initial={prefersReducedMotion ? {} : { opacity: 0 }}
                         animate={prefersReducedMotion ? {} : { opacity: 1 }}
                         exit={prefersReducedMotion ? {} : { opacity: 0 }}
-                        transition={prefersReducedMotion ? {} : { duration: 0.3, ease: 'easeOut' }}
+                        transition={prefersReducedMotion ? {} : { duration: adventureMotion.sceneSeconds, ease: 'easeOut' }}
                         className="w-full h-full min-h-0 rounded-lg relative overflow-hidden"
                         style={{
                             border: '3px solid #ffd700',
@@ -963,14 +976,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             skills={skills}
                             desktopPopupSkills={desktopPopupSkills}
                             prefersReducedMotion={prefersReducedMotion}
-                            onClose={() => {
-                                setShowDesktopPopup(false);
-                                setDesktopPopupSkills(null);
-                                if (desktopPopupTimeoutRef.current) {
-                                    clearTimeout(desktopPopupTimeoutRef.current);
-                                    desktopPopupTimeoutRef.current = null;
-                                }
-                            }}
+                            onClose={dismissRewardPopup}
                             isMobile={true}
                         />
                         <DesktopPopup
@@ -978,14 +984,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                             skills={skills}
                             desktopPopupSkills={desktopPopupSkills}
                             prefersReducedMotion={prefersReducedMotion}
-                            onClose={() => {
-                                setShowDesktopPopup(false);
-                                setDesktopPopupSkills(null);
-                                if (desktopPopupTimeoutRef.current) {
-                                    clearTimeout(desktopPopupTimeoutRef.current);
-                                    desktopPopupTimeoutRef.current = null;
-                                }
-                            }}
+                            onClose={dismissRewardPopup}
                             isMobile={false}
                         />
 
@@ -1164,4 +1163,3 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
         </>
     );
 }
-

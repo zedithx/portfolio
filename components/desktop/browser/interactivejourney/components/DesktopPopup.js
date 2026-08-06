@@ -21,7 +21,7 @@ export default function DesktopPopup({
                 initial={prefersReducedMotion ? {} : { scale: 0, opacity: 0, y: -20 }}
                 animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1, y: 0 }}
                 exit={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0, y: -10 }}
-                transition={prefersReducedMotion ? {} : { duration: 0.4, type: 'spring', stiffness: 200 }}
+                transition={prefersReducedMotion ? {} : { duration: 0.25, type: 'spring', stiffness: 360, damping: 24 }}
                 onClick={onClose}
                 className={isMobile ? "lg:hidden absolute top-4 right-4 z-50 cursor-pointer" : "hidden lg:block absolute top-4 right-4 z-50 cursor-pointer"}
                 style={{
@@ -69,8 +69,8 @@ export default function DesktopPopup({
                                     initial={prefersReducedMotion ? {} : { x: -20, opacity: 0 }}
                                     animate={prefersReducedMotion ? {} : { x: 0, opacity: 1 }}
                                     transition={prefersReducedMotion ? {} : { 
-                                        delay: idx * 0.1,
-                                        duration: 0.3
+                                        delay: idx * 0.05,
+                                        duration: 0.18
                                     }}
                                     className={`flex items-center justify-between gap-2 md:gap-3 py-1 md:py-1.5 px-2 rounded`}
                                     style={{
@@ -91,7 +91,7 @@ export default function DesktopPopup({
                                         initial={prefersReducedMotion ? {} : { scale: 0 }}
                                         animate={prefersReducedMotion ? {} : { scale: 1 }}
                                         transition={prefersReducedMotion ? {} : { 
-                                            delay: 0.2 + idx * 0.1,
+                                            delay: 0.1 + idx * 0.05,
                                             type: 'spring',
                                             stiffness: 300
                                         }}
@@ -115,7 +115,7 @@ export default function DesktopPopup({
                     <motion.p
                         initial={prefersReducedMotion ? {} : { opacity: 0 }}
                         animate={prefersReducedMotion ? {} : { opacity: 0.7 }}
-                        transition={prefersReducedMotion ? {} : { delay: 0.5 }}
+                        transition={prefersReducedMotion ? {} : { delay: 0.25 }}
                         className={`${isMobile ? 'text-[10px] md:text-xs' : 'text-xs'} text-yellow-400/60 mt-2 text-center`}
                         style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}
                     >

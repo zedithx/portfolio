@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
+import { adventureMotion } from './motionConfig';
 
 const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
     const [displayValue, setDisplayValue] = useState(from || 0);
@@ -24,7 +25,7 @@ const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
             gainTimeout = setTimeout(() => {
                 setShowGainIndicator(false);
                 
-                const duration = 1000;
+                const duration = adventureMotion.valueCountMs;
                 const startTime = performance.now();
                 const startValue = from || 0;
                 const endValue = to || 0;
@@ -46,9 +47,9 @@ const AnimatedValue = memo(({ from, to, max, showGain = false }) => {
                 };
                 
                 animationFrameId = requestAnimationFrame(animate);
-            }, 600);
+            }, adventureMotion.valueGainDelayMs);
         } else {
-            const duration = 500;
+            const duration = adventureMotion.valueCountMs;
             const startTime = performance.now();
             const startValue = from || 0;
             const endValue = to || 0;
