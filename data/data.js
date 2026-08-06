@@ -1276,7 +1276,7 @@ export const generateProjectContent = (project, isDark = false) => {
                                             A shipped social app that turns shared interests into real plans.
                                         </h3>
                                         <p className={`max-w-3xl text-sm sm:text-base leading-relaxed ${tangledMutedTextClass}`}>
-                                            Tangled helps people discover and float ideas, form small groups around shared interests, and move from conversation to meeting up—with realtime chat, Ty-assisted planning, and production-grade infrastructure behind every connection.
+                                            Tangled helps people discover and float ideas, form small groups around shared interests, and move from conversation to meeting up. Realtime chat, Ty-assisted planning, and production-grade infrastructure support every connection.
                                         </p>
                                     </div>
 
