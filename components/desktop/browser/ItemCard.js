@@ -199,7 +199,7 @@ const ItemCard = React.memo(({ item, onClick }) => {
                             item.badge === 'Top 3' ? 'bg-amber-700 text-white' :
                             item.badge === 'Top 2' ? 'bg-gray-400 text-white' :
                             item.badge === 'Full Marks' ? 'bg-yellow-500 text-white' :
-                            item.badge === '2K+ Users' ? 'bg-[#67A2B9] text-white' :
+                            item.badge === '4k+ users' ? 'bg-[#67A2B9] text-white' :
                             'bg-green-500 text-white'
                         }`}
                     >

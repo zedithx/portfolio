@@ -75,7 +75,7 @@ export const projectData = {
             id: 11,
             title: 'Tangled',
             commits: 1235,
-            badge: '2K+ Users',
+            badge: '4k+ users',
             featured: true,
             thumbnail: {
                 type: 'image',
@@ -87,7 +87,7 @@ export const projectData = {
                 '/projects/tech-icons/python.webp',
                 '/projects/tech-icons/terraform.png'
             ],
-            description: 'A live App Store social platform co-founded and scaled to 2,000+ users, with real-time chat, AWS infrastructure, and cloud-native architecture.',
+            description: 'A live App Store social platform co-founded and scaled to 4k+ users, with real-time chat, AWS infrastructure, and cloud-native architecture.',
             techTags: ['Expo', 'Python', 'Terraform'],
             githubUrl: null,
             blogUrl: null
@@ -1261,7 +1261,7 @@ export const generateProjectContent = (project, isDark = false) => {
                                             className="rounded-full border px-3 py-1 text-[11px] font-bold"
                                             style={tangledBadgeStyles.users}
                                         >
-                                            2,000+ users
+                                            4k+ users
                                         </span>
                                         <span
                                             className="rounded-full border px-3 py-1 text-[11px] font-bold"
@@ -1643,12 +1643,13 @@ export const contentData = {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h2 className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Tangled Social</h2>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Singapore</p>
                                     <p className={`text-xs sm:text-sm md:text-base lg:text-lg mt-0.5 sm:mt-1 font-medium leading-snug ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Co-founder & Software Engineer</p>
-                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>July 2025 - Present</p>
+                                    <p className={`text-[10px] sm:text-xs md:text-sm mt-0.5 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Jul 2025 - Present</p>
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                I co-founded a live App Store social platform with 2,000+ users and built the majority of the codebase, including a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. I provisioned production-grade infrastructure with Terraform and implemented end-to-end monitoring and reliability features. This project sharpened my skills in cloud architecture, serverless systems, and production operations.
+                                I co-founded a live App Store social platform with 4k+ users and built the majority of the codebase, including a real-time chat system using AWS WebSocket Gateway, Lambda, and DynamoDB. I provisioned production-grade infrastructure with Terraform and implemented end-to-end monitoring and reliability features. This project sharpened my skills in cloud architecture, serverless systems, and production operations.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
                                 <span className="font-medium">Tech:</span> AWS (Lambda, DynamoDB, WebSocket Gateway, ECS rolling deployment), Terraform, Python, Expo, Sentry
@@ -1866,7 +1867,7 @@ export const aboutMeData = {
                 },
                 {
                     speaker: "hero",
-                    text: "I investigate partition and replica-group issues with Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts. That work includes expanding storage in response to utilization alerts. Alongside my SRE role, I continue to build Tangled: a live App Store social platform with 2,000+ users."
+                    text: "I investigate partition and replica-group issues with Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts. That work includes expanding storage in response to utilization alerts. Alongside my SRE role, I continue to build Tangled: a live App Store social platform with 4k+ users."
                 }
             ],
             category: "Current",
@@ -1893,6 +1894,6 @@ export const journeySummaryContent = {
     },
     "whatsNext": {
         "title": "The current chapter",
-        "content": "I now work full-time at ByteDance as a Software Engineer (SRE), focusing on platform engineering and operational automation for distributed storage including HBase, ByteKV, and TokaDB. My tooling covers storage expansion in response to utilization alerts, machine replacement, configuration management, infrastructure tracking, and administrative CLI usability. I investigate partition and replica-group issues using Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts.\n\nAlongside that role, I continue to build and iterate on Tangled as its co-founder and software engineer. Tangled is a live App Store social platform with 2,000+ users, combining real-time chat, cloud infrastructure, and production operations."
+        "content": "I now work full-time at ByteDance as a Software Engineer (SRE), focusing on platform engineering and operational automation for distributed storage including HBase, ByteKV, and TokaDB. My tooling covers storage expansion in response to utilization alerts, machine replacement, configuration management, infrastructure tracking, and administrative CLI usability. I investigate partition and replica-group issues using Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts.\n\nAlongside that role, I continue to build and iterate on Tangled as its co-founder and software engineer. Tangled is a live App Store social platform with 4k+ users, combining real-time chat, cloud infrastructure, and production operations."
     }
 };

@@ -1,25 +1,33 @@
 import './globals.css';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { Inter, Orbitron, Rajdhani } from 'next/font/google';
+import localFont from 'next/font/local';
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+// Bundle the existing Latin fonts so builds do not depend on Google font fetching.
+const inter = localFont({
+  src: './fonts/inter-latin-variable.woff2',
+  weight: '300 700',
+  style: 'normal',
   display: 'swap',
   variable: '--font-inter',
 });
 
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+const orbitron = localFont({
+  src: './fonts/orbitron-latin-variable.woff2',
+  weight: '400 900',
+  style: 'normal',
   display: 'swap',
   variable: '--font-orbitron',
 });
 
-const rajdhani = Rajdhani({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+const rajdhani = localFont({
+  src: [
+    { path: './fonts/rajdhani-latin-300.woff2', weight: '300', style: 'normal' },
+    { path: './fonts/rajdhani-latin-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/rajdhani-latin-500.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/rajdhani-latin-600.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/rajdhani-latin-700.woff2', weight: '700', style: 'normal' },
+  ],
   display: 'swap',
   variable: '--font-rajdhani',
 });

@@ -3,8 +3,8 @@
 
 Requires reportlab and Times New Roman or Liberation Serif fonts. Fonts are
 embedded so the downloaded PDF keeps its appearance on every device.
-The current-role facts and dates match data/data.js;
-historical details and education are preserved from the original public PDF.
+The current-role facts and dates match data/data.js. Historical details and
+education are preserved from the original public PDF.
 """
 
 from pathlib import Path
@@ -34,10 +34,10 @@ EXPERIENCE = [
         ],
     ),
     (
-        "Tangled Social", "", "Co-founder & Software Engineer", "July 2025 - Present",
+        "Tangled Social", "Singapore", "Co-founder & Software Engineer", "Jul 2025 - Present",
         [
-            "Co-founded a live App Store social platform with 2,000+ users and built the majority of the codebase.",
-            "Built real-time chat with AWS WebSocket Gateway, Lambda, and DynamoDB; provisioned infrastructure with Terraform and implemented monitoring and reliability features.",
+            "Co-founded a live App Store social platform with 4k+ users and built the majority of the codebase.",
+            "Built real-time chat with AWS WebSocket Gateway, Lambda, and DynamoDB. Provisioned infrastructure with Terraform and implemented monitoring and reliability features.",
         ],
     ),
     (
@@ -52,7 +52,7 @@ EXPERIENCE = [
         "Taiwan Semiconductor Manufacturing Company (TSMC)", "Taiwan, Hsinchu",
         "Software Engineer (DevOps) Intern", "June 2025 - Aug 2025",
         [
-            "Integrated OpenTelemetry tracing with Spring Boot Starter across 10+ fabrication labs; first on the team to enable context propagation for NATS-driven systems.",
+            "Integrated OpenTelemetry tracing with Spring Boot Starter across 10+ fabrication labs and was first on the team to enable context propagation for NATS-driven systems.",
             "Auto-generated test scenarios with Grafana Tempo to expand and track SIT coverage, eliminating manual system testing and saving developer time.",
             "Built auto sanity checks with Prometheus metrics to strengthen service reliability and deployment confidence across all fabrication labs.",
         ],
@@ -135,7 +135,7 @@ def generate_resume():
     pdf = canvas.Canvas(str(OUTPUT), pagesize=letter, pageCompression=1, invariant=1)
     pdf.setTitle("Yang Si Jun - Resume")
     pdf.setAuthor("Yang Si Jun")
-    pdf.setSubject("Software Engineer (SRE), ByteDance; Co-founder, Tangled Social")
+    pdf.setSubject("Software Engineer (SRE), ByteDance, Co-founder, Tangled Social")
     pdf.setFillColor(colors.black)
     y = PAGE_HEIGHT - 31
     body_style = ParagraphStyle(

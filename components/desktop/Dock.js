@@ -1,11 +1,16 @@
 'use client';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Activity, Link } from 'lucide-react';
+import { Link } from 'lucide-react';
 
 const dockApps = [
     { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
-    { name: 'SRE Dashboard', ariaLabel: 'SRE Dashboard — Grafana-style storage monitor', customIcon: true },
+    {
+        name: 'SRE Dashboard',
+        ariaLabel: 'SRE Dashboard — Grafana-style storage monitor',
+        icon: '/dock-icons/sre-dashboard.svg',
+        imageClassName: 'h-[84%] w-[84%] object-contain',
+    },
     { name: 'Gmail', icon: '/dock-icons/gmail.webp' },
     {
         name: 'GitHub',
@@ -26,8 +31,8 @@ const dockApps = [
         imageClassName: 'h-[84%] w-[84%] rounded-lg object-cover',
         loadingService: 'tangled',
         tooltip: 'Tangled',
-        ariaLabel: 'Tangled - 2,000+ App Store users',
-        badge: '2K+',
+        ariaLabel: 'Tangled - 4k+ App Store users',
+        badge: '4k+',
         url: 'https://www.tangledsocial.com'
     },
     { name: 'Spotify', icon: '/dock-icons/spotify.png' },
@@ -46,7 +51,7 @@ const loadingServices = {
     tangled: {
         icon: '/experience/tangled_logo_highres.jpg',
         label: 'Opening Tangled...',
-        detail: '2,000+ App Store users'
+        detail: '4k+ App Store users'
     }
 };
 
@@ -168,15 +173,11 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
             </div>
             <div className="relative h-10 w-10 min-[430px]:h-12 min-[430px]:w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
                 <div className={`flex h-full w-full items-center justify-center overflow-hidden rounded-lg shadow-lg cursor-pointer sm:rounded-xl ${app.iconBoxClassName || ''}`}>
-                    {app.customIcon ? (
-                        <div className="flex h-[84%] w-[84%] items-center justify-center rounded-lg border border-emerald-300/30 bg-gradient-to-br from-[#325448] to-[#142b23] text-emerald-200 sm:rounded-xl">
-                            <Activity className="h-[62%] w-[62%]" strokeWidth={1.75} aria-hidden="true" />
-                        </div>
-                    ) : <img
+                    <img
                         src={app.icon}
                         alt={app.name}
                         className={app.imageClassName || `w-full h-full object-cover ${app.iconClassName || ''}`}
-                    />}
+                    />
                 </div>
                 {badge && (
                     <span aria-hidden="true" data-alert-badge={hasAlert ? 'sre' : undefined} className={`absolute -right-1.5 -top-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full border border-white/80 px-0.5 font-bold leading-none text-white shadow-lg ${hasAlert ? 'bg-red-600 text-[10px]' : 'bg-red-500 text-[8px]'}`}>

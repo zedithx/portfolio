@@ -76,7 +76,7 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                 </p>
                                 
                                 <p>
-                                    Alongside my full-time SRE role, I continue to build and iterate on Tangled as its co-founder and software engineer. Tangled is a live App Store social platform with 2,000+ users, bringing together real-time chat, cloud infrastructure, and production operations.
+                                    Alongside my full-time SRE role, I continue to build and iterate on Tangled as its co-founder and software engineer. Tangled is a live App Store social platform with 4k+ users, bringing together real-time chat, cloud infrastructure, and production operations.
                                 </p>
                             </div>
                         </ContentSection>
