@@ -1,0 +1,22 @@
+.panel { min-width:0;background:var(--lab-panel,#161719);border:1px solid var(--lab-border,#282a2d);border-radius:3px;overflow:hidden; }
+.header { min-height:38px;padding:8px 40px;display:flex;align-items:center;justify-content:center;position:relative;gap:8px; }
+.header h3 { font-size:16px;font-weight:550;line-height:1.4;color:var(--lab-text,#d8d9da);margin:0;text-align:center; }
+.header > span { position:absolute;right:11px;color:var(--lab-muted,#999da5);font-size:10px; }
+.body { padding:0 10px 10px; }
+.plot { min-width:0;position:relative; }
+.plot > svg { width:100%;display:block;outline:none;touch-action:pan-y; }
+.plot > svg:focus-visible { outline:2px solid var(--lab-blue,#5794f2);outline-offset:-2px; }
+.gridLine { stroke:var(--lab-grid,#373a3e);stroke-width:.75; }
+.axis { fill:var(--lab-muted,#aaaeb6);font-size:11px;font-family:Arial,sans-serif;font-variant-numeric:tabular-nums; }
+.threshold { stroke:var(--lab-red,#f2495c);stroke-dasharray:4 4;stroke-width:1;stroke-opacity:.65; }
+.annotation { stroke:var(--lab-red,#f2495c);stroke-opacity:.5;stroke-width:1; }.annotation[data-level='success'] { stroke:var(--lab-green,#73bf69); }
+.crosshair { stroke:var(--lab-muted,#aaaeb6);stroke-width:1;stroke-dasharray:3 3; }
+.tooltip { position:absolute;background:#090a0cee;color:#d8d9da;border:1px solid #35383e;border-radius:3px;padding:10px;z-index:3;box-shadow:0 5px 20px #0008;pointer-events:none;font-size:11px;line-height:1.7;max-width:calc(100% - 16px); }
+.tooltip > strong { display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #ffffff19;padding-bottom:5px;margin-bottom:6px;font-weight:600;font-variant-numeric:tabular-nums; }.tooltip > strong > span { font-size:9px;font-weight:400;color:#aaaeb6; }
+.tooltip > div { display:flex;align-items:center;gap:6px; }.tooltip i,.legend i,.legendTable i { width:14px;height:3px;display:inline-block;flex-shrink:0; }.tooltip b { margin-left:auto;font-weight:600;white-space:nowrap; }.tooltip > div > span { overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.legend { display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0 10px;min-height:27px;padding:0 2px;font-size:11px; }.legend > div { display:flex;align-items:center;gap:4px; }.legend button,.legendTable button { display:flex;align-items:center;gap:6px;padding:4px 0;font-size:11px;text-align:left;min-width:0;color:var(--lab-text,#d8d9da);cursor:pointer; }.legend button[aria-pressed='false'],.legendTable button[aria-pressed='false'] { opacity:.45;text-decoration:line-through; }.legend > div > span { color:var(--lab-muted,#aaaeb6);font-size:10px;font-variant-numeric:tabular-nums; }.legend > small { color:var(--lab-muted,#aaaeb6);font-size:9px;display:flex;align-items:center;gap:4px; }.legend > small > i { width:12px;height:0;border-top:1px dashed var(--lab-red,#f2495c); }
+.legend button:focus-visible,.legendTable button:focus-visible { outline:2px solid var(--lab-blue,#5794f2);outline-offset:2px; }
+.body[data-legend-mode='table'] { display:grid;grid-template-columns:minmax(0,1fr) minmax(185px,max-content);gap:10px; }.legendTable { width:100%;border-collapse:collapse;align-self:start;margin-top:15px;font-size:11px; }.legendTable th { color:var(--lab-blue,#5794f2);font-weight:500;text-align:right;padding:5px; }.legendTable td { padding:3px 5px;text-align:right;color:var(--lab-text,#d8d9da);font-variant-numeric:tabular-nums; }.legendTable td:first-child { text-align:left; }.legendTable button > span { white-space:nowrap; }
+.noSeries { position:absolute;inset:0;display:grid;place-items:center;color:var(--lab-muted,#aaaeb6);font-size:11px;pointer-events:none; }
+@media(max-width:900px) { .body[data-legend-mode='table'] { display:block; }.legendTable { margin-top:2px; } }
+@media(max-width:700px) { .header { min-height:41px; }.header h3 { font-size:14px; }.header > span { font-size:9px;right:8px; }.body[data-legend-mode='table'] { display:block; }.legendTable { margin-top:2px; }.legend button,.legendTable button { min-height:44px;font-size:12px; }.legend > div > span { font-size:11px; }.legendTable { font-size:12px; }.tooltip { font-size:12px; }.axis { font-size:11px; } }

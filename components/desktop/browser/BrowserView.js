@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import AboutMeView from './AboutMeView';
@@ -7,9 +7,19 @@ import BrowserChrome from './BrowserChrome';
 import { aboutMeData } from '../../../data/data';
 import { useTheme } from '../../../contexts/ThemeContext';
 
-export default function BrowserView({ type, data, onClose }) {
+export default function BrowserView({ type, data, onClose, experienceTarget }) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const contentRef = useRef(null);
+    useEffect(() => {
+        if (!experienceTarget) return;
+        const target = [...(contentRef.current?.querySelectorAll('[data-experience]') || [])].find(element => element.dataset.experience === experienceTarget);
+        if (target) {
+            target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+            target.scrollIntoView({ block: 'start', behavior: 'instant' });
+        }
+    }, [experienceTarget]);
     // If background type, render AboutMeView instead
     if (type === 'background') {
         return (
@@ -71,7 +81,7 @@ export default function BrowserView({ type, data, onClose }) {
 
             {/* Browser Content */}
             <div className={`flex-1 rounded-b-xl border border-t-0 overflow-hidden flex flex-col ${isDark ? 'bg-[#1a1a1a] border-gray-700' : 'bg-white border-gray-200'}`}>
-                <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-8">
+                <div ref={contentRef} className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-8">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentPage}
@@ -108,4 +118,3 @@ export default function BrowserView({ type, data, onClose }) {
         </>
     );
 }
-

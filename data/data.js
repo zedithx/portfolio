@@ -1616,7 +1616,7 @@ export const contentData = {
                 content: (isDark = false) => (
                     <div className="space-y-4 sm:space-y-5 md:space-y-8">
                         {/* ByteDance Full-time */}
-                        <div className="space-y-2 sm:space-y-3 md:space-y-4">
+                        <div id="bytedance-current" data-experience="bytedance-current" className="space-y-2 sm:space-y-3 md:space-y-4 scroll-mt-4">
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/bytedance_logo.png" alt="ByteDance" className="w-full h-full object-contain" />
@@ -1628,15 +1628,15 @@ export const contentData = {
                                 </div>
                             </div>
                             <p className={`text-xs sm:text-sm md:text-base leading-relaxed mt-2 sm:mt-0 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Maintaining multimodal components such as HBase, ByteKV, and TokaDB.
+                                My full-time role combines platform engineering and operational automation for distributed storage, including HBase, ByteKV, and TokaDB. I build tooling for storage expansion in response to utilization alerts, machine replacement, configuration management, infrastructure tracking, and administrative CLI usability. I investigate partition and replica-group issues using Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts.
                             </p>
                             <p className={`text-[10px] sm:text-xs md:text-sm mt-1.5 sm:mt-2 leading-tight ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                <span className="font-medium">Tech:</span> HBase, ByteKV, TokaDB, Site Reliability Engineering
+                                <span className="font-medium">Tech:</span> HBase, ByteKV, TokaDB, Go, Python, Grafana, Shell, Raft, RocksDB, Site Reliability Engineering
                             </p>
                         </div>
 
                         {/* Tangled Social */}
-                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <div id="tangled" data-experience="tangled" className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 scroll-mt-4 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/tangled_logo_highres.jpg" alt="Tangled Social" className="w-full h-full object-contain" />
@@ -1656,7 +1656,7 @@ export const contentData = {
                         </div>
 
                         {/* ByteDance Internship */}
-                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <div id="bytedance-intern" data-experience="bytedance-intern" className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 scroll-mt-4 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/bytedance_logo.png" alt="ByteDance" className="w-full h-full object-contain" />
@@ -1677,7 +1677,7 @@ export const contentData = {
                         </div>
 
                         {/* TSMC */}
-                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <div id="tsmc" data-experience="tsmc" className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 scroll-mt-4 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/TSMC.png" alt="TSMC" className="w-full h-full object-contain" />
@@ -1698,7 +1698,7 @@ export const contentData = {
                         </div>
 
                         {/* Changi Airport Group */}
-                        <div className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <div id="cag" data-experience="cag" className={`space-y-2 sm:space-y-3 md:space-y-4 border-t pt-3 sm:pt-4 md:pt-6 scroll-mt-4 ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                             <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                                 <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-md sm:shadow-lg flex-shrink-0 p-1 sm:p-1.5 md:p-2 border border-gray-200">
                                     <img src="/experience/Changi_Airport_logo.png" alt="Changi Airport Group" className="w-full h-full object-contain" />
@@ -1790,7 +1790,7 @@ export const aboutMeData = {
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "Hi, I'm Si Jun, an SRE-focused engineer. My coding journey started during my army days, where I first got hooked on building systems. I went through Harvard's CS50 and a Django course, which helped me land an internship at Reluvate Technologies and gave me my first exposure to production workloads."
+                    text: "Hi, I'm Si Jun, a Software Engineer (SRE) at ByteDance. My coding journey started during my army days, where I first got hooked on building systems. I went through Harvard's CS50 and a Django course, which helped me land an internship at Reluvate Technologies and gave me my first exposure to production workloads."
                 },
                 {
                     speaker: "hero",
@@ -1858,17 +1858,21 @@ export const aboutMeData = {
         },
         {
             id: 4,
-            title: "What's next?",
+            title: "The current chapter",
             dialogues: [
                 {
                     speaker: "hero",
-                    text: "Returning to SUTD to complete my studies, I'm now preparing for the next chapter of my journey. With all the experiences I've gained, I'm ready to take on my full-time job and continue growing in this software domain."
+                    text: "I'm now a full-time Software Engineer (SRE) at ByteDance, working on platform engineering and operational automation for distributed storage including HBase, ByteKV, and TokaDB. I build tooling for storage expansion, machine replacement, configuration management, infrastructure tracking, and administrative CLI usability."
+                },
+                {
+                    speaker: "hero",
+                    text: "I investigate partition and replica-group issues with Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts. That work includes expanding storage in response to utilization alerts. Alongside my SRE role, I continue to build Tangled: a live App Store social platform with 2,000+ users."
                 }
             ],
-            category: "Future",
+            category: "Current",
             icon: "⭐",
             skillsGained: {},
-            scene: "/background/sutd.webp"
+            scene: "/background/bytedance.webp"
         }
     ]
 };
@@ -1885,10 +1889,10 @@ export const journeySummaryContent = {
     },
     "internshipsInUniversity": {
         "title": "Internships in university",
-        "content": "At Changi Airport Group (CAG) I worked on automation and event-driven systems. At TSMC I focused on DevOps, telemetry, and SRE infrastructure at industrial scale. At ByteDance I did Site Reliability Engineering — monitoring, automation, and service reliability at scale. Each role built progressively deeper exposure to automation, infrastructure, and reliability engineering."
+        "content": "At Changi Airport Group (CAG) I worked on automation and event-driven systems. At TSMC I focused on DevOps, telemetry, and SRE infrastructure at industrial scale. During my ByteDance internship, I worked on ByteGraph monitoring, automation, and service reliability. Each role built progressively deeper exposure to automation, infrastructure, and reliability engineering."
     },
     "whatsNext": {
-        "title": "What's next?",
-        "content": "Completing the final phase of studies at SUTD, preparing for a full-time role in Site Reliability Engineering, and continuing to build and iterate on Tangled, a social startup, ahead of my full-time start."
+        "title": "The current chapter",
+        "content": "I now work full-time at ByteDance as a Software Engineer (SRE), focusing on platform engineering and operational automation for distributed storage including HBase, ByteKV, and TokaDB. My tooling covers storage expansion in response to utilization alerts, machine replacement, configuration management, infrastructure tracking, and administrative CLI usability. I investigate partition and replica-group issues using Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts.\n\nAlongside that role, I continue to build and iterate on Tangled as its co-founder and software engineer. Tangled is a live App Store social platform with 2,000+ users, combining real-time chat, cloud infrastructure, and production operations."
     }
 };

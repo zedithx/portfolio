@@ -1,5 +1,5 @@
 'use client';
-import React, { useMemo, useEffect, useState, useCallback } from 'react';
+import React, { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { contentData, aboutMeData, projectData } from '../../data/data';
@@ -8,8 +8,13 @@ import BrowserView from './browser/BrowserView';
 import FormalAboutMeView from './browser/FormalAboutMeView';
 import AboutMeView from './browser/AboutMeView';
 
-export default function BrowserModal({ type, onClose, onPermissionError }) {
-    const [showInteractiveJourney, setShowInteractiveJourney] = useState(false);
+export default function BrowserModal({ type, onClose, onPermissionError, initialJourneyStep, experienceTarget, onNotificationHostChange }) {
+    const [showInteractiveJourney, setShowInteractiveJourney] = useState(Boolean(initialJourneyStep));
+    const dialogRef = useRef(null);
+    const setDialogHost = useCallback(element => {
+        dialogRef.current = element;
+        onNotificationHostChange?.(element);
+    }, [onNotificationHostChange]);
     
     // Memoize data access to prevent unnecessary recalculations
     const data = useMemo(() => contentData[type], [type]);
@@ -32,9 +37,9 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
     // Reset interactive journey state when modal type changes
     useEffect(() => {
         if (isAboutMe) {
-            setShowInteractiveJourney(false);
+            setShowInteractiveJourney(Boolean(initialJourneyStep));
         }
-    }, [type, isAboutMe]);
+    }, [type, isAboutMe, initialJourneyStep]);
 
     // Stable callback for toggling to interactive journey
     const handleToggleToInteractive = useCallback((e) => {
@@ -45,22 +50,41 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
         setShowInteractiveJourney(true);
     }, []);
 
-    // Add ESC key handler
+    // Quick Look is a nested portal and owns keyboard focus while it is open.
     useEffect(() => {
+        const previousFocus = document.activeElement;
+        if (!document.querySelector('[data-project-quick-look]') && !dialogRef.current?.contains(document.activeElement)) dialogRef.current?.focus();
         const handleEscape = (e) => {
+            if (document.querySelector('[data-project-quick-look]')) return;
             if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
                 onClose();
+            }
+            if (e.key === 'Tab' && dialogRef.current) {
+                const controls = [...dialogRef.current.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), a[href], summary, [tabindex="0"]')].filter(element => element.getClientRects().length);
+                const first = controls[0];
+                const last = controls.at(-1);
+                // Native tab order can include a scrollable container without a
+                // tabindex attribute. Let that in-dialog stop reach the notice.
+                const focusNeedsBoundary = document.activeElement === dialogRef.current || !dialogRef.current.contains(document.activeElement);
+                if (e.shiftKey && (document.activeElement === first || focusNeedsBoundary)) { e.preventDefault(); last?.focus(); }
+                else if (!e.shiftKey && (document.activeElement === last || focusNeedsBoundary)) { e.preventDefault(); first?.focus(); }
             }
         };
         
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleEscape, true);
+        return () => {
+            document.removeEventListener('keydown', handleEscape, true);
+            if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+        };
     }, [onClose]);
 
     // About Me Layout (formal view or interactive journey)
     if (isAboutMe) {
     return (
         <motion.div
+                ref={setDialogHost} role="dialog" aria-modal="true" aria-label="About Me" tabIndex={-1}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -130,6 +154,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                                 </motion.button>
                                 <AboutMeView 
                                     data={aboutMeData}
+                                    initialJourneyStep={initialJourneyStep}
                                     onModeChange={() => {}}
                                     onToggleToFormal={() => setShowInteractiveJourney(false)}
                                 />
@@ -151,6 +176,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
         return (
             <AnimatePresence>
                 <motion.div
+                    ref={setDialogHost} role="dialog" aria-modal="true" aria-label="Projects" tabIndex={-1}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -190,6 +216,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
     return (
         <AnimatePresence>
             <motion.div
+                ref={setDialogHost} role="dialog" aria-modal="true" aria-label={data.title} tabIndex={-1}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -213,6 +240,7 @@ export default function BrowserModal({ type, onClose, onPermissionError }) {
                         type={type}
                         data={data}
                         onClose={onClose}
+                        experienceTarget={experienceTarget}
                     />
                 </motion.div>
             </motion.div>

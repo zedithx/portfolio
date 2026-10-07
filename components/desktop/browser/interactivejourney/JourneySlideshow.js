@@ -17,14 +17,18 @@ import SkillItem from './components/SkillItem';
 import { useSkillHelpers } from '../../../../hooks/journey/useSkillHelpers';
 import { useJourneyNavigation } from '../../../../hooks/journey/useJourneyNavigation';
 import { adventureMotion } from './motionConfig';
+import ChapterContext from './components/ChapterContext';
+import { JOURNEY_CHAPTER_CONTEXT } from './chapterContext.mjs';
 
-export default function JourneySlideshow({ journey, updateSkills, onSkillGain, hero, skills, onToggleToFormal }) {
-    const [currentIndex, setCurrentIndex] = useState(0);
+export default function JourneySlideshow({ journey, updateSkills, onSkillGain, hero, skills, onToggleToFormal, initialCardId }) {
+    const safeJourney = Array.isArray(journey) ? journey : [];
+    const initialIndex = Math.max(0, safeJourney.findIndex(card => card.id === initialCardId));
+    const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [dialogueIndex, setDialogueIndex] = useState(0);
     const [showDialogue, setShowDialogue] = useState(true);
     const [showDesktopPopup, setShowDesktopPopup] = useState(false);
     const [desktopPopupSkills, setDesktopPopupSkills] = useState(null);
-    const [processedCards, setProcessedCards] = useState(new Set());
+    const [processedCards, setProcessedCards] = useState(() => new Set(safeJourney.slice(0, initialIndex).map(card => card.id)));
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const desktopPopupTimeoutRef = useRef(null);
@@ -40,8 +44,6 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     const [unlockedSkills, setUnlockedSkills] = useState([]); // Track newly unlocked skills (array for multiple unlocks)
     const [recentlyUnlockedSkills, setRecentlyUnlockedSkills] = useState(new Set()); // Track skills that just unlocked for animation
     const [isAnimating, setIsAnimating] = useState(false); // Track if any animations are in progress
-
-    const safeJourney = Array.isArray(journey) ? journey : [];
 
     // Memoize prefersReducedMotion to avoid checking on every render
     const prefersReducedMotion = useMemo(() => {
@@ -576,7 +578,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
     };
     
     // Check if this card should show multiple backgrounds together (for internships segment)
-    const showMultiBackground = currentCard.id === 4;
+    const showMultiBackground = currentCard.id === 3;
     const multiBackgrounds = showMultiBackground ? [
         { url: "/background/changiairport.webp", position: "right center", positionLg: "60% 70%" },
         { url: "/background/tsmc.webp", position: "center center", positionLg: "center center" },
@@ -585,7 +587,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
 
     return (
         <>
-            <section className="w-full h-full flex flex-col relative lg:overflow-hidden">
+            <section className="w-full h-full flex flex-col relative lg:overflow-hidden" data-journey-card-id={currentCard.id}>
                 {/* Section Header - Better margins */}
                 <motion.h2 
                     initial={prefersReducedMotion ? {} : { opacity: 0 }}
@@ -875,9 +877,7 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                                     exit={prefersReducedMotion ? {} : { opacity: 0 }}
                                     transition={prefersReducedMotion ? {} : { duration: 0.2, ease: 'easeOut' }}
                                     onClick={handleDialogueClick}
-                                    className={`absolute bottom-0 left-0 right-0 p-3 md:p-4 z-30 cursor-pointer touch-manipulation flex flex-col ${
-                                        showMultiBackground ? 'max-h-[30%] lg:max-h-[40%]' : 'max-h-[40%]'
-                                    }`}
+                                    className="absolute bottom-0 left-0 right-0 p-3 md:p-4 z-30 cursor-pointer touch-manipulation flex flex-col max-h-[40%]"
                                     style={{
                                         background: 'rgba(20, 20, 30, 0.9)',
                                         backdropFilter: 'blur(15px)',
@@ -1030,6 +1030,8 @@ export default function JourneySlideshow({ journey, updateSkills, onSkillGain, h
                     </motion.div>
                 </AnimatePresence>
                         </div>
+
+                        <ChapterContext context={JOURNEY_CHAPTER_CONTEXT[currentCard.id]} />
 
                         {/* Slide Indicators - Compact */}
                         <div className="flex items-center justify-center gap-2 mt-2 shrink-0">

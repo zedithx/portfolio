@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import MenuBar from '../components/desktop/MenuBar';
 import Dock from '../components/desktop/Dock';
 import Terminal from '../components/desktop/Terminal';
@@ -12,6 +13,13 @@ import SpotifyModal from '../components/desktop/SpotifyModal';
 import PDFViewer from '../components/desktop/PDFViewer';
 import { Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import IncidentNotification from '../components/desktop/IncidentNotification';
+import useSreMonitor from '../hooks/useSreMonitor';
+import ClusterWarning, { useClusterWarning } from '../components/desktop/ClusterWarning';
+import clusterWarningStyles from '../components/desktop/ClusterWarning.module.css';
+
+const IncidentLab = dynamic(() => import('../components/desktop/IncidentLab'));
+const AboutSiJun = dynamic(() => import('../components/desktop/AboutSiJun'));
 
 export default function Home() {
     const { theme, mounted } = useTheme();
@@ -28,10 +36,50 @@ export default function Home() {
     const [isSpotifyOpen, setIsSpotifyOpen] = useState(false);
     const [spotifyModalState, setSpotifyModalState] = useState('closed'); // 'closed', 'minimized', 'normal', 'maximized'
     const [isPDFViewerOpen, setIsPDFViewerOpen] = useState(false);
+    const [incidentLabState, setIncidentLabState] = useState('closed');
+    const [aboutOpen, setAboutOpen] = useState(false);
+    const [isMenuActive, setIsMenuActive] = useState(false);
+    const [browserNotificationHost, setBrowserNotificationHost] = useState(null);
+    const [aboutNotificationHost, setAboutNotificationHost] = useState(null);
+    const [pdfNotificationHost, setPdfNotificationHost] = useState(null);
+    const notificationHost = isPDFViewerOpen ? pdfNotificationHost : aboutOpen ? aboutNotificationHost : activeModal ? browserNotificationHost : null;
+    // Browsing always counts. Only defer the visual cue during short menus/forms.
+    const presentationBlocked = Boolean(isPermissionModalOpen || isGmailConfirmOpen || isGmailComposeOpen || isGmailSuccessOpen || isMenuActive);
+    const { monitor, resolveFault } = useSreMonitor();
+    const { visible: clusterWarningVisible, jitterSequence } = useClusterWarning({
+        faultId: monitor.faultId,
+        faultSequence: monitor.faultSequence,
+        resolving: monitor.resolving,
+        blocked: presentationBlocked,
+    });
 
     const handleCommand = useCallback((command) => {
+        setAboutOpen(false);
+        setIncidentLabState(previous => previous === 'normal' || previous === 'maximized' ? 'minimized' : previous);
         setActiveModal(command);
     }, []);
+
+    const openSreDashboard = useCallback(() => {
+        setAboutOpen(false);
+        setActiveModal(null);
+        setIsPDFViewerOpen(false);
+        setIncidentLabState('normal');
+    }, []);
+
+    const openAboutSiJun = useCallback(() => {
+        setActiveModal(null);
+        setIsPDFViewerOpen(false);
+        setIncidentLabState(previous => previous === 'normal' || previous === 'maximized' ? 'minimized' : previous);
+        setAboutOpen(true);
+    }, []);
+    const closeAbout = useCallback(() => setAboutOpen(false), []);
+    const handleIncidentLabClick = useCallback(() => {
+        if (incidentLabState === 'normal' || incidentLabState === 'maximized') setIncidentLabState('minimized');
+        else openSreDashboard();
+    }, [incidentLabState, openSreDashboard]);
+    const closeIncidentLab = useCallback(() => setIncidentLabState('closed'), []);
+    const minimizeIncidentLab = useCallback(() => setIncidentLabState('minimized'), []);
+    const maximizeIncidentLab = useCallback(() => setIncidentLabState(previous => previous === 'maximized' ? 'normal' : 'maximized'), []);
 
     const closeModal = useCallback(() => {
         setActiveModal(null);
@@ -131,9 +179,16 @@ export default function Home() {
         window.dispatchEvent(new CustomEvent('restore-terminal'));
     }, []);
 
+    const handleAboutNavigate = useCallback(target => {
+        setAboutOpen(false);
+        if (target.kind === 'resume') handleOpenPDF();
+        if (target.kind === 'contact') handleGmailClick();
+    }, [handleOpenPDF, handleGmailClick]);
+
     return (
-        <main className="min-h-screen w-full relative overflow-hidden bg-black" role="application" aria-label="Yang Si Jun's Portfolio — macOS Desktop">
+        <main className={`min-h-screen w-full relative overflow-hidden bg-black ${jitterSequence !== null ? clusterWarningStyles.jitter : ''}`} data-cluster-jitter={jitterSequence ?? undefined} role="application" aria-label="Yang Si Jun's Portfolio — macOS Desktop">
             <h1 className="sr-only">Yang Si Jun — Software Developer Portfolio</h1>
+            <ClusterWarning visible={clusterWarningVisible} sequence={monitor.faultSequence} />
             {/* Desktop Wallpaper */}
             <div 
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat w-full h-full"
@@ -145,7 +200,14 @@ export default function Home() {
                 }}
             />
 
-            <MenuBar onPermissionError={triggerPermissionError} />
+            <MenuBar onPermissionError={triggerPermissionError} onAboutSiJun={openAboutSiJun} onMenuActivityChange={setIsMenuActive} />
+            <IncidentNotification
+                blocked={presentationBlocked || incidentLabState === 'normal' || incidentLabState === 'maximized'}
+                monitor={monitor}
+                portalHost={notificationHost}
+                dashboardOpen={incidentLabState === 'normal' || incidentLabState === 'maximized'}
+                onOpen={openSreDashboard}
+            />
             {terminalState !== 'closed' && (
                 <Terminal 
                     onCommand={handleCommand} 
@@ -163,7 +225,16 @@ export default function Home() {
                 onSpotifyClick={handleSpotifyClick}
                 terminalState={terminalState}
                 spotifyModalState={spotifyModalState}
+                onIncidentLabClick={handleIncidentLabClick}
+                incidentLabState={incidentLabState}
+                sreFaultActive={Boolean(monitor.faultId)}
+                sreResolving={monitor.resolving}
             />
+
+            {incidentLabState !== 'closed' && (
+                <IncidentLab monitor={monitor} onResolve={resolveFault} modalState={incidentLabState} onClose={closeIncidentLab} onMinimize={minimizeIncidentLab} onMaximize={maximizeIncidentLab} />
+            )}
+            {aboutOpen && <AboutSiJun onClose={closeAbout} onNavigate={handleAboutNavigate} onNotificationHostChange={setAboutNotificationHost} />}
 
             {/* Browser Modal */}
             {activeModal && (
@@ -171,6 +242,7 @@ export default function Home() {
                     type={activeModal} 
                     onClose={closeModal}
                     onPermissionError={triggerPermissionError}
+                    onNotificationHostChange={setBrowserNotificationHost}
                 />
             )}
 
@@ -241,6 +313,7 @@ export default function Home() {
             {/* PDF Viewer */}
             <PDFViewer
                 isOpen={isPDFViewerOpen}
+                onNotificationHostChange={setPdfNotificationHost}
                 onClose={handleClosePDF}
                 pdfUrl="/resume/Yang Si Jun Resume.pdf"
                 title="Yang Si Jun's Resume"
@@ -248,4 +321,3 @@ export default function Home() {
         </main>
     );
 }
-

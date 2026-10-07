@@ -1,15 +1,20 @@
 'use client';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
 
-export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' }) {
+export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume', onNotificationHostChange }) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState(250);
     const isResizing = useRef(false);
     const startPos = useRef({ x: 0, width: 0 });
+    const dialogRef = useRef(null);
+    const setDialogHost = useCallback(element => {
+        dialogRef.current = element;
+        onNotificationHostChange?.(element);
+    }, [onNotificationHostChange]);
 
     // Reset sidebar state when modal closes
     useEffect(() => {
@@ -19,18 +24,38 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
         }
     }, [isOpen]);
 
-    // Add ESC key handler
+    // The viewport-sized dialog includes the portaled notification controls.
+    // Keep the native PDF iframe in the tab order rather than inspecting it.
     useEffect(() => {
         if (!isOpen) return;
-        
-        const handleEscape = (e) => {
+        const previousFocus = document.activeElement;
+        if (!dialogRef.current?.contains(document.activeElement)) dialogRef.current?.focus();
+        const handleKeyDown = (e) => {
             if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
                 onClose();
+                return;
+            }
+            if (e.key !== 'Tab' || !dialogRef.current) return;
+            const controls = [...dialogRef.current.querySelectorAll('button:not(:disabled), a[href], iframe, [tabindex="0"]')]
+                .filter(element => element.getClientRects().length > 0);
+            const first = controls[0];
+            const last = controls.at(-1);
+            const focusNeedsBoundary = document.activeElement === dialogRef.current || !dialogRef.current.contains(document.activeElement);
+            if (e.shiftKey && (document.activeElement === first || focusNeedsBoundary)) {
+                e.preventDefault();
+                last?.focus();
+            } else if (!e.shiftKey && (document.activeElement === last || focusNeedsBoundary)) {
+                e.preventDefault();
+                first?.focus();
             }
         };
-        
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleKeyDown, true);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown, true);
+            if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+        };
     }, [isOpen, onClose]);
 
     // Handle sidebar resizing
@@ -78,6 +103,7 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title = 'Resume' })
         <AnimatePresence>
             {isOpen && (
                 <motion.div
+                    ref={setDialogHost} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

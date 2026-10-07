@@ -1,0 +1,52 @@
+.notification {
+    --notice-bg: rgb(40 42 48 / 96%);
+    --notice-text: #f5f5f7;
+    --notice-muted: #bdc0cc;
+    --notice-border: #595c6a;
+    --notice-accent: #a7c9ff;
+    --notice-hover: #ffffff0d;
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(112px, calc(env(safe-area-inset-bottom) + 112px));
+    z-index: 200;
+    width: min(350px, calc(100vw - 32px));
+    max-height: calc(100dvh - 158px);
+    overflow-y: auto;
+    padding: 12px 14px 14px;
+    border: 1px solid var(--notice-border);
+    border-radius: 15px;
+    background: var(--notice-bg);
+    color: var(--notice-text);
+    backdrop-filter: blur(24px);
+    box-shadow: 0 16px 45px #0005, 0 2px 7px #0002;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    animation: notice-appear 220ms ease-out;
+}
+.notification[data-theme='light'] {
+    --notice-bg: rgb(247 248 252 / 96%);
+    --notice-text: #232631;
+    --notice-muted: #545b6d;
+    --notice-border: #c5c9d4;
+    --notice-accent: #1c5eb7;
+    --notice-hover: #00000008;
+}
+.header { display: flex; align-items: center; gap: 9px; min-height: 44px; }
+.icon { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #ff9830; color: #27190a; }
+.sender { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 3px; }
+.sender strong { font-size: 12px; font-weight: 600; }
+.sender > span { color: var(--notice-muted); font-size: 10px; line-height: 1.4; }
+.notification button { font: inherit; cursor: pointer; border-radius: 6px; }
+.notification button:focus-visible { outline: 2px solid var(--notice-accent); outline-offset: 3px; }
+.dismiss { display: grid; place-items: center; flex-shrink: 0; margin-left: auto; width: 44px; height: 44px; color: var(--notice-muted); background: transparent; border: 0; }
+.dismiss:hover { background: var(--notice-hover); color: var(--notice-text); }
+.message h2 { margin: 8px 0 5px; font-size: 15px; line-height: 1.4; font-weight: 650; }
+.message p { color: var(--notice-muted); font-size: 13px; line-height: 1.55; margin: 0; }
+.open { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 9px; min-height: 44px; margin-top: 12px; padding: 9px 12px; color: var(--notice-accent); border: 1px solid var(--notice-border); background: var(--notice-hover); font-size: 12px !important; font-weight: 600 !important; }
+.open:hover { border-color: var(--notice-accent); }
+@keyframes notice-appear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 639px) {
+    .notification { right: 8px; bottom: max(82px, calc(env(safe-area-inset-bottom) + 82px)); width: min(350px, calc(100vw - 16px)); max-height: calc(100dvh - 124px); }
+    .message p { font-size: 15px; }
+    .message h2 { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .notification { animation: none; } }

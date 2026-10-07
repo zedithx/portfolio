@@ -4,7 +4,7 @@ import { Wifi, Battery, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../contexts/ThemeContext';
 
-export default function MenuBar({ onPermissionError }) {
+export default function MenuBar({ onPermissionError, onAboutSiJun, onMenuActivityChange }) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const [time, setTime] = useState(new Date());
@@ -35,6 +35,10 @@ export default function MenuBar({ onPermissionError }) {
     const widgetScreenRef = useRef(null);
 
     useEffect(() => {
+        onMenuActivityChange?.(isAppleMenuOpen || isiTermMenuOpen || isFileMenuOpen || isEditMenuOpen || isViewMenuOpen || isGoMenuOpen || isWindowMenuOpen || isHelpMenuOpen || isWifiMenuOpen || isBatteryMenuOpen || isWidgetScreenOpen);
+    }, [onMenuActivityChange, isAppleMenuOpen, isiTermMenuOpen, isFileMenuOpen, isEditMenuOpen, isViewMenuOpen, isGoMenuOpen, isWindowMenuOpen, isHelpMenuOpen, isWifiMenuOpen, isBatteryMenuOpen, isWidgetScreenOpen]);
+
+    useEffect(() => {
         setIsMounted(true);
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
@@ -42,13 +46,19 @@ export default function MenuBar({ onPermissionError }) {
 
     useEffect(() => {
         const handleEscape = (e) => {
-            if (e.key === 'Escape' && isWidgetScreenOpen) {
+            if (e.key !== 'Escape') return;
+            if (isAppleMenuOpen) {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsAppleMenuOpen(false);
+                appleMenuRef.current?.querySelector('button')?.focus();
+            } else if (isWidgetScreenOpen) {
                 setIsWidgetScreenOpen(false);
             }
         };
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [isWidgetScreenOpen]);
+        window.addEventListener('keydown', handleEscape, true);
+        return () => window.removeEventListener('keydown', handleEscape, true);
+    }, [isAppleMenuOpen, isWidgetScreenOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -151,19 +161,18 @@ export default function MenuBar({ onPermissionError }) {
                 <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
                     {/* Apple Menu */}
                     <div className="relative flex items-center" ref={appleMenuRef}>
-                        <img
-                            src="/menubar-icon/apple.png"
-                            alt="Apple menu"
-                            role="button"
-                            tabIndex={0}
+                        <button
+                            type="button"
+                            aria-label="Apple menu"
                             aria-haspopup="true"
                             aria-expanded={isAppleMenuOpen}
-                            className="w-4 h-4 cursor-pointer brightness-200 contrast-200"
+                            aria-controls={isAppleMenuOpen ? 'apple-system-menu' : undefined}
+                            className="w-4 h-4 flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-300"
                             onClick={() => {
                                 closeAllMenus();
                                 setIsAppleMenuOpen(!isAppleMenuOpen);
                             }}
-                        />
+                        ><img src="/menubar-icon/apple.png" alt="" className="w-4 h-4 brightness-200 contrast-200" /></button>
                         <AnimatePresence>
                             {isAppleMenuOpen && (
                                 <motion.div
@@ -171,9 +180,14 @@ export default function MenuBar({ onPermissionError }) {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.1 }}
-                                    className="absolute top-7 left-[-16px] w-[250px] bg-[#1e1e1e]/90 backdrop-blur-3xl rounded-b-lg shadow-2xl border border-white/10 py-1 z-[60]"
+                                    id="apple-system-menu"
+                                    className="absolute top-7 left-0 w-[250px] max-w-[calc(100vw-16px)] max-h-[calc(100dvh-42px)] overflow-y-auto overscroll-contain bg-[#1e1e1e]/90 backdrop-blur-3xl rounded-b-lg shadow-2xl border border-white/10 py-1 z-[60]"
                                 >
-                                    <div onClick={handleMenuClick} className="px-4 py-1 text-white text-[13px] hover:bg-blue-600 cursor-default">About This Mac</div>
+                                    <button type="button" onClick={() => {
+                                        appleMenuRef.current?.querySelector('button')?.focus();
+                                        closeAllMenus();
+                                        onAboutSiJun?.();
+                                    }} className="w-full min-h-[44px] md:min-h-0 text-left px-4 py-1 text-white text-[13px] hover:bg-blue-600 focus-visible:bg-blue-600 cursor-pointer">About Si Jun</button>
                                     <div className="h-[1px] bg-white/10 my-1 mx-1" />
                                     <div onClick={handleMenuClick} className="px-4 py-1 text-white text-[13px] hover:bg-blue-600 cursor-default flex justify-between">
                                         <span>System Settings...</span>
@@ -856,7 +870,7 @@ export default function MenuBar({ onPermissionError }) {
                         className="text-white/90 text-[10px] sm:text-[11px] md:text-[13px] whitespace-nowrap cursor-pointer hover:text-white transition-colors"
                         onClick={() => setIsWidgetScreenOpen(true)}
                     >
-                        {formatDate(time)} {formatTime(time)}
+                        {isMounted ? `${formatDate(time)} ${formatTime(time)}` : '\u00a0'}
                     </span>
                 </div>
             </nav>

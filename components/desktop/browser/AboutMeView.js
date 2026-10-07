@@ -5,15 +5,19 @@ import { useSkillProgression } from '../../../hooks/browser/useSkillProgression'
 import HeroSection from './interactivejourney/HeroSection';
 import StatsDrawer from './StatsDrawer';
 import FormalAboutMeView from './FormalAboutMeView';
+import { advanceJourneyCheckpoint, createJourneyCheckpoint } from '../../../lib/careerTimeline.mjs';
 
 // Lazy load JourneySlideshow for better initial load performance
 const JourneySlideshow = lazy(() => import('./interactivejourney/JourneySlideshow'));
 
-export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
+export default function AboutMeView({ data, onModeChange, onToggleToFormal, initialJourneyStep }) {
     const journeyStartRef = useRef(null);
-    const [journeyStarted, setJourneyStarted] = useState(false);
+    const hasJourneyEntry = Number.isFinite(initialJourneyStep) && data.journey.some(card => card.id === initialJourneyStep);
+    const entryCheckpoint = useMemo(() => createJourneyCheckpoint(data.journey, data.skills, initialJourneyStep), [data.journey, data.skills, initialJourneyStep]);
+    const [chapterCheckpoint, setChapterCheckpoint] = useState(entryCheckpoint);
+    const [journeyStarted, setJourneyStarted] = useState(hasJourneyEntry);
     const [isFormalMode, setIsFormalMode] = useState(false); // Always informal when opened from modal
-    const [isLoading, setIsLoading] = useState(true); // Show loading screen initially
+    const [isLoading, setIsLoading] = useState(!hasJourneyEntry); // Direct chapter links skip the intro delay
     
     // Notify parent of mode changes
     useEffect(() => {
@@ -27,7 +31,24 @@ export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
         return data.skills;
     }, [data.skills]);
 
-    const { skills, updateSkills, isSREUnlocked } = useSkillProgression(initialSkills);
+    const { skills: storedSkills, updateSkills: updateStoredSkills } = useSkillProgression(initialSkills);
+    // A chapter entry starts from its preceding chapters, independently of any
+    // later points already earned during a regular journey in this session.
+    const activeCheckpoint = chapterCheckpoint.initialCardId === entryCheckpoint.initialCardId ? chapterCheckpoint : entryCheckpoint;
+    const skills = hasJourneyEntry ? activeCheckpoint.skills : storedSkills;
+    const updateSkills = useCallback((cardId, skillDeltas) => {
+        if (!hasJourneyEntry) return updateStoredSkills(cardId, skillDeltas);
+        const result = advanceJourneyCheckpoint(activeCheckpoint, cardId, skillDeltas);
+        if (result.updated) setChapterCheckpoint(result.checkpoint);
+        return { updated: result.updated, unlockedSkills: result.unlockedSkills };
+    }, [hasJourneyEntry, activeCheckpoint, updateStoredSkills]);
+
+    useEffect(() => {
+        if (!hasJourneyEntry) return;
+        setChapterCheckpoint(entryCheckpoint);
+        setJourneyStarted(true);
+        setIsLoading(false);
+    }, [entryCheckpoint, hasJourneyEntry]);
 
     const handleStartJourney = useCallback(() => {
         setJourneyStarted(true);
@@ -65,11 +86,12 @@ export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
 
     // Show loading screen initially, then fade to content
     useEffect(() => {
+        if (hasJourneyEntry) return;
         const timer = setTimeout(() => {
             setIsLoading(false);
         }, 1500); // Minimum 1.5 second delay
         return () => clearTimeout(timer);
-    }, []);
+    }, [hasJourneyEntry]);
 
     // Render formal view (default for headhunters)
     if (isFormalMode) {
@@ -313,9 +335,9 @@ export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
                     {journeyStarted && !isLoading && (
                         <motion.div
                             key="journey"
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={hasJourneyEntry || prefersReducedMotion ? false : { opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
+                            transition={hasJourneyEntry || prefersReducedMotion ? { duration: 0 } : { duration: 0.6, delay: 0.3 }}
                             className="absolute inset-0 w-full h-full flex flex-col"
                         >
                             {/* Journey Slideshow with integrated skills - Takes full space on mobile */}
@@ -326,7 +348,9 @@ export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
                                     </div>
                                 }>
                                     <JourneySlideshow
+                                        key={hasJourneyEntry ? `chapter-${entryCheckpoint.initialCardId}` : 'ordinary-journey'}
                                         journey={data.journey}
+                                        initialCardId={hasJourneyEntry ? entryCheckpoint.initialCardId : undefined}
                                         updateSkills={updateSkills}
                                         onSkillGain={handleSkillGain}
                                         hero={data.hero}
@@ -345,4 +369,3 @@ export default function AboutMeView({ data, onModeChange, onToggleToFormal }) {
         </div>
     );
 }
-

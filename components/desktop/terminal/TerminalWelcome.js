@@ -57,7 +57,7 @@ export default function TerminalWelcome({
             >
                 <div
                     key={statusGlitchKey}
-                    className={`box-border grid w-max min-w-[42ch] max-w-full border border-current px-2.5 py-1.5 font-mono text-[15px] leading-snug overflow-x-auto ${isReady ? 'terminal-status-glitch' : ''} ${isDark ? 'text-green-400' : 'text-blue-700'}`}
+                    className={`box-border grid w-full min-w-0 max-w-full sm:w-max sm:min-w-[42ch] border border-current px-2.5 py-1.5 font-mono text-[15px] leading-snug overflow-x-auto ${isReady ? 'terminal-status-glitch' : ''} ${isDark ? 'text-green-400' : 'text-blue-700'}`}
                 >
                     <div className="whitespace-nowrap">{sessionText}</div>
                     <div className="whitespace-nowrap">
@@ -108,7 +108,7 @@ export default function TerminalWelcome({
                                 e.stopPropagation();
                                 onCommandClick(cmd.name);
                             }}
-                            className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b last:border-0 transition-colors cursor-pointer ${isDark ? 'border-white/5 hover:bg-white/10 active:bg-white/15' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-150'}`}
+                            className={`w-full min-h-11 sm:min-h-0 text-left px-2 sm:px-3 py-1.5 sm:py-2 flex items-start gap-2 sm:gap-4 border-b last:border-0 transition-colors cursor-pointer ${isDark ? 'border-white/5 hover:bg-white/10 active:bg-white/15' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-150'}`}
                             style={{ touchAction: 'manipulation' }}
                             aria-label={`Run ${cmd.name} command: ${cmd.description}`}
                         >

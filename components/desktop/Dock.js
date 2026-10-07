@@ -1,10 +1,11 @@
 'use client';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Link } from 'lucide-react';
+import { Activity, Link } from 'lucide-react';
 
 const dockApps = [
     { name: 'Terminal', icon: '/dock-icons/iterm2.png' },
+    { name: 'SRE Dashboard', ariaLabel: 'SRE Dashboard — Grafana-style storage monitor', customIcon: true },
     { name: 'Gmail', icon: '/dock-icons/gmail.webp' },
     {
         name: 'GitHub',
@@ -49,9 +50,14 @@ const loadingServices = {
     }
 };
 
-function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, terminalState, spotifyModalState, onLoadingStart, iconRef }) {
+function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, onIncidentLabClick, terminalState, spotifyModalState, incidentLabState, sreFaultActive, sreResolving, onLoadingStart, iconRef }) {
     const scale = useMotionValue(1);
     const y = useMotionValue(0);
+    const isSreDashboard = app.name === 'SRE Dashboard';
+    const hasAlert = isSreDashboard && sreFaultActive;
+    const badge = hasAlert ? '1' : app.badge;
+    const alertStatus = hasAlert ? sreResolving ? 'resolving simulated storage alert' : '1 simulated storage alert' : '';
+    const label = alertStatus ? `${app.name} — ${alertStatus}` : app.ariaLabel || app.tooltip || app.name;
 
     const springScale = useSpring(scale, { stiffness: 300, damping: 20 });
     const springY = useSpring(y, { stiffness: 300, damping: 20 });
@@ -110,6 +116,8 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
 
         if (app.name === 'Terminal') {
             onTerminalClick();
+        } else if (app.name === 'SRE Dashboard') {
+            onIncidentLabClick();
         } else if (app.name === 'Gmail') {
             onGmailClick();
         } else if (app.url && app.loadingService) {
@@ -140,8 +148,10 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
     return (
         <motion.button
             ref={iconRef}
-            className="group relative cursor-pointer"
-            aria-label={`Open ${app.ariaLabel || app.tooltip || app.name}`}
+            type="button"
+            className={`group relative cursor-pointer rounded-lg focus-visible:outline-2 focus-visible:outline-white ${isSreDashboard ? 'flex min-h-11 min-w-11 items-center justify-center' : ''}`}
+            aria-label={`Open ${label}`}
+            data-sre-alert={isSreDashboard ? hasAlert ? sreResolving ? 'resolving' : 'active' : 'healthy' : undefined}
             style={prefersReducedMotion ? {} : { scale: springScale, y: springY }}
             transition={{
                 type: 'spring',
@@ -154,32 +164,37 @@ function DockIcon({ app, index, mouseX, isHovering, prefersReducedMotion, onPerm
             {...hoverProps}
         >
             <div className="absolute -top-7 left-1/2 z-50 max-w-40 -translate-x-1/2 rounded bg-gray-800/90 px-1.5 py-0.5 text-center text-[10px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                {app.tooltip || app.name}
+                {hasAlert ? `${app.name} · ${sreResolving ? 'Resolving' : 'Alert active'}` : app.tooltip || app.name}
             </div>
-            <div className="relative h-10 w-10 min-[380px]:h-12 min-[380px]:w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
+            <div className="relative h-10 w-10 min-[430px]:h-12 min-[430px]:w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
                 <div className={`flex h-full w-full items-center justify-center overflow-hidden rounded-lg shadow-lg cursor-pointer sm:rounded-xl ${app.iconBoxClassName || ''}`}>
-                    <img
+                    {app.customIcon ? (
+                        <div className="flex h-[84%] w-[84%] items-center justify-center rounded-lg border border-emerald-300/30 bg-gradient-to-br from-[#325448] to-[#142b23] text-emerald-200 sm:rounded-xl">
+                            <Activity className="h-[62%] w-[62%]" strokeWidth={1.75} aria-hidden="true" />
+                        </div>
+                    ) : <img
                         src={app.icon}
                         alt={app.name}
                         className={app.imageClassName || `w-full h-full object-cover ${app.iconClassName || ''}`}
-                    />
+                    />}
                 </div>
-                {app.badge && (
-                    <span className="absolute -right-1.5 -top-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full border border-white/80 bg-red-500 px-0.5 text-[8px] font-bold leading-none text-white shadow-lg">
-                        {app.badge}
+                {badge && (
+                    <span aria-hidden="true" data-alert-badge={hasAlert ? 'sre' : undefined} className={`absolute -right-1.5 -top-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full border border-white/80 px-0.5 font-bold leading-none text-white shadow-lg ${hasAlert ? 'bg-red-600 text-[10px]' : 'bg-red-500 text-[8px]'}`}>
+                        {badge}
                     </span>
                 )}
             </div>
             {(app.active ||
               (app.name === 'Terminal' && terminalState !== 'closed') ||
-              (app.name === 'Spotify' && spotifyModalState !== 'closed')) && (
+              (app.name === 'Spotify' && spotifyModalState !== 'closed') ||
+              (app.name === 'SRE Dashboard' && incidentLabState !== 'closed')) && (
                 <div className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/80 rounded-full" />
             )}
         </motion.button>
     );
 }
 
-export default function Dock({ onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, terminalState, spotifyModalState }) {
+export default function Dock({ onPermissionError, onGmailClick, onTerminalClick, onSpotifyClick, onIncidentLabClick, terminalState, spotifyModalState, incidentLabState, sreFaultActive, sreResolving }) {
     const [isLoading, setIsLoading] = useState(false);
     const [loadingService, setLoadingService] = useState(null);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -321,7 +336,7 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, type: 'spring', stiffness: 100 }}
-                className="flex items-end gap-1 px-2 py-2 bg-white/10 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl min-[380px]:gap-1.5 min-[380px]:px-2.5 sm:gap-2 sm:px-3 sm:py-2.5 md:gap-1.5"
+                className="flex items-end gap-1 px-2 py-2 max-[340px]:gap-0.5 max-[340px]:px-1.5 bg-white/10 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl min-[380px]:gap-1.5 min-[380px]:px-2.5 sm:gap-2 sm:px-3 sm:py-2.5 md:gap-1.5"
                 aria-label="Application dock"
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
@@ -339,8 +354,12 @@ export default function Dock({ onPermissionError, onGmailClick, onTerminalClick,
                         onGmailClick={onGmailClick}
                         onTerminalClick={onTerminalClick}
                         onSpotifyClick={onSpotifyClick}
+                        onIncidentLabClick={onIncidentLabClick}
                         terminalState={terminalState}
                         spotifyModalState={spotifyModalState}
+                        incidentLabState={incidentLabState}
+                        sreFaultActive={sreFaultActive}
+                        sreResolving={sreResolving}
                         onLoadingStart={handleLoadingStart}
                         iconRef={iconRefs.current[index]}
                     />

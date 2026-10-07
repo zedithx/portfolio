@@ -1,0 +1,25 @@
+.warning {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    pointer-events: none;
+    border: 1px solid #f2495c66;
+    box-shadow: inset 0 0 48px #f2495c21;
+}
+
+.warning[data-theme='light'] {
+    border-color: #bd2b3a66;
+    box-shadow: inset 0 0 48px #bd2b3a18;
+}
+
+.jitter { animation: cluster-jitter 520ms ease-out; }
+
+@keyframes cluster-jitter {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    18% { transform: translate3d(-3px, 1px, 0); }
+    36% { transform: translate3d(2px, -1px, 0); }
+    58% { transform: translate3d(-1px, 0, 0); }
+    78% { transform: translate3d(1px, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) { .jitter { animation: none; } }

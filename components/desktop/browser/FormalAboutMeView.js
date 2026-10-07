@@ -37,7 +37,7 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                         <ContentSection isDark={isDark} prefersReducedMotion={prefersReducedMotion}>
                             <div className={`space-y-4 sm:space-y-5 md:space-y-6 text-sm sm:text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                 <p>
-                                    I'm an SRE-focused engineer with hands-on experience building, operating, and scaling production systems across payments, automation, and large-scale infrastructure. My core strengths are observability, operational automation, and reliability engineering for systems that run in the real world.
+                                    I'm a Software Engineer (SRE) at ByteDance, with hands-on experience building, operating, and scaling production systems across payments, automation, and large-scale infrastructure. My core strengths are observability, operational automation, and reliability engineering for systems that run in the real world.
                                 </p>
                                 
                                 <p>
@@ -51,13 +51,18 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                     <ul className={`list-disc list-outside space-y-2 ml-5 sm:ml-6 md:ml-8 pl-1.5 sm:pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                         <li>At Changi Airport Group, I built a chatbot automation tool for optimising our airport operations on serverless, event-driven architectures.</li>
                                         <li>At TSMC, I worked on Telemetry and DevOps/SRE infrastructure at industrial scale.</li>
-                                        <li>At ByteDance, I focused on Site Reliability Engineering, including Monitoring, Automation, and Service Reliability for Large-Scale Systems.</li>
+                                        <li>During my ByteDance internship, I worked on ByteGraph monitoring, automation, and service reliability.</li>
+                                        <li>I now work full-time at ByteDance on platform engineering and operational automation for distributed storage, including HBase, ByteKV, and TokaDB. My tooling covers storage expansion in response to utilization alerts, machine replacement, configuration management, infrastructure tracking, and administrative CLI usability.</li>
                                     </ul>
                                 </div>
+
+                                <p>
+                                    In my current role, I investigate partition and replica-group issues using Grafana, shell tools, jump servers, and Go/Python code, drawing on Raft and RocksDB concepts.
+                                </p>
                                 
                                 <div className="space-y-2 sm:space-y-3">
                                     <p>
-                                        Alongside internships, I've been a core contributor to Student Government's Tech Department at the Singapore University of Technology and Design (SUTD), where I repeatedly shipped and operated production systems for campus-wide events. This included:
+                                        During my time at the Singapore University of Technology and Design (SUTD), I was a core contributor to Student Government's Tech Department, where I repeatedly shipped and operated production systems for campus-wide events. This included:
                                     </p>
                                     <ul className={`list-disc list-outside space-y-2 ml-5 sm:ml-6 md:ml-8 pl-1.5 sm:pl-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                         <li>Frontend event pages for major events (Night Fiesta, Orientation, LCC)</li>
@@ -71,7 +76,7 @@ export default function FormalAboutMeView({ onToggleToInformal, onClose }) {
                                 </p>
                                 
                                 <p>
-                                    I'm currently completing my final phase of studies at SUTD and preparing for a full-time role in Site Reliability Engineering. In parallel, I'm continuing to build and iterate on Tangled, a social startup, ahead of my full-time start.
+                                    Alongside my full-time SRE role, I continue to build and iterate on Tangled as its co-founder and software engineer. Tangled is a live App Store social platform with 2,000+ users, bringing together real-time chat, cloud infrastructure, and production operations.
                                 </p>
                             </div>
                         </ContentSection>
